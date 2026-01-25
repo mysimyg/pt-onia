@@ -616,6 +616,49 @@
             color: var(--text-muted);
         }
 
+        .chart-data-table {
+            margin-top: 12px;
+            overflow-x: auto;
+            font-size: 10px;
+        }
+
+        .chart-data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .chart-data-table th, .chart-data-table td {
+            padding: 4px 6px;
+            text-align: center;
+            border-bottom: 1px solid var(--bg-input);
+        }
+
+        .chart-data-table th {
+            color: var(--text-muted);
+            font-weight: normal;
+            text-transform: uppercase;
+            font-size: 9px;
+            letter-spacing: 0.5px;
+            position: sticky;
+            left: 0;
+            background: var(--bg-card);
+            text-align: left;
+            width: 80px;
+        }
+
+        .chart-data-table td {
+            color: var(--text);
+        }
+
+        .chart-data-table tr.pto-row td { color: var(--pto); }
+        .chart-data-table tr.activism-row td { color: var(--activism); }
+        .chart-data-table tr.personal-row td { color: var(--personal); }
+        .chart-data-table tr.wellness-row td { color: var(--wellness); }
+
+        .chart-data-table td.warning { color: var(--warning); }
+        .chart-data-table td.danger { color: var(--danger); }
+
         .instructions {
             background: var(--bg-card);
             border-radius: 8px;
@@ -955,17 +998,20 @@
             </div>
 
             <div class="balance-projection">
-                <h3>PTO Balance Projection Throughout Year</h3>
+                <h3>PTO Balance Projection</h3>
                 <div class="projection-chart" id="projectionChart"></div>
-                <div class="chart-labels">
-                    <span>Jan</span>
-                    <span>Mar</span>
-                    <span>May</span>
-                    <span>Jul</span>
-                    <span>Sep</span>
-                    <span>Nov</span>
-                    <span>Dec</span>
-                </div>
+                <div class="chart-data-table" id="ptoDataTable"></div>
+            </div>
+
+            <div class="balance-projection">
+                <h3>Wellness Balance Projection</h3>
+                <div class="projection-chart" id="wellnessProjectionChart"></div>
+                <div class="chart-data-table" id="wellnessDataTable"></div>
+            </div>
+
+            <div class="balance-projection">
+                <h3>Activism & Personal Balances by Pay Period</h3>
+                <div class="chart-data-table" id="otherDataTable"></div>
             </div>
 
             <div class="legend">
@@ -1704,26 +1750,42 @@
                 wellnessBalance -= getHoursForDay(date);
                 wellnessIndex++;
             }
-            // Cap wellness at rollover max
-            const wellnessOverRollover = wellnessBalance > maxWellness ? wellnessBalance - maxWellness : 0;
 
-            // Update displays
+            // Update displays - show actual projected balance (wellness shows full amount, not capped)
             document.getElementById('projectedPto').textContent = ptoBalance.toFixed(1) + 'h';
             document.getElementById('projectedActivism').textContent = activismBalance.toFixed(1) + 'h';
             document.getElementById('projectedPersonal').textContent = personalBalance.toFixed(1) + 'h';
-            document.getElementById('projectedWellness').textContent = Math.min(wellnessBalance, maxWellness).toFixed(1) + 'h';
+            document.getElementById('projectedWellness').textContent = wellnessBalance.toFixed(1) + 'h';
 
             // Update type selector availability displays
             document.getElementById('ptoAvailDisplay').textContent = ptoBalance.toFixed(0) + 'h avail';
             document.getElementById('activismAvailDisplay').textContent = activismBalance.toFixed(0) + 'h avail';
             document.getElementById('personalAvailDisplay').textContent = personalBalance.toFixed(0) + 'h avail';
-            document.getElementById('wellnessAvailDisplay').textContent = Math.min(wellnessBalance, maxWellness).toFixed(0) + 'h avail';
+            document.getElementById('wellnessAvailDisplay').textContent = wellnessBalance.toFixed(0) + 'h avail';
 
             // Update details
             document.getElementById('activismDetail').textContent = activismBalance < 0 ? 'Over limit!' : 'Use it or lose it';
             document.getElementById('personalDetail').textContent = personalBalance < 0 ? 'Over limit!' : `Max ${maxPersonal}h`;
-            document.getElementById('wellnessDetail').textContent = wellnessOverRollover > 0 ?
-                `${wellnessOverRollover.toFixed(0)}h over rollover!` : `Rollover max ${maxWellness}h`;
+
+            // Wellness detail - explain what happens at year end
+            const wellnessCard = document.querySelector('.balance-card.wellness');
+            const wellnessValue = document.getElementById('projectedWellness');
+            wellnessCard.style.borderLeftColor = ''; // Reset
+            wellnessValue.style.color = ''; // Reset
+
+            if (wellnessBalance < 0) {
+                document.getElementById('wellnessDetail').textContent = 'Negative! Not enough wellness';
+                wellnessCard.style.borderLeftColor = 'var(--danger)';
+                wellnessValue.style.color = 'var(--danger)';
+            } else if (wellnessBalance > maxWellness) {
+                const willLose = wellnessBalance - maxWellness;
+                document.getElementById('wellnessDetail').textContent = `Will lose ${willLose.toFixed(0)}h at year end`;
+                wellnessCard.style.borderLeftColor = 'var(--warning)';
+                wellnessValue.style.color = 'var(--warning)';
+            } else {
+                document.getElementById('wellnessDetail').textContent = `Under ${maxWellness}h - all rolls over`;
+                wellnessCard.style.borderLeftColor = 'var(--wellness)';
+            }
 
             // Update PTO status box
             const statBox = document.getElementById('statBoxPto');
@@ -1782,12 +1844,17 @@
             }
             document.getElementById('countTotalOff').textContent = totalDaysOff;
 
+            // Render charts and data tables
             renderProjectionChart(currentPto, ptoPerPaycheck, maxPto, yearEndGoal);
+            renderWellnessChart(currentWellness, wellnessPerPaycheck, maxWellness);
+            renderOtherBalancesTable(currentActivism, futureActivismUsed, currentPersonal, personalPerYear, maxPersonal, futurePersonalUsed);
         }
 
         function renderProjectionChart(startBalance, ptoPerPaycheck, maxPto, yearEndGoal) {
             const container = document.getElementById('projectionChart');
+            const dataTable = document.getElementById('ptoDataTable');
             container.innerHTML = '';
+            dataTable.innerHTML = '';
 
             const chartHeight = 100;
             const maxValue = Math.max(maxPto * 1.1, startBalance + state.paycheckDates.length * ptoPerPaycheck);
@@ -1815,6 +1882,9 @@
             const containerWidth = container.offsetWidth || 600;
             const barWidth = Math.max(6, Math.floor(containerWidth / state.paycheckDates.length) - 3);
 
+            // Collect data for table
+            const tableData = { dates: [], balances: [] };
+
             state.paycheckDates.forEach((paycheck, i) => {
                 const paycheckKey = dateKey(paycheck);
                 while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) {
@@ -1823,6 +1893,10 @@
                     ptoIndex++;
                 }
                 balance = Math.min(balance + ptoPerPaycheck, maxPto);
+
+                // Store for table
+                tableData.dates.push(paycheck);
+                tableData.balances.push({ value: balance, atMax: balance >= maxPto, warning: balance >= maxPto * 0.9, danger: balance < 0 || balance >= maxPto });
 
                 const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
                 const bar = document.createElement('div');
@@ -1839,6 +1913,151 @@
 
                 container.appendChild(bar);
             });
+
+            // Render data table
+            let tableHTML = '<table><tr><th>Date</th>';
+            tableData.dates.forEach(d => {
+                tableHTML += `<td>${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>`;
+            });
+            tableHTML += '</tr><tr class="pto-row"><th>PTO Hrs</th>';
+            tableData.balances.forEach(b => {
+                const cls = b.danger ? 'danger' : (b.warning ? 'warning' : '');
+                tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`;
+            });
+            tableHTML += '</tr></table>';
+            dataTable.innerHTML = tableHTML;
+        }
+
+        function renderWellnessChart(startBalance, wellnessPerPaycheck, maxWellness) {
+            const container = document.getElementById('wellnessProjectionChart');
+            const dataTable = document.getElementById('wellnessDataTable');
+            container.innerHTML = '';
+            dataTable.innerHTML = '';
+
+            const chartHeight = 100;
+            // Wellness can accrue higher than max during year, so scale accordingly
+            const projectedMax = startBalance + state.paycheckDates.length * wellnessPerPaycheck;
+            const maxValue = Math.max(maxWellness * 1.5, projectedMax);
+
+            // Add rollover limit line
+            const maxLineY = chartHeight - (maxWellness / maxValue * chartHeight);
+            const maxLine = document.createElement('div');
+            maxLine.className = 'chart-max-line';
+            maxLine.style.top = `${maxLineY}px`;
+            maxLine.title = `Rollover Limit: ${maxWellness}h`;
+            container.appendChild(maxLine);
+
+            let balance = startBalance;
+            const sortedWellnessDays = [...state.selectedDays.wellness].filter(k => !isPastDate(k)).sort();
+            let wellnessIndex = 0;
+            const containerWidth = container.offsetWidth || 600;
+            const barWidth = Math.max(6, Math.floor(containerWidth / state.paycheckDates.length) - 3);
+
+            // Collect data for table
+            const tableData = { dates: [], balances: [] };
+
+            state.paycheckDates.forEach((paycheck, i) => {
+                const paycheckKey = dateKey(paycheck);
+                while (wellnessIndex < sortedWellnessDays.length && sortedWellnessDays[wellnessIndex] < paycheckKey) {
+                    const date = new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00');
+                    balance -= getHoursForDay(date);
+                    wellnessIndex++;
+                }
+                balance += wellnessPerPaycheck;
+
+                // Store for table
+                tableData.dates.push(paycheck);
+                const overRollover = balance > maxWellness;
+                tableData.balances.push({ value: balance, overRollover: overRollover, danger: balance < 0 });
+
+                const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+
+                // Color based on whether over rollover limit
+                if (balance < 0) bar.classList.add('danger');
+                else if (balance > maxWellness) bar.classList.add('warning');
+
+                bar.style.height = `${height}px`;
+                bar.style.left = `${i * (barWidth + 2)}px`;
+                bar.style.width = `${barWidth}px`;
+                bar.title = `${paycheck.toLocaleDateString()}: ${balance.toFixed(1)}h${balance > maxWellness ? ' (over rollover limit)' : ''}`;
+
+                container.appendChild(bar);
+            });
+
+            // Render data table
+            let tableHTML = '<table><tr><th>Date</th>';
+            tableData.dates.forEach(d => {
+                tableHTML += `<td>${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>`;
+            });
+            tableHTML += '</tr><tr class="wellness-row"><th>Wellness</th>';
+            tableData.balances.forEach(b => {
+                const cls = b.danger ? 'danger' : (b.overRollover ? 'warning' : '');
+                tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`;
+            });
+            tableHTML += '</tr></table>';
+            dataTable.innerHTML = tableHTML;
+        }
+
+        function renderOtherBalancesTable(currentActivism, futureActivismUsed, currentPersonal, personalPerYear, maxPersonal, futurePersonalUsed) {
+            const dataTable = document.getElementById('otherDataTable');
+            dataTable.innerHTML = '';
+
+            // Activism is simple - it just decreases as used, doesn't accrue
+            // Personal gets yearly amount at start, then decreases
+
+            // Calculate running balances through pay periods
+            const activismDays = [...state.selectedDays.activism].filter(k => !isPastDate(k)).sort();
+            const personalDays = [...state.selectedDays.personal].filter(k => !isPastDate(k)).sort();
+
+            let activismBalance = currentActivism;
+            let personalBalance = Math.min(currentPersonal + personalPerYear, maxPersonal);
+
+            let activismIndex = 0;
+            let personalIndex = 0;
+
+            const tableData = { dates: [], activism: [], personal: [] };
+
+            state.paycheckDates.forEach((paycheck, i) => {
+                const paycheckKey = dateKey(paycheck);
+
+                // Deduct activism used before this paycheck
+                while (activismIndex < activismDays.length && activismDays[activismIndex] < paycheckKey) {
+                    const date = new Date(activismDays[activismIndex] + 'T12:00:00');
+                    activismBalance -= getHoursForDay(date);
+                    activismIndex++;
+                }
+
+                // Deduct personal used before this paycheck
+                while (personalIndex < personalDays.length && personalDays[personalIndex] < paycheckKey) {
+                    const date = new Date(personalDays[personalIndex] + 'T12:00:00');
+                    personalBalance -= getHoursForDay(date);
+                    personalIndex++;
+                }
+
+                tableData.dates.push(paycheck);
+                tableData.activism.push({ value: activismBalance, danger: activismBalance < 0 });
+                tableData.personal.push({ value: personalBalance, danger: personalBalance < 0 });
+            });
+
+            // Render data table
+            let tableHTML = '<table><tr><th>Date</th>';
+            tableData.dates.forEach(d => {
+                tableHTML += `<td>${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>`;
+            });
+            tableHTML += '</tr><tr class="activism-row"><th>Activism</th>';
+            tableData.activism.forEach(b => {
+                const cls = b.danger ? 'danger' : '';
+                tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`;
+            });
+            tableHTML += '</tr><tr class="personal-row"><th>Personal</th>';
+            tableData.personal.forEach(b => {
+                const cls = b.danger ? 'danger' : '';
+                tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`;
+            });
+            tableHTML += '</tr></table>';
+            dataTable.innerHTML = tableHTML;
         }
 
         function renderCalendar() {
