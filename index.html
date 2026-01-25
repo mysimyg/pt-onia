@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTO Optimizer - 9/80 Schedule</title>
+    <style>
+        :root {
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+            --bg-input: #0f3460;
+            --accent: #e94560;
+            --accent-light: #ff6b6b;
+            --text: #eaeaea;
+            --text-muted: #a0a0a0;
+            --holiday: #4ade80;
+            --nine80: #60a5fa;
+            --pto-selected: #f472b6;
+            --weekend: #374151;
+            --today: #fbbf24;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-card);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--bg-input);
+        }
+
+        h1 {
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            min-height: calc(100vh - 80px);
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sidebar {
+            background: var(--bg-card);
+            padding: 20px;
+            overflow-y: auto;
+            max-height: calc(100vh - 80px);
+            position: sticky;
+            top: 0;
+        }
+
+        .sidebar-section {
+            margin-bottom: 25px;
+        }
+
+        .sidebar-section h3 {
+            color: var(--accent);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--bg-input);
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: var(--bg-input);
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: 2px solid var(--accent);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .holiday-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .holiday-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            padding: 6px 8px;
+            background: var(--bg-input);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .holiday-item:hover {
+            background: var(--bg-dark);
+        }
+
+        .holiday-item input {
+            accent-color: var(--accent);
+        }
+
+        .stat-box {
+            background: var(--bg-input);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .stat-box.highlight {
+            border: 2px solid var(--accent);
+        }
+
+        .stat-box.success {
+            border: 2px solid var(--success);
+        }
+
+        .stat-box.warning {
+            border: 2px solid var(--warning);
+        }
+
+        .stat-box.danger {
+            border: 2px solid var(--danger);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--text);
+        }
+
+        .stat-value.success { color: var(--success); }
+        .stat-value.warning { color: var(--warning); }
+        .stat-value.danger { color: var(--danger); }
+
+        .stat-detail {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+        }
+
+        .btn-secondary {
+            background: var(--bg-input);
+            color: var(--text);
+            border: 1px solid var(--text-muted);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-dark);
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .quick-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+            border-radius: 4px;
+            border: 1px solid var(--text-muted);
+            background: var(--bg-input);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .quick-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .quick-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .opportunity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .opportunity-item {
+            background: var(--bg-input);
+            border-radius: 6px;
+            padding: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .opportunity-item:hover {
+            border-color: var(--text-muted);
+        }
+
+        .opportunity-item.selected {
+            border-color: var(--pto-selected);
+            background: rgba(244, 114, 182, 0.1);
+        }
+
+        .opportunity-item .title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .opportunity-item .details {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .opportunity-item .badges {
+            display: flex;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .badge-hours {
+            background: var(--accent);
+            color: white;
+        }
+
+        .badge-days {
+            background: var(--holiday);
+            color: #000;
+        }
+
+        .badge-type {
+            background: var(--nine80);
+            color: #000;
+        }
+
+        .content-area {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: var(--bg-card);
+            border-radius: 8px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+        }
+
+        .calendar-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 15px;
+        }
+
+        .month-card {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 12px;
+        }
+
+        .month-title {
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .weekday-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-bottom: 4px;
+        }
+
+        .weekday-header span {
+            text-align: center;
+            font-size: 10px;
+            color: var(--text-muted);
+            padding: 4px;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            border-radius: 5px;
+            background: var(--bg-input);
+            position: relative;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .day:hover:not(.empty):not(.weekend):not(.holiday):not(.nine80) {
+            transform: scale(1.1);
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+
+        .day.empty {
+            background: transparent;
+            cursor: default;
+        }
+
+        .day.weekend {
+            background: var(--weekend);
+            color: var(--text-muted);
+            cursor: default;
+        }
+
+        .day.holiday {
+            background: var(--holiday);
+            color: #000;
+            font-weight: bold;
+            cursor: default;
+        }
+
+        .day.nine80 {
+            background: var(--nine80);
+            color: #000;
+            font-weight: bold;
+            cursor: default;
+        }
+
+        .day.pto-selected {
+            background: var(--pto-selected);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .day.today {
+            box-shadow: 0 0 0 2px var(--today);
+        }
+
+        .day.combo {
+            background: linear-gradient(135deg, var(--holiday) 50%, var(--nine80) 50%);
+            color: #000;
+            font-weight: bold;
+            cursor: default;
+        }
+
+        .day .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            z-index: 100;
+            margin-bottom: 4px;
+            pointer-events: none;
+        }
+
+        .day:hover .tooltip {
+            display: block;
+        }
+
+        .day .hours-badge {
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            font-size: 8px;
+            background: rgba(0,0,0,0.3);
+            padding: 1px 3px;
+            border-radius: 2px;
+        }
+
+        .balance-projection {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .balance-projection h3 {
+            color: var(--accent);
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .projection-chart {
+            height: 120px;
+            position: relative;
+            background: var(--bg-input);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 12px;
+            background: var(--success);
+            border-radius: 2px 2px 0 0;
+            transition: height 0.3s;
+        }
+
+        .chart-bar.warning { background: var(--warning); }
+        .chart-bar.danger { background: var(--danger); }
+
+        .chart-max-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-top: 2px dashed var(--danger);
+            opacity: 0.7;
+        }
+
+        .chart-goal-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-top: 2px dashed var(--success);
+            opacity: 0.7;
+        }
+
+        .chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .instructions {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .instructions h3 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .instructions ul {
+            font-size: 12px;
+            color: var(--text-muted);
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 6px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 8px 0;
+        }
+
+        .collapsible-header:hover {
+            color: var(--accent);
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible-content.open {
+            max-height: 500px;
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 13px;
+            border-bottom: 1px solid var(--bg-input);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row .label {
+            color: var(--text-muted);
+        }
+
+        .summary-row .value {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>PTO Optimizer</h1>
+        <p class="subtitle">Interactive 9/80 Schedule Planner - Click days to plan your time off</p>
+    </div>
+
+    <div class="main-layout">
+        <div class="sidebar">
+            <!-- Settings Section -->
+            <div class="sidebar-section">
+                <h3>Settings</h3>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Year</label>
+                        <select id="year" onchange="regenerate()"></select>
+                    </div>
+                    <div class="input-group">
+                        <label>PTO/Paycheck</label>
+                        <input type="number" id="ptoPerPaycheck" step="0.01" value="7.69" onchange="regenerate()">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Current Balance</label>
+                        <input type="number" id="currentPto" step="0.01" value="0" onchange="recalculate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Max Accrual</label>
+                        <input type="number" id="maxPto" step="1" value="300" onchange="recalculate()">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Next Paycheck</label>
+                        <input type="date" id="nextPaycheck" onchange="regenerate()">
+                    </div>
+                    <div class="input-group">
+                        <label>Next 9/80 Friday</label>
+                        <input type="date" id="next980Friday" onchange="regenerate()">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>End-of-Year Goal (optional)</label>
+                    <input type="number" id="yearEndGoal" step="1" placeholder="Leave blank for no goal" onchange="recalculate()">
+                </div>
+            </div>
+
+            <!-- Holidays Section -->
+            <div class="sidebar-section">
+                <div class="collapsible-header" onclick="toggleSection('holidaysContent', this)">
+                    <h3 style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Your Holidays</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div id="holidaysContent" class="collapsible-content open">
+                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Select holidays your company observes:</p>
+                    <div class="holiday-list" id="holidayCheckboxes"></div>
+                </div>
+            </div>
+
+            <!-- Live Stats -->
+            <div class="sidebar-section">
+                <h3>Live Calculation</h3>
+                <div class="stat-box" id="statBoxBalance">
+                    <div class="stat-label">Projected Year-End Balance</div>
+                    <div class="stat-value" id="projectedBalance">0h</div>
+                    <div class="stat-detail" id="balanceDetail">-</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">PTO Earned This Year</div>
+                    <div class="stat-value" id="totalEarned">0h</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">PTO Selected to Use</div>
+                    <div class="stat-value" id="totalUsed">0h</div>
+                    <div class="stat-detail" id="usedDetail">0 days selected</div>
+                </div>
+                <div class="summary-row">
+                    <span class="label">9/80 Fridays Off</span>
+                    <span class="value" id="count980">0</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Holidays Off</span>
+                    <span class="value" id="countHolidays">0</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Total Days Off</span>
+                    <span class="value" id="countTotalOff">0</span>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="sidebar-section">
+                <h3>Quick Select</h3>
+                <div class="quick-actions">
+                    <button class="quick-btn" onclick="selectAllType('super')">All Super Combos</button>
+                    <button class="quick-btn" onclick="selectAllType('4day')">All 4-Day Weekends</button>
+                    <button class="quick-btn" onclick="selectAllType('friday')">All Fridays</button>
+                    <button class="quick-btn" onclick="clearAllSelections()">Clear All</button>
+                </div>
+            </div>
+
+            <!-- Opportunities -->
+            <div class="sidebar-section">
+                <div class="collapsible-header" onclick="toggleSection('opportunitiesContent', this)">
+                    <h3 style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Opportunities</h3>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div id="opportunitiesContent" class="collapsible-content open">
+                    <div class="opportunity-list" id="opportunityList"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div class="instructions">
+                <h3>How to Use</h3>
+                <ul>
+                    <li><strong>Click any workday</strong> on the calendar to toggle PTO on/off</li>
+                    <li>Use <strong>Quick Select</strong> buttons to auto-fill optimization opportunities</li>
+                    <li>Click individual <strong>Opportunities</strong> in the sidebar to toggle them</li>
+                    <li>Set an <strong>End-of-Year Goal</strong> to track against a target balance</li>
+                    <li>Adjust <strong>Your Holidays</strong> based on what your company observes</li>
+                </ul>
+            </div>
+
+            <div class="balance-projection">
+                <h3>PTO Balance Projection Throughout Year</h3>
+                <div class="projection-chart" id="projectionChart"></div>
+                <div class="chart-labels">
+                    <span>Jan</span>
+                    <span>Mar</span>
+                    <span>May</span>
+                    <span>Jul</span>
+                    <span>Sep</span>
+                    <span>Nov</span>
+                    <span>Dec</span>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--weekend);"></div>
+                    <span>Weekend</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--holiday);"></div>
+                    <span>Holiday</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--nine80);"></div>
+                    <span>9/80 Friday</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--pto-selected);"></div>
+                    <span>Selected PTO</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(135deg, var(--holiday) 50%, var(--nine80) 50%);"></div>
+                    <span>Holiday + 9/80</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="box-shadow: 0 0 0 2px var(--today); background: var(--bg-input);"></div>
+                    <span>Today</span>
+                </div>
+            </div>
+
+            <div class="calendar-container" id="calendarContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let state = {
+            year: new Date().getFullYear(),
+            holidays: {},
+            nine80Fridays: {},
+            paycheckDates: [],
+            selectedPtoDays: new Set(),
+            opportunities: [],
+            selectedOpportunities: new Set()
+        };
+
+        // All possible federal holidays
+        const ALL_HOLIDAYS = [
+            { id: 'newyear', name: "New Year's Day", default: true },
+            { id: 'mlk', name: "MLK Day", default: true },
+            { id: 'presidents', name: "Presidents Day", default: true },
+            { id: 'memorial', name: "Memorial Day", default: true },
+            { id: 'juneteenth', name: "Juneteenth", default: true },
+            { id: 'independence', name: "Independence Day", default: true },
+            { id: 'labor', name: "Labor Day", default: true },
+            { id: 'columbus', name: "Columbus Day", default: false },
+            { id: 'veterans', name: "Veterans Day", default: false },
+            { id: 'thanksgiving', name: "Thanksgiving", default: true },
+            { id: 'thanksgivingfri', name: "Day After Thanksgiving", default: true },
+            { id: 'christmas', name: "Christmas", default: true }
+        ];
+
+        // Holiday calculation functions
+        function observedDate(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            if (day === 0) d.setDate(d.getDate() + 1);
+            else if (day === 6) d.setDate(d.getDate() - 1);
+            return d;
+        }
+
+        function nthWeekday(year, month, weekday, n) {
+            const first = new Date(year, month, 1);
+            const firstWeekday = first.getDay();
+            let day = 1 + ((weekday - firstWeekday + 7) % 7) + (n - 1) * 7;
+            return new Date(year, month, day);
+        }
+
+        function lastWeekday(year, month, weekday) {
+            const last = new Date(year, month + 1, 0);
+            const lastDay = last.getDate();
+            const lastWeekdayOfMonth = last.getDay();
+            let diff = (lastWeekdayOfMonth - weekday + 7) % 7;
+            return new Date(year, month, lastDay - diff);
+        }
+
+        function getHolidayDate(id, year) {
+            switch(id) {
+                case 'newyear': return observedDate(new Date(year, 0, 1));
+                case 'mlk': return nthWeekday(year, 0, 1, 3);
+                case 'presidents': return nthWeekday(year, 1, 1, 3);
+                case 'memorial': return lastWeekday(year, 4, 1);
+                case 'juneteenth': return observedDate(new Date(year, 5, 19));
+                case 'independence': return observedDate(new Date(year, 6, 4));
+                case 'labor': return nthWeekday(year, 8, 1, 1);
+                case 'columbus': return nthWeekday(year, 9, 1, 2);
+                case 'veterans': return observedDate(new Date(year, 10, 11));
+                case 'thanksgiving': return nthWeekday(year, 10, 4, 4);
+                case 'thanksgivingfri':
+                    const tg = nthWeekday(year, 10, 4, 4);
+                    return new Date(tg.getFullYear(), tg.getMonth(), tg.getDate() + 1);
+                case 'christmas': return observedDate(new Date(year, 11, 25));
+            }
+        }
+
+        function dateKey(date) {
+            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        }
+
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        }
+
+        function formatShortDate(date) {
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function getHoursForDay(date) {
+            const day = date.getDay();
+            if (day === 0 || day === 6) return 0;
+            if (day === 5) return 8;
+            return 9;
+        }
+
+        // Initialize
+        function init() {
+            initYearDropdown();
+            initDateInputs();
+            initHolidayCheckboxes();
+            regenerate();
+        }
+
+        function initYearDropdown() {
+            const yearSelect = document.getElementById('year');
+            const currentYear = new Date().getFullYear();
+            for (let y = currentYear - 1; y <= currentYear + 2; y++) {
+                const option = document.createElement('option');
+                option.value = y;
+                option.textContent = y;
+                if (y === currentYear) option.selected = true;
+                yearSelect.appendChild(option);
+            }
+        }
+
+        function initDateInputs() {
+            const today = new Date();
+            let nextFriday = new Date(today);
+            while (nextFriday.getDay() !== 5) {
+                nextFriday.setDate(nextFriday.getDate() + 1);
+            }
+            document.getElementById('nextPaycheck').value = dateKey(today);
+            document.getElementById('next980Friday').value = dateKey(nextFriday);
+        }
+
+        function initHolidayCheckboxes() {
+            const container = document.getElementById('holidayCheckboxes');
+            container.innerHTML = '';
+
+            ALL_HOLIDAYS.forEach(h => {
+                const label = document.createElement('label');
+                label.className = 'holiday-item';
+                label.innerHTML = `
+                    <input type="checkbox" id="holiday_${h.id}" ${h.default ? 'checked' : ''} onchange="regenerate()">
+                    <span>${h.name}</span>
+                `;
+                container.appendChild(label);
+            });
+        }
+
+        function toggleSection(contentId, headerEl) {
+            const content = document.getElementById(contentId);
+            const icon = headerEl.querySelector('.toggle-icon');
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+
+        function regenerate() {
+            state.year = parseInt(document.getElementById('year').value);
+
+            // Calculate holidays based on checkboxes
+            state.holidays = {};
+            ALL_HOLIDAYS.forEach(h => {
+                const checkbox = document.getElementById(`holiday_${h.id}`);
+                if (checkbox && checkbox.checked) {
+                    const date = getHolidayDate(h.id, state.year);
+                    state.holidays[dateKey(date)] = h.name;
+                }
+            });
+
+            // Calculate 9/80 Fridays
+            const next980 = new Date(document.getElementById('next980Friday').value + 'T12:00:00');
+            state.nine80Fridays = {};
+            let current = new Date(next980);
+
+            // Go back
+            let temp = new Date(current);
+            while (temp.getFullYear() >= state.year - 1) {
+                temp.setDate(temp.getDate() - 14);
+                if (temp.getFullYear() === state.year) {
+                    state.nine80Fridays[dateKey(temp)] = true;
+                } else if (temp.getFullYear() < state.year) break;
+            }
+
+            // Go forward
+            while (current.getFullYear() <= state.year) {
+                if (current.getFullYear() === state.year) {
+                    state.nine80Fridays[dateKey(current)] = true;
+                }
+                current.setDate(current.getDate() + 14);
+            }
+
+            // Calculate paycheck dates
+            const nextPaycheck = new Date(document.getElementById('nextPaycheck').value + 'T12:00:00');
+            state.paycheckDates = [];
+            current = new Date(nextPaycheck);
+
+            temp = new Date(current);
+            while (temp.getFullYear() >= state.year - 1) {
+                temp.setDate(temp.getDate() - 14);
+                if (temp.getFullYear() === state.year) {
+                    state.paycheckDates.unshift(new Date(temp));
+                } else if (temp.getFullYear() < state.year) break;
+            }
+
+            while (current.getFullYear() <= state.year) {
+                if (current.getFullYear() === state.year) {
+                    state.paycheckDates.push(new Date(current));
+                }
+                current.setDate(current.getDate() + 14);
+            }
+
+            // Find opportunities
+            findOpportunities();
+
+            // Clear selections that are no longer valid
+            const validDates = new Set();
+            const startOfYear = new Date(state.year, 0, 1);
+            const endOfYear = new Date(state.year, 11, 31);
+            for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
+                const key = dateKey(d);
+                const dow = d.getDay();
+                if (dow !== 0 && dow !== 6 && !state.holidays[key] && !state.nine80Fridays[key]) {
+                    validDates.add(key);
+                }
+            }
+            state.selectedPtoDays = new Set([...state.selectedPtoDays].filter(k => validDates.has(k)));
+
+            renderCalendar();
+            renderOpportunities();
+            recalculate();
+        }
+
+        function findOpportunities() {
+            state.opportunities = [];
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Super combos: Monday holiday + 9/80 Friday same week
+            for (const [key, holidayName] of Object.entries(state.holidays)) {
+                const holidayDate = new Date(key + 'T12:00:00');
+                if (holidayDate < today) continue;
+
+                const dayOfWeek = holidayDate.getDay();
+
+                if (dayOfWeek === 1) {
+                    const friday = new Date(holidayDate);
+                    friday.setDate(friday.getDate() + 4);
+
+                    if (state.nine80Fridays[dateKey(friday)]) {
+                        const dates = [];
+                        for (let i = 1; i <= 3; i++) {
+                            const d = new Date(holidayDate);
+                            d.setDate(d.getDate() + i);
+                            dates.push(dateKey(d));
+                        }
+                        state.opportunities.push({
+                            id: `super_${key}`,
+                            type: 'super',
+                            title: `${holidayName} Super Combo`,
+                            description: `Take Tue-Thu for 9 days off`,
+                            dates: dates,
+                            hours: 27,
+                            daysOff: 9
+                        });
+                    }
+                }
+            }
+
+            // 4-day weekends: Monday after 9/80 Friday
+            for (const fridayKey of Object.keys(state.nine80Fridays)) {
+                const friday = new Date(fridayKey + 'T12:00:00');
+                if (friday < today) continue;
+
+                const monday = new Date(friday);
+                monday.setDate(monday.getDate() + 3);
+                const mondayKey = dateKey(monday);
+
+                if (state.holidays[mondayKey]) continue;
+                if (monday.getFullYear() !== state.year) continue;
+
+                state.opportunities.push({
+                    id: `4day_${fridayKey}`,
+                    type: '4day',
+                    title: `4-Day Weekend`,
+                    description: `Take Mon ${formatShortDate(monday)}`,
+                    dates: [mondayKey],
+                    hours: 9,
+                    daysOff: 4
+                });
+            }
+
+            // Friday opportunities (non-9/80 Fridays)
+            const startOfYear = new Date(state.year, 0, 1);
+            const endOfYear = new Date(state.year, 11, 31);
+
+            for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
+                if (d < today) continue;
+                if (d.getDay() !== 5) continue;
+
+                const key = dateKey(d);
+                if (state.nine80Fridays[key] || state.holidays[key]) continue;
+
+                state.opportunities.push({
+                    id: `friday_${key}`,
+                    type: 'friday',
+                    title: `Friday Off`,
+                    description: formatShortDate(d),
+                    dates: [key],
+                    hours: 8,
+                    daysOff: 3
+                });
+            }
+
+            // Sort by date
+            state.opportunities.sort((a, b) => a.dates[0].localeCompare(b.dates[0]));
+        }
+
+        function renderOpportunities() {
+            const container = document.getElementById('opportunityList');
+            container.innerHTML = '';
+
+            // Group by type
+            const supers = state.opportunities.filter(o => o.type === 'super');
+            const fourDays = state.opportunities.filter(o => o.type === '4day');
+            const fridays = state.opportunities.filter(o => o.type === 'friday');
+
+            function renderGroup(title, opps, badgeClass) {
+                if (opps.length === 0) return;
+
+                const header = document.createElement('div');
+                header.style.cssText = 'font-size: 11px; color: var(--text-muted); margin: 10px 0 5px; text-transform: uppercase;';
+                header.textContent = `${title} (${opps.length})`;
+                container.appendChild(header);
+
+                opps.forEach(opp => {
+                    const isSelected = state.selectedOpportunities.has(opp.id);
+                    const item = document.createElement('div');
+                    item.className = `opportunity-item ${isSelected ? 'selected' : ''}`;
+                    item.onclick = () => toggleOpportunity(opp.id);
+
+                    item.innerHTML = `
+                        <div class="title">${opp.title}</div>
+                        <div class="details">${opp.description}</div>
+                        <div class="badges">
+                            <span class="badge badge-hours">${opp.hours}h</span>
+                            <span class="badge badge-days">${opp.daysOff} days</span>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            }
+
+            renderGroup('Super Combos', supers);
+            renderGroup('4-Day Weekends', fourDays);
+            renderGroup('Fridays', fridays);
+        }
+
+        function toggleOpportunity(oppId) {
+            const opp = state.opportunities.find(o => o.id === oppId);
+            if (!opp) return;
+
+            if (state.selectedOpportunities.has(oppId)) {
+                state.selectedOpportunities.delete(oppId);
+                opp.dates.forEach(d => state.selectedPtoDays.delete(d));
+            } else {
+                state.selectedOpportunities.add(oppId);
+                opp.dates.forEach(d => state.selectedPtoDays.add(d));
+            }
+
+            renderCalendar();
+            renderOpportunities();
+            recalculate();
+        }
+
+        function selectAllType(type) {
+            const opps = state.opportunities.filter(o => o.type === type);
+            opps.forEach(opp => {
+                state.selectedOpportunities.add(opp.id);
+                opp.dates.forEach(d => state.selectedPtoDays.add(d));
+            });
+            renderCalendar();
+            renderOpportunities();
+            recalculate();
+        }
+
+        function clearAllSelections() {
+            state.selectedPtoDays.clear();
+            state.selectedOpportunities.clear();
+            renderCalendar();
+            renderOpportunities();
+            recalculate();
+        }
+
+        function toggleDay(key) {
+            if (state.selectedPtoDays.has(key)) {
+                state.selectedPtoDays.delete(key);
+                // Remove from any opportunity that includes this day
+                state.opportunities.forEach(opp => {
+                    if (opp.dates.includes(key)) {
+                        state.selectedOpportunities.delete(opp.id);
+                    }
+                });
+            } else {
+                state.selectedPtoDays.add(key);
+                // Check if this completes any opportunity
+                state.opportunities.forEach(opp => {
+                    if (opp.dates.every(d => state.selectedPtoDays.has(d))) {
+                        state.selectedOpportunities.add(opp.id);
+                    }
+                });
+            }
+            renderCalendar();
+            renderOpportunities();
+            recalculate();
+        }
+
+        function recalculate() {
+            const ptoPerPaycheck = parseFloat(document.getElementById('ptoPerPaycheck').value) || 0;
+            const currentPto = parseFloat(document.getElementById('currentPto').value) || 0;
+            const maxPto = parseFloat(document.getElementById('maxPto').value) || 999;
+            const yearEndGoal = document.getElementById('yearEndGoal').value ?
+                parseFloat(document.getElementById('yearEndGoal').value) : null;
+
+            // Calculate total PTO earned
+            const totalEarned = state.paycheckDates.length * ptoPerPaycheck;
+            document.getElementById('totalEarned').textContent = totalEarned.toFixed(1) + 'h';
+
+            // Calculate total PTO used
+            let totalUsed = 0;
+            state.selectedPtoDays.forEach(key => {
+                const date = new Date(key + 'T12:00:00');
+                totalUsed += getHoursForDay(date);
+            });
+            document.getElementById('totalUsed').textContent = totalUsed.toFixed(1) + 'h';
+            document.getElementById('usedDetail').textContent = `${state.selectedPtoDays.size} days selected`;
+
+            // Calculate projected year-end balance
+            let projectedBalance = Math.min(currentPto + totalEarned - totalUsed, maxPto);
+
+            // Handle case where we'd hit max during year
+            let balance = currentPto;
+            const sortedPtoDays = [...state.selectedPtoDays].sort();
+            let ptoIndex = 0;
+
+            for (const paycheck of state.paycheckDates) {
+                // Deduct PTO used before this paycheck
+                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < dateKey(paycheck)) {
+                    const date = new Date(sortedPtoDays[ptoIndex] + 'T12:00:00');
+                    balance -= getHoursForDay(date);
+                    ptoIndex++;
+                }
+                // Add paycheck
+                balance = Math.min(balance + ptoPerPaycheck, maxPto);
+            }
+            // Deduct remaining PTO
+            while (ptoIndex < sortedPtoDays.length) {
+                const date = new Date(sortedPtoDays[ptoIndex] + 'T12:00:00');
+                balance -= getHoursForDay(date);
+                ptoIndex++;
+            }
+            projectedBalance = balance;
+
+            document.getElementById('projectedBalance').textContent = projectedBalance.toFixed(1) + 'h';
+
+            // Update balance status
+            const statBox = document.getElementById('statBoxBalance');
+            const balanceValue = document.getElementById('projectedBalance');
+            const balanceDetail = document.getElementById('balanceDetail');
+
+            statBox.className = 'stat-box';
+            balanceValue.className = 'stat-value';
+
+            if (yearEndGoal !== null) {
+                const diff = projectedBalance - yearEndGoal;
+                if (Math.abs(diff) < 5) {
+                    statBox.classList.add('success');
+                    balanceValue.classList.add('success');
+                    balanceDetail.textContent = `On target! Goal: ${yearEndGoal}h`;
+                } else if (diff > 0) {
+                    statBox.classList.add('warning');
+                    balanceValue.classList.add('warning');
+                    balanceDetail.textContent = `${diff.toFixed(1)}h over goal of ${yearEndGoal}h - use more PTO`;
+                } else {
+                    statBox.classList.add('danger');
+                    balanceValue.classList.add('danger');
+                    balanceDetail.textContent = `${Math.abs(diff).toFixed(1)}h under goal of ${yearEndGoal}h - use less PTO`;
+                }
+            } else {
+                if (projectedBalance >= maxPto) {
+                    statBox.classList.add('danger');
+                    balanceValue.classList.add('danger');
+                    balanceDetail.textContent = `At max! You'll lose PTO - use more`;
+                } else if (projectedBalance >= maxPto * 0.9) {
+                    statBox.classList.add('warning');
+                    balanceValue.classList.add('warning');
+                    balanceDetail.textContent = `Approaching max (${maxPto}h)`;
+                } else if (projectedBalance < 0) {
+                    statBox.classList.add('danger');
+                    balanceValue.classList.add('danger');
+                    balanceDetail.textContent = `Negative! You don't have enough PTO`;
+                } else {
+                    statBox.classList.add('success');
+                    balanceValue.classList.add('success');
+                    balanceDetail.textContent = `Healthy balance`;
+                }
+            }
+
+            // Update counts
+            document.getElementById('count980').textContent = Object.keys(state.nine80Fridays).length;
+            document.getElementById('countHolidays').textContent = Object.keys(state.holidays).length;
+
+            // Count total days off
+            let totalDaysOff = 0;
+            const startOfYear = new Date(state.year, 0, 1);
+            const endOfYear = new Date(state.year, 11, 31);
+            for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
+                const key = dateKey(d);
+                const dow = d.getDay();
+                if (dow === 0 || dow === 6 || state.holidays[key] || state.nine80Fridays[key] || state.selectedPtoDays.has(key)) {
+                    totalDaysOff++;
+                }
+            }
+            document.getElementById('countTotalOff').textContent = totalDaysOff;
+
+            // Render projection chart
+            renderProjectionChart(currentPto, ptoPerPaycheck, maxPto, yearEndGoal);
+        }
+
+        function renderProjectionChart(startBalance, ptoPerPaycheck, maxPto, yearEndGoal) {
+            const container = document.getElementById('projectionChart');
+            container.innerHTML = '';
+
+            const chartHeight = 120;
+            const maxValue = Math.max(maxPto * 1.1, startBalance + state.paycheckDates.length * ptoPerPaycheck);
+
+            // Add max line
+            const maxLineY = chartHeight - (maxPto / maxValue * chartHeight);
+            const maxLine = document.createElement('div');
+            maxLine.className = 'chart-max-line';
+            maxLine.style.top = `${maxLineY}px`;
+            maxLine.title = `Max: ${maxPto}h`;
+            container.appendChild(maxLine);
+
+            // Add goal line if set
+            if (yearEndGoal !== null) {
+                const goalLineY = chartHeight - (yearEndGoal / maxValue * chartHeight);
+                const goalLine = document.createElement('div');
+                goalLine.className = 'chart-goal-line';
+                goalLine.style.top = `${goalLineY}px`;
+                goalLine.title = `Goal: ${yearEndGoal}h`;
+                container.appendChild(goalLine);
+            }
+
+            // Calculate balance at each paycheck
+            let balance = startBalance;
+            const sortedPtoDays = [...state.selectedPtoDays].sort();
+            let ptoIndex = 0;
+            const barWidth = Math.max(8, Math.floor(container.offsetWidth / state.paycheckDates.length) - 4);
+
+            state.paycheckDates.forEach((paycheck, i) => {
+                // Deduct PTO used before this paycheck
+                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < dateKey(paycheck)) {
+                    const date = new Date(sortedPtoDays[ptoIndex] + 'T12:00:00');
+                    balance -= getHoursForDay(date);
+                    ptoIndex++;
+                }
+                // Add paycheck
+                balance = Math.min(balance + ptoPerPaycheck, maxPto);
+
+                const height = Math.max(2, (balance / maxValue) * chartHeight);
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+
+                if (balance >= maxPto) bar.classList.add('danger');
+                else if (balance >= maxPto * 0.9) bar.classList.add('warning');
+                else if (balance < 0) bar.classList.add('danger');
+
+                bar.style.height = `${height}px`;
+                bar.style.left = `${i * (barWidth + 2)}px`;
+                bar.style.width = `${barWidth}px`;
+                bar.title = `${paycheck.toLocaleDateString()}: ${balance.toFixed(1)}h`;
+
+                container.appendChild(bar);
+            });
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarContainer');
+            container.innerHTML = '';
+
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+            const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            const today = new Date();
+            const todayKey = dateKey(today);
+
+            for (let month = 0; month < 12; month++) {
+                const card = document.createElement('div');
+                card.className = 'month-card';
+
+                const title = document.createElement('div');
+                title.className = 'month-title';
+                title.textContent = months[month];
+                card.appendChild(title);
+
+                const header = document.createElement('div');
+                header.className = 'weekday-header';
+                weekdays.forEach(day => {
+                    const span = document.createElement('span');
+                    span.textContent = day;
+                    header.appendChild(span);
+                });
+                card.appendChild(header);
+
+                const grid = document.createElement('div');
+                grid.className = 'days-grid';
+
+                const firstDay = new Date(state.year, month, 1);
+                const lastDay = new Date(state.year, month + 1, 0);
+                const startPadding = firstDay.getDay();
+
+                for (let i = 0; i < startPadding; i++) {
+                    const empty = document.createElement('div');
+                    empty.className = 'day empty';
+                    grid.appendChild(empty);
+                }
+
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const date = new Date(state.year, month, day);
+                    const key = dateKey(date);
+                    const dayOfWeek = date.getDay();
+
+                    const cell = document.createElement('div');
+                    cell.className = 'day';
+                    cell.textContent = day;
+
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+
+                    const isHoliday = state.holidays[key];
+                    const is980 = state.nine80Fridays[key];
+                    const isSelected = state.selectedPtoDays.has(key);
+                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                    const isToday = key === todayKey;
+
+                    let canClick = false;
+
+                    if (isHoliday && is980) {
+                        cell.classList.add('combo');
+                        tooltip.textContent = `${isHoliday} + 9/80`;
+                    } else if (isSelected) {
+                        cell.classList.add('pto-selected');
+                        const hours = getHoursForDay(date);
+                        tooltip.textContent = `PTO Selected (${hours}h) - Click to remove`;
+                        canClick = true;
+
+                        // Add hours badge
+                        const badge = document.createElement('span');
+                        badge.className = 'hours-badge';
+                        badge.textContent = hours + 'h';
+                        cell.appendChild(badge);
+                    } else if (isHoliday) {
+                        cell.classList.add('holiday');
+                        tooltip.textContent = isHoliday;
+                    } else if (is980) {
+                        cell.classList.add('nine80');
+                        tooltip.textContent = '9/80 Friday Off';
+                    } else if (isWeekend) {
+                        cell.classList.add('weekend');
+                        tooltip.textContent = dayOfWeek === 0 ? 'Sunday' : 'Saturday';
+                    } else {
+                        const hours = getHoursForDay(date);
+                        tooltip.textContent = `Work day (${hours}h) - Click to take PTO`;
+                        canClick = true;
+                    }
+
+                    if (isToday) {
+                        cell.classList.add('today');
+                    }
+
+                    if (canClick) {
+                        cell.onclick = () => toggleDay(key);
+                    }
+
+                    cell.appendChild(tooltip);
+                    grid.appendChild(cell);
+                }
+
+                card.appendChild(grid);
+                container.appendChild(card);
+            }
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
