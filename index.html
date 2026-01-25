@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PTO Optimizer - 9/80 Schedule</title>
+    <title>Time Off Optimizer - 9/80 Schedule</title>
     <style>
         :root {
             --bg-dark: #1a1a2e;
@@ -15,12 +15,16 @@
             --text-muted: #a0a0a0;
             --holiday: #4ade80;
             --nine80: #60a5fa;
-            --pto-selected: #f472b6;
+            --pto: #f472b6;
+            --activism: #a78bfa;
+            --personal: #fbbf24;
+            --wellness: #2dd4bf;
             --weekend: #374151;
-            --today: #fbbf24;
+            --today: #ffffff;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
+            --past: #6b7280;
         }
 
         * {
@@ -38,75 +42,80 @@
 
         .header {
             background: var(--bg-card);
-            padding: 20px;
+            padding: 15px 20px;
             text-align: center;
             border-bottom: 1px solid var(--bg-input);
         }
 
         h1 {
             color: var(--accent);
-            margin-bottom: 5px;
+            margin-bottom: 3px;
+            font-size: 24px;
         }
 
         .subtitle {
             color: var(--text-muted);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .main-layout {
             display: grid;
-            grid-template-columns: 320px 1fr;
-            min-height: calc(100vh - 80px);
+            grid-template-columns: 340px 1fr;
+            min-height: calc(100vh - 70px);
         }
 
         @media (max-width: 1200px) {
             .main-layout {
                 grid-template-columns: 1fr;
             }
+            .sidebar {
+                max-height: none !important;
+                position: relative !important;
+            }
         }
 
         .sidebar {
             background: var(--bg-card);
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
-            max-height: calc(100vh - 80px);
+            max-height: calc(100vh - 70px);
             position: sticky;
             top: 0;
         }
 
         .sidebar-section {
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .sidebar-section h3 {
             color: var(--accent);
-            font-size: 14px;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
             border-bottom: 1px solid var(--bg-input);
         }
 
         .input-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .input-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .input-group input, .input-group select {
             width: 100%;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 6px;
+            border-radius: 5px;
             background: var(--bg-input);
             color: var(--text);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .input-group input:focus, .input-group select:focus {
@@ -116,25 +125,50 @@
         .input-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .input-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .preset-btn {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--text-muted);
+            border-radius: 5px;
+            background: var(--bg-input);
+            color: var(--text);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .preset-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
         }
 
         .holiday-list {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 4px;
+            max-height: 200px;
+            overflow-y: auto;
         }
 
         .holiday-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            padding: 6px 8px;
+            gap: 6px;
+            font-size: 12px;
+            padding: 5px 6px;
             background: var(--bg-input);
             border-radius: 4px;
             cursor: pointer;
-            transition: background 0.2s;
         }
 
         .holiday-item:hover {
@@ -143,42 +177,84 @@
 
         .holiday-item input {
             accent-color: var(--accent);
+            width: 14px;
+            height: 14px;
+        }
+
+        .type-selector {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .type-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 8px 4px;
+            border: 2px solid transparent;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .type-btn.pto {
+            background: var(--pto);
+            color: #000;
+        }
+
+        .type-btn.activism {
+            background: var(--activism);
+            color: #000;
+        }
+
+        .type-btn.personal {
+            background: var(--personal);
+            color: #000;
+        }
+
+        .type-btn.wellness {
+            background: var(--wellness);
+            color: #000;
+        }
+
+        .type-btn.active {
+            border-color: #fff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .type-btn .hours {
+            display: block;
+            font-size: 9px;
+            font-weight: normal;
+            margin-top: 2px;
+            opacity: 0.8;
         }
 
         .stat-box {
             background: var(--bg-input);
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 10px;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 8px;
         }
 
-        .stat-box.highlight {
-            border: 2px solid var(--accent);
-        }
-
-        .stat-box.success {
-            border: 2px solid var(--success);
-        }
-
-        .stat-box.warning {
-            border: 2px solid var(--warning);
-        }
-
-        .stat-box.danger {
-            border: 2px solid var(--danger);
-        }
+        .stat-box.success { border: 2px solid var(--success); }
+        .stat-box.warning { border: 2px solid var(--warning); }
+        .stat-box.danger { border: 2px solid var(--danger); }
 
         .stat-label {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            color: var(--text);
         }
 
         .stat-value.success { color: var(--success); }
@@ -186,57 +262,54 @@
         .stat-value.danger { color: var(--danger); }
 
         .stat-detail {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
             margin-top: 2px;
         }
 
-        .btn {
-            width: 100%;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 8px;
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-light);
-        }
-
-        .btn-secondary {
+        .balance-card {
             background: var(--bg-input);
-            color: var(--text);
-            border: 1px solid var(--text-muted);
+            border-radius: 5px;
+            padding: 8px;
+            border-left: 3px solid;
         }
 
-        .btn-secondary:hover {
-            background: var(--bg-dark);
+        .balance-card.pto { border-left-color: var(--pto); }
+        .balance-card.activism { border-left-color: var(--activism); }
+        .balance-card.personal { border-left-color: var(--personal); }
+        .balance-card.wellness { border-left-color: var(--wellness); }
+
+        .balance-card .label {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
         }
 
-        .btn-small {
-            padding: 8px 12px;
-            font-size: 12px;
-            width: auto;
+        .balance-card .value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .balance-card .detail {
+            font-size: 9px;
+            color: var(--text-muted);
         }
 
         .quick-actions {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 10px;
+            gap: 4px;
         }
 
         .quick-btn {
-            padding: 6px 10px;
-            font-size: 11px;
+            padding: 5px 8px;
+            font-size: 10px;
             border-radius: 4px;
             border: 1px solid var(--text-muted);
             background: var(--bg-input);
@@ -250,23 +323,18 @@
             border-color: var(--accent);
         }
 
-        .quick-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-        }
-
         .opportunity-list {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            max-height: 300px;
+            gap: 6px;
+            max-height: 250px;
             overflow-y: auto;
         }
 
         .opportunity-item {
             background: var(--bg-input);
-            border-radius: 6px;
-            padding: 10px;
+            border-radius: 5px;
+            padding: 8px;
             cursor: pointer;
             border: 2px solid transparent;
             transition: all 0.2s;
@@ -277,60 +345,49 @@
         }
 
         .opportunity-item.selected {
-            border-color: var(--pto-selected);
+            border-color: var(--pto);
             background: rgba(244, 114, 182, 0.1);
         }
 
         .opportunity-item .title {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
 
         .opportunity-item .details {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
         }
 
         .opportunity-item .badges {
             display: flex;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 4px;
+            margin-top: 4px;
         }
 
         .badge {
-            font-size: 10px;
-            padding: 2px 6px;
+            font-size: 9px;
+            padding: 2px 5px;
             border-radius: 3px;
         }
 
-        .badge-hours {
-            background: var(--accent);
-            color: white;
-        }
-
-        .badge-days {
-            background: var(--holiday);
-            color: #000;
-        }
-
-        .badge-type {
-            background: var(--nine80);
-            color: #000;
-        }
+        .badge-hours { background: var(--accent); color: white; }
+        .badge-days { background: var(--holiday); color: #000; }
+        .badge-type { background: var(--nine80); color: #000; }
 
         .content-area {
-            padding: 20px;
+            padding: 15px;
             overflow-y: auto;
         }
 
         .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
-            margin-bottom: 20px;
-            padding: 12px;
+            margin-bottom: 15px;
+            padding: 10px;
             background: var(--bg-card);
             border-radius: 8px;
         }
@@ -338,33 +395,33 @@
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12px;
+            gap: 5px;
+            font-size: 11px;
         }
 
         .legend-color {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 3px;
         }
 
         .calendar-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
         }
 
         .month-card {
             background: var(--bg-card);
-            border-radius: 10px;
-            padding: 12px;
+            border-radius: 8px;
+            padding: 10px;
         }
 
         .month-title {
             text-align: center;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: var(--accent);
         }
 
@@ -372,14 +429,14 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 2px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
         .weekday-header span {
             text-align: center;
-            font-size: 10px;
+            font-size: 9px;
             color: var(--text-muted);
-            padding: 4px;
+            padding: 3px;
         }
 
         .days-grid {
@@ -393,8 +450,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
-            border-radius: 5px;
+            font-size: 12px;
+            border-radius: 4px;
             background: var(--bg-input);
             position: relative;
             cursor: pointer;
@@ -402,10 +459,10 @@
             user-select: none;
         }
 
-        .day:hover:not(.empty):not(.weekend):not(.holiday):not(.nine80) {
+        .day:hover:not(.empty):not(.weekend):not(.holiday):not(.nine80):not(.past-holiday):not(.past-nine80) {
             transform: scale(1.1);
             z-index: 10;
-            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+            box-shadow: 0 0 8px rgba(233, 69, 96, 0.5);
         }
 
         .day.empty {
@@ -433,11 +490,32 @@
             cursor: default;
         }
 
-        .day.pto-selected {
-            background: var(--pto-selected);
+        .day.past-holiday {
+            background: var(--holiday);
+            opacity: 0.5;
             color: #000;
-            font-weight: bold;
+            cursor: default;
         }
+
+        .day.past-nine80 {
+            background: var(--nine80);
+            opacity: 0.5;
+            color: #000;
+            cursor: default;
+        }
+
+        .day.past {
+            opacity: 0.5;
+        }
+
+        .day.past.selected-past {
+            opacity: 0.6;
+        }
+
+        .day.pto-selected { background: var(--pto); color: #000; font-weight: bold; }
+        .day.activism-selected { background: var(--activism); color: #000; font-weight: bold; }
+        .day.personal-selected { background: var(--personal); color: #000; font-weight: bold; }
+        .day.wellness-selected { background: var(--wellness); color: #000; font-weight: bold; }
 
         .day.today {
             box-shadow: 0 0 0 2px var(--today);
@@ -460,7 +538,7 @@
             color: #fff;
             padding: 4px 8px;
             border-radius: 4px;
-            font-size: 10px;
+            font-size: 9px;
             white-space: nowrap;
             z-index: 100;
             margin-bottom: 4px;
@@ -475,37 +553,37 @@
             position: absolute;
             bottom: 1px;
             right: 1px;
-            font-size: 8px;
-            background: rgba(0,0,0,0.3);
-            padding: 1px 3px;
+            font-size: 7px;
+            background: rgba(0,0,0,0.4);
+            padding: 1px 2px;
             border-radius: 2px;
+            color: #fff;
         }
 
         .balance-projection {
             background: var(--bg-card);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
         }
 
         .balance-projection h3 {
             color: var(--accent);
-            margin-bottom: 12px;
-            font-size: 14px;
+            margin-bottom: 10px;
+            font-size: 13px;
         }
 
         .projection-chart {
-            height: 120px;
+            height: 100px;
             position: relative;
             background: var(--bg-input);
-            border-radius: 6px;
+            border-radius: 5px;
             overflow: hidden;
         }
 
         .chart-bar {
             position: absolute;
             bottom: 0;
-            width: 12px;
             background: var(--success);
             border-radius: 2px 2px 0 0;
             transition: height 0.3s;
@@ -533,36 +611,32 @@
         .chart-labels {
             display: flex;
             justify-content: space-between;
-            margin-top: 8px;
-            font-size: 10px;
+            margin-top: 6px;
+            font-size: 9px;
             color: var(--text-muted);
         }
 
         .instructions {
             background: var(--bg-card);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 15px;
         }
 
         .instructions h3 {
             color: var(--accent);
-            margin-bottom: 10px;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-size: 13px;
         }
 
         .instructions ul {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-muted);
-            padding-left: 20px;
+            padding-left: 18px;
         }
 
         .instructions li {
-            margin-bottom: 6px;
-        }
-
-        .hidden {
-            display: none !important;
+            margin-bottom: 4px;
         }
 
         .collapsible-header {
@@ -570,7 +644,7 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            padding: 8px 0;
+            padding: 6px 0;
         }
 
         .collapsible-header:hover {
@@ -584,11 +658,12 @@
         }
 
         .collapsible-content.open {
-            max-height: 500px;
+            max-height: 600px;
         }
 
         .toggle-icon {
             transition: transform 0.3s;
+            font-size: 10px;
         }
 
         .toggle-icon.open {
@@ -598,8 +673,8 @@
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
-            font-size: 13px;
+            padding: 4px 0;
+            font-size: 11px;
             border-bottom: 1px solid var(--bg-input);
         }
 
@@ -614,52 +689,169 @@
         .summary-row .value {
             font-weight: 600;
         }
+
+        .opp-group-header {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin: 8px 0 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .current-mode {
+            background: var(--bg-dark);
+            border-radius: 5px;
+            padding: 8px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        .current-mode strong {
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>PTO Optimizer</h1>
+        <h1>Time Off Optimizer</h1>
         <p class="subtitle">Interactive 9/80 Schedule Planner - Click days to plan your time off</p>
     </div>
 
     <div class="main-layout">
         <div class="sidebar">
+            <!-- Time Off Type Selector -->
+            <div class="sidebar-section">
+                <h3>Click Mode - What type of time off?</h3>
+                <div class="type-selector">
+                    <button class="type-btn pto active" onclick="setTimeOffType('pto')">
+                        PTO
+                        <span class="hours" id="ptoAvailDisplay">0h avail</span>
+                    </button>
+                    <button class="type-btn activism" onclick="setTimeOffType('activism')">
+                        Activism
+                        <span class="hours" id="activismAvailDisplay">0h avail</span>
+                    </button>
+                    <button class="type-btn personal" onclick="setTimeOffType('personal')">
+                        Personal
+                        <span class="hours" id="personalAvailDisplay">0h avail</span>
+                    </button>
+                    <button class="type-btn wellness" onclick="setTimeOffType('wellness')">
+                        Wellness
+                        <span class="hours" id="wellnessAvailDisplay">0h avail</span>
+                    </button>
+                </div>
+                <div class="current-mode">
+                    Clicking a day will use: <strong id="currentModeDisplay">PTO</strong>
+                </div>
+            </div>
+
             <!-- Settings Section -->
             <div class="sidebar-section">
-                <h3>Settings</h3>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label>Year</label>
-                        <select id="year" onchange="regenerate()"></select>
+                <div class="collapsible-header" onclick="toggleSection('settingsContent', this)">
+                    <h3 style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Settings</h3>
+                    <span class="toggle-icon open">▼</span>
+                </div>
+                <div id="settingsContent" class="collapsible-content open">
+                    <div class="input-row" style="margin-top: 10px;">
+                        <div class="input-group">
+                            <label>Year</label>
+                            <select id="year" onchange="regenerate()"></select>
+                        </div>
+                        <div class="input-group">
+                            <label>Years of Service</label>
+                            <select id="yearsOfService" onchange="applyServicePreset()">
+                                <option value="custom">Custom</option>
+                                <option value="0-3">0-3 years</option>
+                                <option value="4-6">4-6 years</option>
+                                <option value="7-9">7-9 years</option>
+                                <option value="10+">10+ years</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Next Paycheck</label>
+                            <input type="date" id="nextPaycheck" onchange="regenerate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Next 9/80 Friday</label>
+                            <input type="date" id="next980Friday" onchange="regenerate()">
+                        </div>
                     </div>
                     <div class="input-group">
-                        <label>PTO/Paycheck</label>
-                        <input type="number" id="ptoPerPaycheck" step="0.01" value="7.69" onchange="regenerate()">
+                        <label>End-of-Year PTO Goal (optional)</label>
+                        <input type="number" id="yearEndGoal" step="1" placeholder="Target balance" onchange="recalculate()">
                     </div>
                 </div>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label>Current Balance</label>
-                        <input type="number" id="currentPto" step="0.01" value="0" onchange="recalculate()">
-                    </div>
-                    <div class="input-group">
-                        <label>Max Accrual</label>
-                        <input type="number" id="maxPto" step="1" value="300" onchange="recalculate()">
-                    </div>
+            </div>
+
+            <!-- Balances Section -->
+            <div class="sidebar-section">
+                <div class="collapsible-header" onclick="toggleSection('balancesContent', this)">
+                    <h3 style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Current Balances & Limits</h3>
+                    <span class="toggle-icon open">▼</span>
                 </div>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label>Next Paycheck</label>
-                        <input type="date" id="nextPaycheck" onchange="regenerate()">
+                <div id="balancesContent" class="collapsible-content open">
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">PTO / Vacation</p>
+                    <div class="input-row-3">
+                        <div class="input-group">
+                            <label>Current</label>
+                            <input type="number" id="currentPto" step="0.01" value="0" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Per Paycheck</label>
+                            <input type="number" id="ptoPerPaycheck" step="0.01" value="7.69" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Max Cap</label>
+                            <input type="number" id="maxPto" step="1" value="300" onchange="recalculate()">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label>Next 9/80 Friday</label>
-                        <input type="date" id="next980Friday" onchange="regenerate()">
+
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Activism Hours</p>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label>Current Balance</label>
+                            <input type="number" id="currentActivism" step="0.01" value="18" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Yearly Allowance</label>
+                            <input type="number" id="maxActivism" step="1" value="18" onchange="recalculate()">
+                        </div>
                     </div>
-                </div>
-                <div class="input-group">
-                    <label>End-of-Year Goal (optional)</label>
-                    <input type="number" id="yearEndGoal" step="1" placeholder="Leave blank for no goal" onchange="recalculate()">
+
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Personal Days</p>
+                    <div class="input-row-3">
+                        <div class="input-group">
+                            <label>Current</label>
+                            <input type="number" id="currentPersonal" step="0.01" value="24" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Yearly (hrs)</label>
+                            <input type="number" id="personalPerYear" step="1" value="24" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Max Cap</label>
+                            <input type="number" id="maxPersonal" step="1" value="40" onchange="recalculate()">
+                        </div>
+                    </div>
+
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Wellness / Sick (1hr per 29hrs worked)</p>
+                    <div class="input-row-3">
+                        <div class="input-group">
+                            <label>Current</label>
+                            <input type="number" id="currentWellness" step="0.01" value="0" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Per Paycheck</label>
+                            <input type="number" id="wellnessPerPaycheck" step="0.01" value="2.76" onchange="recalculate()">
+                        </div>
+                        <div class="input-group">
+                            <label>Max Rollover</label>
+                            <input type="number" id="maxWellness" step="1" value="108" onchange="recalculate()">
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -669,50 +861,71 @@
                     <h3 style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Your Holidays</h3>
                     <span class="toggle-icon">▼</span>
                 </div>
-                <div id="holidaysContent" class="collapsible-content open">
-                    <p style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px;">Select holidays your company observes:</p>
+                <div id="holidaysContent" class="collapsible-content">
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0 6px;">Select holidays your company observes:</p>
                     <div class="holiday-list" id="holidayCheckboxes"></div>
                 </div>
             </div>
 
             <!-- Live Stats -->
             <div class="sidebar-section">
-                <h3>Live Calculation</h3>
-                <div class="stat-box" id="statBoxBalance">
-                    <div class="stat-label">Projected Year-End Balance</div>
-                    <div class="stat-value" id="projectedBalance">0h</div>
-                    <div class="stat-detail" id="balanceDetail">-</div>
+                <h3>Projected Year-End Balances</h3>
+                <div class="stat-box" id="statBoxPto">
+                    <div class="stat-label">PTO Balance</div>
+                    <div class="stat-value" id="projectedPto">0h</div>
+                    <div class="stat-detail" id="ptoDetail">-</div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">PTO Earned This Year</div>
-                    <div class="stat-value" id="totalEarned">0h</div>
+                <div class="balance-grid">
+                    <div class="balance-card activism">
+                        <div class="label">Activism</div>
+                        <div class="value" id="projectedActivism">0h</div>
+                        <div class="detail" id="activismDetail">-</div>
+                    </div>
+                    <div class="balance-card personal">
+                        <div class="label">Personal</div>
+                        <div class="value" id="projectedPersonal">0h</div>
+                        <div class="detail" id="personalDetail">-</div>
+                    </div>
+                    <div class="balance-card wellness">
+                        <div class="label">Wellness</div>
+                        <div class="value" id="projectedWellness">0h</div>
+                        <div class="detail" id="wellnessDetail">-</div>
+                    </div>
+                    <div class="balance-card pto">
+                        <div class="label">Total Days Off</div>
+                        <div class="value" id="countTotalOff">0</div>
+                        <div class="detail">Including weekends</div>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-label">PTO Selected to Use</div>
-                    <div class="stat-value" id="totalUsed">0h</div>
-                    <div class="stat-detail" id="usedDetail">0 days selected</div>
-                </div>
-                <div class="summary-row">
-                    <span class="label">9/80 Fridays Off</span>
-                    <span class="value" id="count980">0</span>
-                </div>
-                <div class="summary-row">
-                    <span class="label">Holidays Off</span>
-                    <span class="value" id="countHolidays">0</span>
-                </div>
-                <div class="summary-row">
-                    <span class="label">Total Days Off</span>
-                    <span class="value" id="countTotalOff">0</span>
+                <div style="margin-top: 10px;">
+                    <div class="summary-row">
+                        <span class="label">Future PTO Selected</span>
+                        <span class="value" id="futurePtoUsed">0h</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Future Activism Selected</span>
+                        <span class="value" id="futureActivismUsed">0h</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Future Personal Selected</span>
+                        <span class="value" id="futurePersonalUsed">0h</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="label">Future Wellness Selected</span>
+                        <span class="value" id="futureWellnessUsed">0h</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Quick Actions -->
             <div class="sidebar-section">
-                <h3>Quick Select</h3>
+                <h3>Quick Select (PTO)</h3>
                 <div class="quick-actions">
-                    <button class="quick-btn" onclick="selectAllType('super')">All Super Combos</button>
-                    <button class="quick-btn" onclick="selectAllType('4day')">All 4-Day Weekends</button>
-                    <button class="quick-btn" onclick="selectAllType('friday')">All Fridays</button>
+                    <button class="quick-btn" onclick="selectAllType('super')">Super Combos</button>
+                    <button class="quick-btn" onclick="selectAllType('4day')">4-Day Wknds</button>
+                    <button class="quick-btn" onclick="selectAllType('summer')">Summer Fridays</button>
+                    <button class="quick-btn" onclick="selectMonthFridays('may')">May Fridays</button>
+                    <button class="quick-btn" onclick="selectMonthFridays('oct')">Oct Fridays</button>
                     <button class="quick-btn" onclick="clearAllSelections()">Clear All</button>
                 </div>
             </div>
@@ -721,7 +934,7 @@
             <div class="sidebar-section">
                 <div class="collapsible-header" onclick="toggleSection('opportunitiesContent', this)">
                     <h3 style="margin-bottom: 0; border-bottom: none; padding-bottom: 0;">Opportunities</h3>
-                    <span class="toggle-icon">▼</span>
+                    <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="opportunitiesContent" class="collapsible-content open">
                     <div class="opportunity-list" id="opportunityList"></div>
@@ -733,11 +946,11 @@
             <div class="instructions">
                 <h3>How to Use</h3>
                 <ul>
-                    <li><strong>Click any workday</strong> on the calendar to toggle PTO on/off</li>
-                    <li>Use <strong>Quick Select</strong> buttons to auto-fill optimization opportunities</li>
-                    <li>Click individual <strong>Opportunities</strong> in the sidebar to toggle them</li>
-                    <li>Set an <strong>End-of-Year Goal</strong> to track against a target balance</li>
-                    <li>Adjust <strong>Your Holidays</strong> based on what your company observes</li>
+                    <li><strong>Select a time-off type</strong> (PTO, Activism, Personal, Wellness) then click calendar days</li>
+                    <li><strong>Past dates</strong> are shown but don't affect future balance calculations</li>
+                    <li>Use <strong>Quick Select</strong> to auto-fill optimization opportunities</li>
+                    <li>Set <strong>Years of Service</strong> to auto-fill PTO rates</li>
+                    <li><strong>Personal days</strong> = 9hrs on Mon-Thu (better value than 8hr Friday)</li>
                 </ul>
             </div>
 
@@ -769,12 +982,20 @@
                     <span>9/80 Friday</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: var(--pto-selected);"></div>
-                    <span>Selected PTO</span>
+                    <div class="legend-color" style="background: var(--pto);"></div>
+                    <span>PTO</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background: linear-gradient(135deg, var(--holiday) 50%, var(--nine80) 50%);"></div>
-                    <span>Holiday + 9/80</span>
+                    <div class="legend-color" style="background: var(--activism);"></div>
+                    <span>Activism</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--personal);"></div>
+                    <span>Personal</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: var(--wellness);"></div>
+                    <span>Wellness</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="box-shadow: 0 0 0 2px var(--today); background: var(--bg-input);"></div>
@@ -793,12 +1014,26 @@
             holidays: {},
             nine80Fridays: {},
             paycheckDates: [],
-            selectedPtoDays: new Set(),
+            selectedDays: {
+                pto: new Set(),
+                activism: new Set(),
+                personal: new Set(),
+                wellness: new Set()
+            },
+            currentTimeOffType: 'pto',
             opportunities: [],
             selectedOpportunities: new Set()
         };
 
-        // All possible federal holidays
+        // Service year presets
+        const SERVICE_PRESETS = {
+            '0-3': { ptoPerPaycheck: 3.07, maxPto: 120 },
+            '4-6': { ptoPerPaycheck: 4.61, maxPto: 180 },
+            '7-9': { ptoPerPaycheck: 6.15, maxPto: 240 },
+            '10+': { ptoPerPaycheck: 7.69, maxPto: 300 }
+        };
+
+        // All possible holidays
         const ALL_HOLIDAYS = [
             { id: 'newyear', name: "New Year's Day", default: true },
             { id: 'mlk', name: "MLK Day", default: true },
@@ -811,15 +1046,16 @@
             { id: 'veterans', name: "Veterans Day", default: false },
             { id: 'thanksgiving', name: "Thanksgiving", default: true },
             { id: 'thanksgivingfri', name: "Day After Thanksgiving", default: true },
-            { id: 'christmas', name: "Christmas", default: true }
+            { id: 'christmaseve', name: "Christmas Eve", default: true },
+            { id: 'christmas', name: "Christmas Day", default: true }
         ];
 
         // Holiday calculation functions
         function observedDate(date) {
             const d = new Date(date);
             const day = d.getDay();
-            if (day === 0) d.setDate(d.getDate() + 1);
-            else if (day === 6) d.setDate(d.getDate() - 1);
+            if (day === 0) d.setDate(d.getDate() + 1); // Sunday -> Monday
+            else if (day === 6) d.setDate(d.getDate() - 1); // Saturday -> Friday
             return d;
         }
 
@@ -850,9 +1086,21 @@
                 case 'columbus': return nthWeekday(year, 9, 1, 2);
                 case 'veterans': return observedDate(new Date(year, 10, 11));
                 case 'thanksgiving': return nthWeekday(year, 10, 4, 4);
-                case 'thanksgivingfri':
+                case 'thanksgivingfri': {
                     const tg = nthWeekday(year, 10, 4, 4);
                     return new Date(tg.getFullYear(), tg.getMonth(), tg.getDate() + 1);
+                }
+                case 'christmaseve': {
+                    // Christmas Eve - observed on nearest weekday if it falls on weekend
+                    const xmasEve = new Date(year, 11, 24);
+                    const xmasEveDay = xmasEve.getDay();
+                    if (xmasEveDay === 0) { // Sunday - observe Friday before
+                        return new Date(year, 11, 22);
+                    } else if (xmasEveDay === 6) { // Saturday - observe Friday
+                        return new Date(year, 11, 23);
+                    }
+                    return xmasEve;
+                }
                 case 'christmas': return observedDate(new Date(year, 11, 25));
             }
         }
@@ -874,6 +1122,39 @@
             if (day === 0 || day === 6) return 0;
             if (day === 5) return 8;
             return 9;
+        }
+
+        function isPastDate(dateKey) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const date = new Date(dateKey + 'T12:00:00');
+            return date < today;
+        }
+
+        function setTimeOffType(type) {
+            state.currentTimeOffType = type;
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.classList.contains(type)) {
+                    btn.classList.add('active');
+                }
+            });
+            const typeNames = {
+                pto: 'PTO',
+                activism: 'Activism',
+                personal: 'Personal',
+                wellness: 'Wellness'
+            };
+            document.getElementById('currentModeDisplay').textContent = typeNames[type];
+        }
+
+        function applyServicePreset() {
+            const preset = document.getElementById('yearsOfService').value;
+            if (preset !== 'custom' && SERVICE_PRESETS[preset]) {
+                document.getElementById('ptoPerPaycheck').value = SERVICE_PRESETS[preset].ptoPerPaycheck;
+                document.getElementById('maxPto').value = SERVICE_PRESETS[preset].maxPto;
+                recalculate();
+            }
         }
 
         // Initialize
@@ -937,7 +1218,9 @@
                 const checkbox = document.getElementById(`holiday_${h.id}`);
                 if (checkbox && checkbox.checked) {
                     const date = getHolidayDate(h.id, state.year);
-                    state.holidays[dateKey(date)] = h.name;
+                    if (date) {
+                        state.holidays[dateKey(date)] = h.name;
+                    }
                 }
             });
 
@@ -986,7 +1269,7 @@
             // Find opportunities
             findOpportunities();
 
-            // Clear selections that are no longer valid
+            // Clear invalid selections
             const validDates = new Set();
             const startOfYear = new Date(state.year, 0, 1);
             const endOfYear = new Date(state.year, 11, 31);
@@ -997,7 +1280,10 @@
                     validDates.add(key);
                 }
             }
-            state.selectedPtoDays = new Set([...state.selectedPtoDays].filter(k => validDates.has(k)));
+
+            Object.keys(state.selectedDays).forEach(type => {
+                state.selectedDays[type] = new Set([...state.selectedDays[type]].filter(k => validDates.has(k)));
+            });
 
             renderCalendar();
             renderOpportunities();
@@ -1063,7 +1349,95 @@
                 });
             }
 
-            // Friday opportunities (non-9/80 Fridays)
+            // Monthly Friday packages
+            const months = [
+                { name: 'January', num: 0 },
+                { name: 'February', num: 1 },
+                { name: 'March', num: 2 },
+                { name: 'April', num: 3 },
+                { name: 'May', num: 4 },
+                { name: 'June', num: 5 },
+                { name: 'July', num: 6 },
+                { name: 'August', num: 7 },
+                { name: 'September', num: 8 },
+                { name: 'October', num: 9 },
+                { name: 'November', num: 10 },
+                { name: 'December', num: 11 }
+            ];
+
+            months.forEach(month => {
+                const fridaysInMonth = [];
+                const firstDay = new Date(state.year, month.num, 1);
+                const lastDay = new Date(state.year, month.num + 1, 0);
+
+                for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+                    if (d.getDay() === 5) {
+                        const key = dateKey(d);
+                        if (!state.nine80Fridays[key] && !state.holidays[key] && d >= today) {
+                            fridaysInMonth.push(key);
+                        }
+                    }
+                }
+
+                // Count total Fridays (including 9/80 and holidays) for display
+                let totalFridays = 0;
+                for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+                    if (d.getDay() === 5) totalFridays++;
+                }
+
+                if (fridaysInMonth.length > 0) {
+                    const hours = fridaysInMonth.length * 8;
+                    state.opportunities.push({
+                        id: `month_${month.num}`,
+                        type: 'month',
+                        title: `All ${month.name} Fridays`,
+                        description: `Take ${fridaysInMonth.length} Fri for all ${totalFridays} Fridays off`,
+                        dates: fridaysInMonth,
+                        hours: hours,
+                        daysOff: totalFridays,
+                        month: month.num
+                    });
+                }
+            });
+
+            // Summer Fridays package (May-August)
+            const summerFridays = [];
+            for (let month = 4; month <= 7; month++) {
+                const firstDay = new Date(state.year, month, 1);
+                const lastDay = new Date(state.year, month + 1, 0);
+                for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+                    if (d.getDay() === 5) {
+                        const key = dateKey(d);
+                        if (!state.nine80Fridays[key] && !state.holidays[key] && d >= today) {
+                            summerFridays.push(key);
+                        }
+                    }
+                }
+            }
+
+            if (summerFridays.length > 0) {
+                // Count total summer Fridays
+                let totalSummerFridays = 0;
+                for (let month = 4; month <= 7; month++) {
+                    const firstDay = new Date(state.year, month, 1);
+                    const lastDay = new Date(state.year, month + 1, 0);
+                    for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
+                        if (d.getDay() === 5) totalSummerFridays++;
+                    }
+                }
+
+                state.opportunities.push({
+                    id: 'summer_fridays',
+                    type: 'summer',
+                    title: 'Summer Fridays (May-Aug)',
+                    description: `Take ${summerFridays.length} Fri for ${totalSummerFridays} Fridays off`,
+                    dates: summerFridays,
+                    hours: summerFridays.length * 8,
+                    daysOff: totalSummerFridays
+                });
+            }
+
+            // Individual Fridays
             const startOfYear = new Date(state.year, 0, 1);
             const endOfYear = new Date(state.year, 11, 31);
 
@@ -1086,23 +1460,31 @@
             }
 
             // Sort by date
-            state.opportunities.sort((a, b) => a.dates[0].localeCompare(b.dates[0]));
+            state.opportunities.sort((a, b) => {
+                // Sort by type first (super, 4day, summer, month, friday)
+                const typeOrder = { super: 0, '4day': 1, summer: 2, month: 3, friday: 4 };
+                if (typeOrder[a.type] !== typeOrder[b.type]) {
+                    return typeOrder[a.type] - typeOrder[b.type];
+                }
+                return a.dates[0].localeCompare(b.dates[0]);
+            });
         }
 
         function renderOpportunities() {
             const container = document.getElementById('opportunityList');
             container.innerHTML = '';
 
-            // Group by type
             const supers = state.opportunities.filter(o => o.type === 'super');
             const fourDays = state.opportunities.filter(o => o.type === '4day');
+            const summer = state.opportunities.filter(o => o.type === 'summer');
+            const months = state.opportunities.filter(o => o.type === 'month');
             const fridays = state.opportunities.filter(o => o.type === 'friday');
 
-            function renderGroup(title, opps, badgeClass) {
+            function renderGroup(title, opps) {
                 if (opps.length === 0) return;
 
                 const header = document.createElement('div');
-                header.style.cssText = 'font-size: 11px; color: var(--text-muted); margin: 10px 0 5px; text-transform: uppercase;';
+                header.className = 'opp-group-header';
                 header.textContent = `${title} (${opps.length})`;
                 container.appendChild(header);
 
@@ -1116,8 +1498,8 @@
                         <div class="title">${opp.title}</div>
                         <div class="details">${opp.description}</div>
                         <div class="badges">
-                            <span class="badge badge-hours">${opp.hours}h</span>
-                            <span class="badge badge-days">${opp.daysOff} days</span>
+                            <span class="badge badge-hours">${opp.hours}h PTO</span>
+                            <span class="badge badge-days">${opp.daysOff} days off</span>
                         </div>
                     `;
                     container.appendChild(item);
@@ -1126,7 +1508,16 @@
 
             renderGroup('Super Combos', supers);
             renderGroup('4-Day Weekends', fourDays);
-            renderGroup('Fridays', fridays);
+            renderGroup('Summer Package', summer);
+            renderGroup('Monthly Packages', months);
+            renderGroup('Individual Fridays', fridays.slice(0, 10)); // Limit display
+
+            if (fridays.length > 10) {
+                const more = document.createElement('div');
+                more.className = 'opp-group-header';
+                more.textContent = `+ ${fridays.length - 10} more Fridays (click calendar)`;
+                container.appendChild(more);
+            }
         }
 
         function toggleOpportunity(oppId) {
@@ -1135,10 +1526,10 @@
 
             if (state.selectedOpportunities.has(oppId)) {
                 state.selectedOpportunities.delete(oppId);
-                opp.dates.forEach(d => state.selectedPtoDays.delete(d));
+                opp.dates.forEach(d => state.selectedDays.pto.delete(d));
             } else {
                 state.selectedOpportunities.add(oppId);
-                opp.dates.forEach(d => state.selectedPtoDays.add(d));
+                opp.dates.forEach(d => state.selectedDays.pto.add(d));
             }
 
             renderCalendar();
@@ -1150,15 +1541,29 @@
             const opps = state.opportunities.filter(o => o.type === type);
             opps.forEach(opp => {
                 state.selectedOpportunities.add(opp.id);
-                opp.dates.forEach(d => state.selectedPtoDays.add(d));
+                opp.dates.forEach(d => state.selectedDays.pto.add(d));
             });
             renderCalendar();
             renderOpportunities();
             recalculate();
         }
 
+        function selectMonthFridays(monthName) {
+            const monthNum = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 }[monthName];
+            const opp = state.opportunities.find(o => o.type === 'month' && o.month === monthNum);
+            if (opp) {
+                state.selectedOpportunities.add(opp.id);
+                opp.dates.forEach(d => state.selectedDays.pto.add(d));
+                renderCalendar();
+                renderOpportunities();
+                recalculate();
+            }
+        }
+
         function clearAllSelections() {
-            state.selectedPtoDays.clear();
+            Object.keys(state.selectedDays).forEach(type => {
+                state.selectedDays[type].clear();
+            });
             state.selectedOpportunities.clear();
             renderCalendar();
             renderOpportunities();
@@ -1166,23 +1571,38 @@
         }
 
         function toggleDay(key) {
-            if (state.selectedPtoDays.has(key)) {
-                state.selectedPtoDays.delete(key);
-                // Remove from any opportunity that includes this day
+            const type = state.currentTimeOffType;
+
+            // Check if this day is already selected with any type
+            let existingType = null;
+            Object.keys(state.selectedDays).forEach(t => {
+                if (state.selectedDays[t].has(key)) {
+                    existingType = t;
+                }
+            });
+
+            if (existingType) {
+                // Remove from existing type
+                state.selectedDays[existingType].delete(key);
+                // Also remove from any opportunity
                 state.opportunities.forEach(opp => {
                     if (opp.dates.includes(key)) {
                         state.selectedOpportunities.delete(opp.id);
                     }
                 });
             } else {
-                state.selectedPtoDays.add(key);
-                // Check if this completes any opportunity
-                state.opportunities.forEach(opp => {
-                    if (opp.dates.every(d => state.selectedPtoDays.has(d))) {
-                        state.selectedOpportunities.add(opp.id);
-                    }
-                });
+                // Add to current type
+                state.selectedDays[type].add(key);
+                // Check if this completes any opportunity (only for PTO)
+                if (type === 'pto') {
+                    state.opportunities.forEach(opp => {
+                        if (opp.dates.every(d => state.selectedDays.pto.has(d))) {
+                            state.selectedOpportunities.add(opp.id);
+                        }
+                    });
+                }
             }
+
             renderCalendar();
             renderOpportunities();
             recalculate();
@@ -1195,93 +1615,158 @@
             const yearEndGoal = document.getElementById('yearEndGoal').value ?
                 parseFloat(document.getElementById('yearEndGoal').value) : null;
 
-            // Calculate total PTO earned
-            const totalEarned = state.paycheckDates.length * ptoPerPaycheck;
-            document.getElementById('totalEarned').textContent = totalEarned.toFixed(1) + 'h';
+            const currentActivism = parseFloat(document.getElementById('currentActivism').value) || 0;
+            const maxActivism = parseFloat(document.getElementById('maxActivism').value) || 18;
 
-            // Calculate total PTO used
-            let totalUsed = 0;
-            state.selectedPtoDays.forEach(key => {
-                const date = new Date(key + 'T12:00:00');
-                totalUsed += getHoursForDay(date);
+            const currentPersonal = parseFloat(document.getElementById('currentPersonal').value) || 0;
+            const personalPerYear = parseFloat(document.getElementById('personalPerYear').value) || 0;
+            const maxPersonal = parseFloat(document.getElementById('maxPersonal').value) || 40;
+
+            const currentWellness = parseFloat(document.getElementById('currentWellness').value) || 0;
+            const wellnessPerPaycheck = parseFloat(document.getElementById('wellnessPerPaycheck').value) || 0;
+            const maxWellness = parseFloat(document.getElementById('maxWellness').value) || 108;
+
+            // Calculate FUTURE usage only (past dates don't count)
+            let futurePtoUsed = 0;
+            let futureActivismUsed = 0;
+            let futurePersonalUsed = 0;
+            let futureWellnessUsed = 0;
+
+            Object.keys(state.selectedDays).forEach(type => {
+                state.selectedDays[type].forEach(key => {
+                    if (!isPastDate(key)) {
+                        const date = new Date(key + 'T12:00:00');
+                        const hours = getHoursForDay(date);
+                        switch(type) {
+                            case 'pto': futurePtoUsed += hours; break;
+                            case 'activism': futureActivismUsed += hours; break;
+                            case 'personal': futurePersonalUsed += hours; break;
+                            case 'wellness': futureWellnessUsed += hours; break;
+                        }
+                    }
+                });
             });
-            document.getElementById('totalUsed').textContent = totalUsed.toFixed(1) + 'h';
-            document.getElementById('usedDetail').textContent = `${state.selectedPtoDays.size} days selected`;
 
-            // Calculate projected year-end balance
-            let projectedBalance = Math.min(currentPto + totalEarned - totalUsed, maxPto);
+            document.getElementById('futurePtoUsed').textContent = futurePtoUsed.toFixed(1) + 'h';
+            document.getElementById('futureActivismUsed').textContent = futureActivismUsed.toFixed(1) + 'h';
+            document.getElementById('futurePersonalUsed').textContent = futurePersonalUsed.toFixed(1) + 'h';
+            document.getElementById('futureWellnessUsed').textContent = futureWellnessUsed.toFixed(1) + 'h';
 
-            // Handle case where we'd hit max during year
-            let balance = currentPto;
-            const sortedPtoDays = [...state.selectedPtoDays].sort();
+            // Calculate year-end balances with proper accrual simulation
+            const totalPtoEarned = state.paycheckDates.length * ptoPerPaycheck;
+            const totalWellnessEarned = state.paycheckDates.length * wellnessPerPaycheck;
+
+            // Simulate PTO balance through year
+            let ptoBalance = currentPto;
+            const sortedPtoDays = [...state.selectedDays.pto].filter(k => !isPastDate(k)).sort();
             let ptoIndex = 0;
 
             for (const paycheck of state.paycheckDates) {
+                const paycheckKey = dateKey(paycheck);
                 // Deduct PTO used before this paycheck
-                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < dateKey(paycheck)) {
+                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) {
                     const date = new Date(sortedPtoDays[ptoIndex] + 'T12:00:00');
-                    balance -= getHoursForDay(date);
+                    ptoBalance -= getHoursForDay(date);
                     ptoIndex++;
                 }
-                // Add paycheck
-                balance = Math.min(balance + ptoPerPaycheck, maxPto);
+                // Add paycheck (capped at max)
+                ptoBalance = Math.min(ptoBalance + ptoPerPaycheck, maxPto);
             }
-            // Deduct remaining PTO
+            // Deduct remaining future PTO
             while (ptoIndex < sortedPtoDays.length) {
                 const date = new Date(sortedPtoDays[ptoIndex] + 'T12:00:00');
-                balance -= getHoursForDay(date);
+                ptoBalance -= getHoursForDay(date);
                 ptoIndex++;
             }
-            projectedBalance = balance;
 
-            document.getElementById('projectedBalance').textContent = projectedBalance.toFixed(1) + 'h';
+            // Activism (doesn't accrue, just decreases)
+            const activismBalance = currentActivism - futureActivismUsed;
 
-            // Update balance status
-            const statBox = document.getElementById('statBoxBalance');
-            const balanceValue = document.getElementById('projectedBalance');
-            const balanceDetail = document.getElementById('balanceDetail');
+            // Personal (add yearly allowance at start, cap at max)
+            let personalBalance = Math.min(currentPersonal + personalPerYear, maxPersonal) - futurePersonalUsed;
+
+            // Wellness (accrues each paycheck, cap at max for rollover)
+            let wellnessBalance = currentWellness;
+            const sortedWellnessDays = [...state.selectedDays.wellness].filter(k => !isPastDate(k)).sort();
+            let wellnessIndex = 0;
+
+            for (const paycheck of state.paycheckDates) {
+                const paycheckKey = dateKey(paycheck);
+                while (wellnessIndex < sortedWellnessDays.length && sortedWellnessDays[wellnessIndex] < paycheckKey) {
+                    const date = new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00');
+                    wellnessBalance -= getHoursForDay(date);
+                    wellnessIndex++;
+                }
+                wellnessBalance += wellnessPerPaycheck;
+            }
+            while (wellnessIndex < sortedWellnessDays.length) {
+                const date = new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00');
+                wellnessBalance -= getHoursForDay(date);
+                wellnessIndex++;
+            }
+            // Cap wellness at rollover max
+            const wellnessOverRollover = wellnessBalance > maxWellness ? wellnessBalance - maxWellness : 0;
+
+            // Update displays
+            document.getElementById('projectedPto').textContent = ptoBalance.toFixed(1) + 'h';
+            document.getElementById('projectedActivism').textContent = activismBalance.toFixed(1) + 'h';
+            document.getElementById('projectedPersonal').textContent = personalBalance.toFixed(1) + 'h';
+            document.getElementById('projectedWellness').textContent = Math.min(wellnessBalance, maxWellness).toFixed(1) + 'h';
+
+            // Update type selector availability displays
+            document.getElementById('ptoAvailDisplay').textContent = ptoBalance.toFixed(0) + 'h avail';
+            document.getElementById('activismAvailDisplay').textContent = activismBalance.toFixed(0) + 'h avail';
+            document.getElementById('personalAvailDisplay').textContent = personalBalance.toFixed(0) + 'h avail';
+            document.getElementById('wellnessAvailDisplay').textContent = Math.min(wellnessBalance, maxWellness).toFixed(0) + 'h avail';
+
+            // Update details
+            document.getElementById('activismDetail').textContent = activismBalance < 0 ? 'Over limit!' : 'Use it or lose it';
+            document.getElementById('personalDetail').textContent = personalBalance < 0 ? 'Over limit!' : `Max ${maxPersonal}h`;
+            document.getElementById('wellnessDetail').textContent = wellnessOverRollover > 0 ?
+                `${wellnessOverRollover.toFixed(0)}h over rollover!` : `Rollover max ${maxWellness}h`;
+
+            // Update PTO status box
+            const statBox = document.getElementById('statBoxPto');
+            const balanceValue = document.getElementById('projectedPto');
+            const ptoDetail = document.getElementById('ptoDetail');
 
             statBox.className = 'stat-box';
             balanceValue.className = 'stat-value';
 
             if (yearEndGoal !== null) {
-                const diff = projectedBalance - yearEndGoal;
+                const diff = ptoBalance - yearEndGoal;
                 if (Math.abs(diff) < 5) {
                     statBox.classList.add('success');
                     balanceValue.classList.add('success');
-                    balanceDetail.textContent = `On target! Goal: ${yearEndGoal}h`;
+                    ptoDetail.textContent = `On target! Goal: ${yearEndGoal}h`;
                 } else if (diff > 0) {
                     statBox.classList.add('warning');
                     balanceValue.classList.add('warning');
-                    balanceDetail.textContent = `${diff.toFixed(1)}h over goal of ${yearEndGoal}h - use more PTO`;
+                    ptoDetail.textContent = `${diff.toFixed(1)}h over goal - use more PTO`;
                 } else {
                     statBox.classList.add('danger');
                     balanceValue.classList.add('danger');
-                    balanceDetail.textContent = `${Math.abs(diff).toFixed(1)}h under goal of ${yearEndGoal}h - use less PTO`;
+                    ptoDetail.textContent = `${Math.abs(diff).toFixed(1)}h under goal - use less PTO`;
                 }
             } else {
-                if (projectedBalance >= maxPto) {
+                if (ptoBalance >= maxPto) {
                     statBox.classList.add('danger');
                     balanceValue.classList.add('danger');
-                    balanceDetail.textContent = `At max! You'll lose PTO - use more`;
-                } else if (projectedBalance >= maxPto * 0.9) {
+                    ptoDetail.textContent = `At max! You'll lose PTO`;
+                } else if (ptoBalance >= maxPto * 0.9) {
                     statBox.classList.add('warning');
                     balanceValue.classList.add('warning');
-                    balanceDetail.textContent = `Approaching max (${maxPto}h)`;
-                } else if (projectedBalance < 0) {
+                    ptoDetail.textContent = `Approaching max (${maxPto}h)`;
+                } else if (ptoBalance < 0) {
                     statBox.classList.add('danger');
                     balanceValue.classList.add('danger');
-                    balanceDetail.textContent = `Negative! You don't have enough PTO`;
+                    ptoDetail.textContent = `Negative! Not enough PTO`;
                 } else {
                     statBox.classList.add('success');
                     balanceValue.classList.add('success');
-                    balanceDetail.textContent = `Healthy balance`;
+                    ptoDetail.textContent = `Healthy balance`;
                 }
             }
-
-            // Update counts
-            document.getElementById('count980').textContent = Object.keys(state.nine80Fridays).length;
-            document.getElementById('countHolidays').textContent = Object.keys(state.holidays).length;
 
             // Count total days off
             let totalDaysOff = 0;
@@ -1290,13 +1775,13 @@
             for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
                 const key = dateKey(d);
                 const dow = d.getDay();
-                if (dow === 0 || dow === 6 || state.holidays[key] || state.nine80Fridays[key] || state.selectedPtoDays.has(key)) {
+                const isSelectedAny = Object.values(state.selectedDays).some(set => set.has(key));
+                if (dow === 0 || dow === 6 || state.holidays[key] || state.nine80Fridays[key] || isSelectedAny) {
                     totalDaysOff++;
                 }
             }
             document.getElementById('countTotalOff').textContent = totalDaysOff;
 
-            // Render projection chart
             renderProjectionChart(currentPto, ptoPerPaycheck, maxPto, yearEndGoal);
         }
 
@@ -1304,7 +1789,7 @@
             const container = document.getElementById('projectionChart');
             container.innerHTML = '';
 
-            const chartHeight = 120;
+            const chartHeight = 100;
             const maxValue = Math.max(maxPto * 1.1, startBalance + state.paycheckDates.length * ptoPerPaycheck);
 
             // Add max line
@@ -1315,7 +1800,6 @@
             maxLine.title = `Max: ${maxPto}h`;
             container.appendChild(maxLine);
 
-            // Add goal line if set
             if (yearEndGoal !== null) {
                 const goalLineY = chartHeight - (yearEndGoal / maxValue * chartHeight);
                 const goalLine = document.createElement('div');
@@ -1325,23 +1809,22 @@
                 container.appendChild(goalLine);
             }
 
-            // Calculate balance at each paycheck
             let balance = startBalance;
-            const sortedPtoDays = [...state.selectedPtoDays].sort();
+            const sortedPtoDays = [...state.selectedDays.pto].filter(k => !isPastDate(k)).sort();
             let ptoIndex = 0;
-            const barWidth = Math.max(8, Math.floor(container.offsetWidth / state.paycheckDates.length) - 4);
+            const containerWidth = container.offsetWidth || 600;
+            const barWidth = Math.max(6, Math.floor(containerWidth / state.paycheckDates.length) - 3);
 
             state.paycheckDates.forEach((paycheck, i) => {
-                // Deduct PTO used before this paycheck
-                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < dateKey(paycheck)) {
+                const paycheckKey = dateKey(paycheck);
+                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) {
                     const date = new Date(sortedPtoDays[ptoIndex] + 'T12:00:00');
                     balance -= getHoursForDay(date);
                     ptoIndex++;
                 }
-                // Add paycheck
                 balance = Math.min(balance + ptoPerPaycheck, maxPto);
 
-                const height = Math.max(2, (balance / maxValue) * chartHeight);
+                const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
                 const bar = document.createElement('div');
                 bar.className = 'chart-bar';
 
@@ -1366,6 +1849,7 @@
                           'July', 'August', 'September', 'October', 'November', 'December'];
             const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             const today = new Date();
+            today.setHours(0, 0, 0, 0);
             const todayKey = dateKey(today);
 
             for (let month = 0; month < 12; month++) {
@@ -1403,6 +1887,7 @@
                     const date = new Date(state.year, month, day);
                     const key = dateKey(date);
                     const dayOfWeek = date.getDay();
+                    const isPast = date < today;
 
                     const cell = document.createElement('div');
                     cell.className = 'day';
@@ -1413,38 +1898,53 @@
 
                     const isHoliday = state.holidays[key];
                     const is980 = state.nine80Fridays[key];
-                    const isSelected = state.selectedPtoDays.has(key);
                     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
                     const isToday = key === todayKey;
+
+                    // Check selection type
+                    let selectedType = null;
+                    Object.keys(state.selectedDays).forEach(type => {
+                        if (state.selectedDays[type].has(key)) {
+                            selectedType = type;
+                        }
+                    });
 
                     let canClick = false;
 
                     if (isHoliday && is980) {
-                        cell.classList.add('combo');
+                        cell.classList.add(isPast ? 'combo' : 'combo');
+                        if (isPast) cell.classList.add('past');
                         tooltip.textContent = `${isHoliday} + 9/80`;
-                    } else if (isSelected) {
-                        cell.classList.add('pto-selected');
+                    } else if (selectedType) {
+                        cell.classList.add(`${selectedType}-selected`);
+                        if (isPast) cell.classList.add('past', 'selected-past');
                         const hours = getHoursForDay(date);
-                        tooltip.textContent = `PTO Selected (${hours}h) - Click to remove`;
+                        const typeNames = { pto: 'PTO', activism: 'Activism', personal: 'Personal', wellness: 'Wellness' };
+                        tooltip.textContent = isPast ?
+                            `${typeNames[selectedType]} (${hours}h) - Past` :
+                            `${typeNames[selectedType]} (${hours}h) - Click to remove`;
                         canClick = true;
 
-                        // Add hours badge
                         const badge = document.createElement('span');
                         badge.className = 'hours-badge';
                         badge.textContent = hours + 'h';
                         cell.appendChild(badge);
                     } else if (isHoliday) {
-                        cell.classList.add('holiday');
+                        cell.classList.add(isPast ? 'past-holiday' : 'holiday');
                         tooltip.textContent = isHoliday;
                     } else if (is980) {
-                        cell.classList.add('nine80');
+                        cell.classList.add(isPast ? 'past-nine80' : 'nine80');
                         tooltip.textContent = '9/80 Friday Off';
                     } else if (isWeekend) {
                         cell.classList.add('weekend');
                         tooltip.textContent = dayOfWeek === 0 ? 'Sunday' : 'Saturday';
                     } else {
+                        if (isPast) cell.classList.add('past');
                         const hours = getHoursForDay(date);
-                        tooltip.textContent = `Work day (${hours}h) - Click to take PTO`;
+                        const typeNames = { pto: 'PTO', activism: 'Activism', personal: 'Personal', wellness: 'Wellness' };
+                        tooltip.textContent = isPast ?
+                            `Past work day (${hours}h)` :
+                            `Work day (${hours}h) - Click to add ${typeNames[state.currentTimeOffType]}`;
                         canClick = true;
                     }
 
@@ -1465,7 +1965,6 @@
             }
         }
 
-        // Initialize on load
         document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
