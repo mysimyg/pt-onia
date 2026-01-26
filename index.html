@@ -804,11 +804,10 @@
                         <div class="input-group">
                             <label>Years of Service</label>
                             <select id="yearsOfService" onchange="applyServicePreset()">
-                                <option value="custom">Custom</option>
                                 <option value="0-3">0-3 years</option>
                                 <option value="4-6">4-6 years</option>
                                 <option value="7-9">7-9 years</option>
-                                <option value="10+">10+ years</option>
+                                <option value="10+" selected>10+ years</option>
                             </select>
                         </div>
                     </div>
@@ -836,63 +835,66 @@
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="balancesContent" class="collapsible-content open">
-                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">PTO / Vacation</p>
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">PTO / Vacation (based on years of service)</p>
                     <div class="input-row-3">
                         <div class="input-group">
-                            <label>Current</label>
+                            <label>Current Balance</label>
                             <input type="number" id="currentPto" step="0.01" value="0" onchange="recalculate()">
                         </div>
                         <div class="input-group">
                             <label>Per Paycheck</label>
-                            <input type="number" id="ptoPerPaycheck" step="0.01" value="7.69" onchange="recalculate()">
+                            <input type="number" id="ptoPerPaycheck" step="0.01" value="7.69" readonly style="opacity: 0.7; cursor: not-allowed;">
                         </div>
                         <div class="input-group">
                             <label>Max Cap</label>
-                            <input type="number" id="maxPto" step="1" value="300" onchange="recalculate()">
+                            <input type="number" id="maxPto" step="1" value="300" readonly style="opacity: 0.7; cursor: not-allowed;">
                         </div>
                     </div>
 
-                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Activism Hours</p>
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Activism Hours (18 hrs/year, use it or lose it)</p>
                     <div class="input-row">
                         <div class="input-group">
                             <label>Current Balance</label>
-                            <input type="number" id="currentActivism" step="0.01" value="18" onchange="recalculate()">
+                            <input type="number" id="currentActivism" step="0.01" value="18" min="0" max="18" onchange="recalculate()">
                         </div>
                         <div class="input-group">
                             <label>Yearly Allowance</label>
-                            <input type="number" id="maxActivism" step="1" value="18" onchange="recalculate()">
+                            <input type="number" id="maxActivism" value="18" readonly style="opacity: 0.7; cursor: not-allowed;">
                         </div>
                     </div>
 
-                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Personal Days</p>
-                    <div class="input-row-3">
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Personal Days (max 5 per year, counts as full day)</p>
+                    <div class="input-row">
                         <div class="input-group">
-                            <label>Current</label>
-                            <input type="number" id="currentPersonal" step="0.01" value="24" onchange="recalculate()">
+                            <label>Current Days</label>
+                            <select id="currentPersonal" onchange="recalculate()">
+                                <option value="0">0 days</option>
+                                <option value="1">1 day</option>
+                                <option value="2">2 days</option>
+                                <option value="3">3 days</option>
+                                <option value="4">4 days</option>
+                                <option value="5" selected>5 days</option>
+                            </select>
                         </div>
                         <div class="input-group">
-                            <label>Yearly (hrs)</label>
-                            <input type="number" id="personalPerYear" step="1" value="24" onchange="recalculate()">
-                        </div>
-                        <div class="input-group">
-                            <label>Max Cap</label>
-                            <input type="number" id="maxPersonal" step="1" value="40" onchange="recalculate()">
+                            <label>Max Per Year</label>
+                            <input type="text" value="5 days" readonly style="opacity: 0.7; cursor: not-allowed;">
                         </div>
                     </div>
 
-                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Wellness / Sick (1hr per 29hrs worked)</p>
+                    <p style="font-size: 10px; color: var(--text-muted); margin: 8px 0;">Wellness / Sick (2.76 hrs/paycheck, 108hr rollover max)</p>
                     <div class="input-row-3">
                         <div class="input-group">
-                            <label>Current</label>
+                            <label>Current Balance</label>
                             <input type="number" id="currentWellness" step="0.01" value="0" onchange="recalculate()">
                         </div>
                         <div class="input-group">
                             <label>Per Paycheck</label>
-                            <input type="number" id="wellnessPerPaycheck" step="0.01" value="2.76" onchange="recalculate()">
+                            <input type="text" id="wellnessPerPaycheck" value="2.76" readonly style="opacity: 0.7; cursor: not-allowed;">
                         </div>
                         <div class="input-group">
                             <label>Max Rollover</label>
-                            <input type="number" id="maxWellness" step="1" value="108" onchange="recalculate()">
+                            <input type="text" id="maxWellness" value="108" readonly style="opacity: 0.7; cursor: not-allowed;">
                         </div>
                     </div>
                 </div>
@@ -1196,7 +1198,7 @@
 
         function applyServicePreset() {
             const preset = document.getElementById('yearsOfService').value;
-            if (preset !== 'custom' && SERVICE_PRESETS[preset]) {
+            if (SERVICE_PRESETS[preset]) {
                 document.getElementById('ptoPerPaycheck').value = SERVICE_PRESETS[preset].ptoPerPaycheck;
                 document.getElementById('maxPto').value = SERVICE_PRESETS[preset].maxPto;
                 recalculate();
@@ -1224,13 +1226,12 @@
         }
 
         function initDateInputs() {
-            const today = new Date();
-            let nextFriday = new Date(today);
-            while (nextFriday.getDay() !== 5) {
-                nextFriday.setDate(nextFriday.getDate() + 1);
-            }
-            document.getElementById('nextPaycheck').value = dateKey(today);
-            document.getElementById('next980Friday').value = dateKey(nextFriday);
+            // Default to first paycheck and first 9/80 Friday of the selected year
+            const year = new Date().getFullYear();
+            // First paycheck of year: January 8th
+            document.getElementById('nextPaycheck').value = `${year}-01-08`;
+            // First 9/80 Friday of year: January 9th
+            document.getElementById('next980Friday').value = `${year}-01-09`;
         }
 
         function initHolidayCheckboxes() {
@@ -1662,20 +1663,19 @@
                 parseFloat(document.getElementById('yearEndGoal').value) : null;
 
             const currentActivism = parseFloat(document.getElementById('currentActivism').value) || 0;
-            const maxActivism = parseFloat(document.getElementById('maxActivism').value) || 18;
+            const maxActivism = 18; // Fixed yearly allowance
 
-            const currentPersonal = parseFloat(document.getElementById('currentPersonal').value) || 0;
-            const personalPerYear = parseFloat(document.getElementById('personalPerYear').value) || 0;
-            const maxPersonal = parseFloat(document.getElementById('maxPersonal').value) || 40;
+            const currentPersonal = parseInt(document.getElementById('currentPersonal').value) || 0;
+            const maxPersonal = 5; // Fixed at 5 days
 
             const currentWellness = parseFloat(document.getElementById('currentWellness').value) || 0;
-            const wellnessPerPaycheck = parseFloat(document.getElementById('wellnessPerPaycheck').value) || 0;
-            const maxWellness = parseFloat(document.getElementById('maxWellness').value) || 108;
+            const wellnessPerPaycheck = 2.76; // Fixed rate
+            const maxWellness = 108; // Fixed rollover max
 
             // Calculate FUTURE usage only (past dates don't count)
             let futurePtoUsed = 0;
             let futureActivismUsed = 0;
-            let futurePersonalUsed = 0;
+            let futurePersonalUsed = 0; // Count of days, not hours
             let futureWellnessUsed = 0;
 
             Object.keys(state.selectedDays).forEach(type => {
@@ -1686,7 +1686,7 @@
                         switch(type) {
                             case 'pto': futurePtoUsed += hours; break;
                             case 'activism': futureActivismUsed += hours; break;
-                            case 'personal': futurePersonalUsed += hours; break;
+                            case 'personal': futurePersonalUsed += 1; break; // Count days, not hours
                             case 'wellness': futureWellnessUsed += hours; break;
                         }
                     }
@@ -1695,7 +1695,7 @@
 
             document.getElementById('futurePtoUsed').textContent = futurePtoUsed.toFixed(1) + 'h';
             document.getElementById('futureActivismUsed').textContent = futureActivismUsed.toFixed(1) + 'h';
-            document.getElementById('futurePersonalUsed').textContent = futurePersonalUsed.toFixed(1) + 'h';
+            document.getElementById('futurePersonalUsed').textContent = futurePersonalUsed + ' days';
             document.getElementById('futureWellnessUsed').textContent = futureWellnessUsed.toFixed(1) + 'h';
 
             // Calculate year-end balances with proper accrual simulation
@@ -1728,8 +1728,8 @@
             // Activism (doesn't accrue, just decreases)
             const activismBalance = currentActivism - futureActivismUsed;
 
-            // Personal (add yearly allowance at start, cap at max)
-            let personalBalance = Math.min(currentPersonal + personalPerYear, maxPersonal) - futurePersonalUsed;
+            // Personal (simple day count - just subtract days used)
+            let personalBalance = currentPersonal - futurePersonalUsed;
 
             // Wellness (accrues each paycheck, cap at max for rollover)
             let wellnessBalance = currentWellness;
@@ -1754,18 +1754,18 @@
             // Update displays - show actual projected balance (wellness shows full amount, not capped)
             document.getElementById('projectedPto').textContent = ptoBalance.toFixed(1) + 'h';
             document.getElementById('projectedActivism').textContent = activismBalance.toFixed(1) + 'h';
-            document.getElementById('projectedPersonal').textContent = personalBalance.toFixed(1) + 'h';
+            document.getElementById('projectedPersonal').textContent = personalBalance + ' days';
             document.getElementById('projectedWellness').textContent = wellnessBalance.toFixed(1) + 'h';
 
             // Update type selector availability displays
             document.getElementById('ptoAvailDisplay').textContent = ptoBalance.toFixed(0) + 'h avail';
             document.getElementById('activismAvailDisplay').textContent = activismBalance.toFixed(0) + 'h avail';
-            document.getElementById('personalAvailDisplay').textContent = personalBalance.toFixed(0) + 'h avail';
+            document.getElementById('personalAvailDisplay').textContent = personalBalance + ' days';
             document.getElementById('wellnessAvailDisplay').textContent = wellnessBalance.toFixed(0) + 'h avail';
 
             // Update details
             document.getElementById('activismDetail').textContent = activismBalance < 0 ? 'Over limit!' : 'Use it or lose it';
-            document.getElementById('personalDetail').textContent = personalBalance < 0 ? 'Over limit!' : `Max ${maxPersonal}h`;
+            document.getElementById('personalDetail').textContent = personalBalance < 0 ? 'Over limit!' : `Max 5 days/year`;
 
             // Wellness detail - explain what happens at year end
             const wellnessCard = document.querySelector('.balance-card.wellness');
@@ -1847,7 +1847,7 @@
             // Render charts and data tables
             renderProjectionChart(currentPto, ptoPerPaycheck, maxPto, yearEndGoal);
             renderWellnessChart(currentWellness, wellnessPerPaycheck, maxWellness);
-            renderOtherBalancesTable(currentActivism, futureActivismUsed, currentPersonal, personalPerYear, maxPersonal, futurePersonalUsed);
+            renderOtherBalancesTable(currentActivism, futureActivismUsed, currentPersonal, futurePersonalUsed);
         }
 
         function renderProjectionChart(startBalance, ptoPerPaycheck, maxPto, yearEndGoal) {
@@ -2000,19 +2000,19 @@
             dataTable.innerHTML = tableHTML;
         }
 
-        function renderOtherBalancesTable(currentActivism, futureActivismUsed, currentPersonal, personalPerYear, maxPersonal, futurePersonalUsed) {
+        function renderOtherBalancesTable(currentActivism, futureActivismUsed, currentPersonal, futurePersonalUsed) {
             const dataTable = document.getElementById('otherDataTable');
             dataTable.innerHTML = '';
 
-            // Activism is simple - it just decreases as used, doesn't accrue
-            // Personal gets yearly amount at start, then decreases
+            // Activism is simple - it just decreases as used (hours), doesn't accrue
+            // Personal is simple - just count of days, decreases by 1 per use
 
             // Calculate running balances through pay periods
             const activismDays = [...state.selectedDays.activism].filter(k => !isPastDate(k)).sort();
-            const personalDays = [...state.selectedDays.personal].filter(k => !isPastDate(k)).sort();
+            const personalDaysList = [...state.selectedDays.personal].filter(k => !isPastDate(k)).sort();
 
             let activismBalance = currentActivism;
-            let personalBalance = Math.min(currentPersonal + personalPerYear, maxPersonal);
+            let personalBalance = currentPersonal;
 
             let activismIndex = 0;
             let personalIndex = 0;
@@ -2022,17 +2022,16 @@
             state.paycheckDates.forEach((paycheck, i) => {
                 const paycheckKey = dateKey(paycheck);
 
-                // Deduct activism used before this paycheck
+                // Deduct activism used before this paycheck (hours)
                 while (activismIndex < activismDays.length && activismDays[activismIndex] < paycheckKey) {
                     const date = new Date(activismDays[activismIndex] + 'T12:00:00');
                     activismBalance -= getHoursForDay(date);
                     activismIndex++;
                 }
 
-                // Deduct personal used before this paycheck
-                while (personalIndex < personalDays.length && personalDays[personalIndex] < paycheckKey) {
-                    const date = new Date(personalDays[personalIndex] + 'T12:00:00');
-                    personalBalance -= getHoursForDay(date);
+                // Deduct personal used before this paycheck (count days, not hours)
+                while (personalIndex < personalDaysList.length && personalDaysList[personalIndex] < paycheckKey) {
+                    personalBalance -= 1;
                     personalIndex++;
                 }
 
@@ -2046,15 +2045,15 @@
             tableData.dates.forEach(d => {
                 tableHTML += `<td>${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>`;
             });
-            tableHTML += '</tr><tr class="activism-row"><th>Activism</th>';
+            tableHTML += '</tr><tr class="activism-row"><th>Activism (hrs)</th>';
             tableData.activism.forEach(b => {
                 const cls = b.danger ? 'danger' : '';
                 tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`;
             });
-            tableHTML += '</tr><tr class="personal-row"><th>Personal</th>';
+            tableHTML += '</tr><tr class="personal-row"><th>Personal (days)</th>';
             tableData.personal.forEach(b => {
                 const cls = b.danger ? 'danger' : '';
-                tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`;
+                tableHTML += `<td class="${cls}">${b.value}</td>`;
             });
             tableHTML += '</tr></table>';
             dataTable.innerHTML = tableHTML;
