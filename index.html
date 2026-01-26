@@ -2,19 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Time Off Optimizer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Accent colors */
             --accent-primary: #2563eb;
             --accent-secondary: #7c3aed;
             --accent-highlight: #dc2626;
-
-            /* Light mode (default) */
             --bg-primary: #ffffff;
             --bg-secondary: #f7f7f7;
             --bg-tertiary: #eeeeee;
@@ -23,8 +20,6 @@
             --text-muted: #999999;
             --border-color: #e0e0e0;
             --shadow: rgba(0, 0, 0, 0.08);
-
-            /* Time off colors - softer versions */
             --color-holiday: #22c55e;
             --color-nine80: #3b82f6;
             --color-pto: #ec4899;
@@ -32,186 +27,92 @@
             --color-personal: #f59e0b;
             --color-wellness: #14b8a6;
             --color-weekend: #d1d5db;
-
-            /* Status colors */
             --color-success: #22c55e;
             --color-warning: #f59e0b;
             --color-danger: #ef4444;
         }
 
-        /* Light Theme: Default */
         [data-theme="light-default"] {
-            --accent-primary: #2563eb;
-            --accent-secondary: #7c3aed;
-            --accent-highlight: #dc2626;
-            --bg-primary: #ffffff;
-            --bg-secondary: #f7f7f7;
-            --bg-tertiary: #eeeeee;
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --text-muted: #999999;
+            --accent-primary: #2563eb; --accent-secondary: #7c3aed; --accent-highlight: #dc2626;
+            --bg-primary: #ffffff; --bg-secondary: #f7f7f7; --bg-tertiary: #eeeeee;
+            --text-primary: #1a1a1a; --text-secondary: #666666; --text-muted: #999999;
             --border-color: #e0e0e0;
-            --color-holiday: #22c55e;
-            --color-nine80: #3b82f6;
-            --color-pto: #ec4899;
-            --color-activism: #8b5cf6;
-            --color-personal: #f59e0b;
-            --color-wellness: #14b8a6;
+            --color-holiday: #22c55e; --color-nine80: #3b82f6; --color-pto: #ec4899;
+            --color-activism: #8b5cf6; --color-personal: #f59e0b; --color-wellness: #14b8a6;
             --color-weekend: #d1d5db;
         }
 
-        /* Light Theme: Minimal (Japanese Muji-inspired) */
         [data-theme="light-minimal"] {
-            --accent-primary: #666666;
-            --accent-secondary: #888888;
-            --accent-highlight: #333333;
-            --bg-primary: #fafafa;
-            --bg-secondary: #f5f5f5;
-            --bg-tertiary: #ebebeb;
-            --text-primary: #333333;
-            --text-secondary: #666666;
-            --text-muted: #999999;
+            --accent-primary: #666666; --accent-secondary: #888888; --accent-highlight: #333333;
+            --bg-primary: #fafafa; --bg-secondary: #f5f5f5; --bg-tertiary: #ebebeb;
+            --text-primary: #333333; --text-secondary: #666666; --text-muted: #999999;
             --border-color: #e5e5e5;
-            --color-holiday: #6b9080;
-            --color-nine80: #7d8597;
-            --color-pto: #a5a58d;
-            --color-activism: #b7b7a4;
-            --color-personal: #ddbea9;
-            --color-wellness: #9db4c0;
+            --color-holiday: #6b9080; --color-nine80: #7d8597; --color-pto: #a5a58d;
+            --color-activism: #b7b7a4; --color-personal: #ddbea9; --color-wellness: #9db4c0;
             --color-weekend: #e0e0e0;
         }
 
-        /* Light Theme: Coastal (Japanese sea-inspired) */
         [data-theme="light-coastal"] {
-            --accent-primary: #0077b6;
-            --accent-secondary: #00a8e8;
-            --accent-highlight: #ff6b6b;
-            --bg-primary: #f8fbfc;
-            --bg-secondary: #e8f4f8;
-            --bg-tertiary: #d6eaf2;
-            --text-primary: #1b4965;
-            --text-secondary: #457b9d;
-            --text-muted: #7da3b7;
+            --accent-primary: #0077b6; --accent-secondary: #00a8e8; --accent-highlight: #ff6b6b;
+            --bg-primary: #f8fbfc; --bg-secondary: #e8f4f8; --bg-tertiary: #d6eaf2;
+            --text-primary: #1b4965; --text-secondary: #457b9d; --text-muted: #7da3b7;
             --border-color: #bee3f0;
-            --color-holiday: #52b788;
-            --color-nine80: #4895ef;
-            --color-pto: #f77f92;
-            --color-activism: #9d80cb;
-            --color-personal: #f9c74f;
-            --color-wellness: #43aa8b;
+            --color-holiday: #52b788; --color-nine80: #4895ef; --color-pto: #f77f92;
+            --color-activism: #9d80cb; --color-personal: #f9c74f; --color-wellness: #43aa8b;
             --color-weekend: #cce3de;
         }
 
-        /* Light Theme: Bold (Japanese vibrant) */
         [data-theme="light-bold"] {
-            --accent-primary: #e63946;
-            --accent-secondary: #ff006e;
-            --accent-highlight: #fb5607;
-            --bg-primary: #ffffff;
-            --bg-secondary: #fff5f5;
-            --bg-tertiary: #ffe8e8;
-            --text-primary: #2b2d42;
-            --text-secondary: #555b6e;
-            --text-muted: #8d93a5;
+            --accent-primary: #e63946; --accent-secondary: #ff006e; --accent-highlight: #fb5607;
+            --bg-primary: #ffffff; --bg-secondary: #fff5f5; --bg-tertiary: #ffe8e8;
+            --text-primary: #2b2d42; --text-secondary: #555b6e; --text-muted: #8d93a5;
             --border-color: #ebd5d5;
-            --color-holiday: #06d6a0;
-            --color-nine80: #4361ee;
-            --color-pto: #ff006e;
-            --color-activism: #8338ec;
-            --color-personal: #ffbe0b;
-            --color-wellness: #3a86a8;
+            --color-holiday: #06d6a0; --color-nine80: #4361ee; --color-pto: #ff006e;
+            --color-activism: #8338ec; --color-personal: #ffbe0b; --color-wellness: #3a86a8;
             --color-weekend: #e8e8e8;
         }
 
-        /* Dark Theme: Default */
         [data-theme="dark-default"] {
-            --accent-primary: #60a5fa;
-            --accent-secondary: #a78bfa;
-            --accent-highlight: #f87171;
-            --bg-primary: #121212;
-            --bg-secondary: #1e1e1e;
-            --bg-tertiary: #2a2a2a;
-            --text-primary: #f5f5f5;
-            --text-secondary: #b0b0b0;
-            --text-muted: #808080;
+            --accent-primary: #60a5fa; --accent-secondary: #a78bfa; --accent-highlight: #f87171;
+            --bg-primary: #121212; --bg-secondary: #1e1e1e; --bg-tertiary: #2a2a2a;
+            --text-primary: #f5f5f5; --text-secondary: #b0b0b0; --text-muted: #808080;
             --border-color: #333333;
-            --color-holiday: #4ade80;
-            --color-nine80: #60a5fa;
-            --color-pto: #f472b6;
-            --color-activism: #a78bfa;
-            --color-personal: #fbbf24;
-            --color-wellness: #2dd4bf;
+            --color-holiday: #4ade80; --color-nine80: #60a5fa; --color-pto: #f472b6;
+            --color-activism: #a78bfa; --color-personal: #fbbf24; --color-wellness: #2dd4bf;
             --color-weekend: #404040;
         }
 
-        /* Dark Theme: Minimal (Japanese Wabi-sabi) */
         [data-theme="dark-minimal"] {
-            --accent-primary: #a8a29e;
-            --accent-secondary: #d6d3d1;
-            --accent-highlight: #78716c;
-            --bg-primary: #1c1917;
-            --bg-secondary: #292524;
-            --bg-tertiary: #3a3432;
-            --text-primary: #e7e5e4;
-            --text-secondary: #a8a29e;
-            --text-muted: #78716c;
+            --accent-primary: #a8a29e; --accent-secondary: #d6d3d1; --accent-highlight: #78716c;
+            --bg-primary: #1c1917; --bg-secondary: #292524; --bg-tertiary: #3a3432;
+            --text-primary: #e7e5e4; --text-secondary: #a8a29e; --text-muted: #78716c;
             --border-color: #44403c;
-            --color-holiday: #84a98c;
-            --color-nine80: #8a9a9e;
-            --color-pto: #c9ada7;
-            --color-activism: #a5a58d;
-            --color-personal: #d4a574;
-            --color-wellness: #7eb09b;
+            --color-holiday: #84a98c; --color-nine80: #8a9a9e; --color-pto: #c9ada7;
+            --color-activism: #a5a58d; --color-personal: #d4a574; --color-wellness: #7eb09b;
             --color-weekend: #3a3a3a;
         }
 
-        /* Dark Theme: Coastal (Japanese night sea) */
         [data-theme="dark-coastal"] {
-            --accent-primary: #38bdf8;
-            --accent-secondary: #22d3ee;
-            --accent-highlight: #fb7185;
-            --bg-primary: #0c1821;
-            --bg-secondary: #132632;
-            --bg-tertiary: #1b3847;
-            --text-primary: #e0f2fe;
-            --text-secondary: #7dd3fc;
-            --text-muted: #5891a8;
+            --accent-primary: #38bdf8; --accent-secondary: #22d3ee; --accent-highlight: #fb7185;
+            --bg-primary: #0c1821; --bg-secondary: #132632; --bg-tertiary: #1b3847;
+            --text-primary: #e0f2fe; --text-secondary: #7dd3fc; --text-muted: #5891a8;
             --border-color: #1e4052;
-            --color-holiday: #34d399;
-            --color-nine80: #38bdf8;
-            --color-pto: #fb7185;
-            --color-activism: #c084fc;
-            --color-personal: #fcd34d;
-            --color-wellness: #2dd4bf;
+            --color-holiday: #34d399; --color-nine80: #38bdf8; --color-pto: #fb7185;
+            --color-activism: #c084fc; --color-personal: #fcd34d; --color-wellness: #2dd4bf;
             --color-weekend: #1a2f3d;
         }
 
-        /* Dark Theme: Bold (Japanese neon) */
         [data-theme="dark-bold"] {
-            --accent-primary: #ff3366;
-            --accent-secondary: #ff00ff;
-            --accent-highlight: #ff6600;
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #15151e;
-            --bg-tertiary: #1f1f2e;
-            --text-primary: #ffffff;
-            --text-secondary: #c0c0d0;
-            --text-muted: #8080a0;
+            --accent-primary: #ff3366; --accent-secondary: #ff00ff; --accent-highlight: #ff6600;
+            --bg-primary: #0a0a0f; --bg-secondary: #15151e; --bg-tertiary: #1f1f2e;
+            --text-primary: #ffffff; --text-secondary: #c0c0d0; --text-muted: #8080a0;
             --border-color: #2a2a40;
-            --color-holiday: #00ff88;
-            --color-nine80: #00aaff;
-            --color-pto: #ff3399;
-            --color-activism: #aa55ff;
-            --color-personal: #ffcc00;
-            --color-wellness: #00ddcc;
+            --color-holiday: #00ff88; --color-nine80: #00aaff; --color-pto: #ff3399;
+            --color-activism: #aa55ff; --color-personal: #ffcc00; --color-wellness: #00ddcc;
             --color-weekend: #1a1a2e;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -219,13 +120,14 @@
             color: var(--text-primary);
             line-height: 1.5;
             transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
         }
 
         /* Header */
         .header {
             background: var(--bg-primary);
             border-bottom: 1px solid var(--border-color);
-            padding: 16px 24px;
+            padding: 12px 16px;
             position: sticky;
             top: 0;
             z-index: 100;
@@ -235,7 +137,7 @@
         }
 
         .header h1 {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             letter-spacing: -0.5px;
         }
@@ -243,95 +145,116 @@
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 12px;
-        }
-
-        .theme-selector {
-            display: flex;
-            align-items: center;
             gap: 8px;
         }
 
-        .theme-selector label {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .theme-selector select {
-            padding: 6px 10px;
+        .theme-select {
+            padding: 6px 8px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             background: var(--bg-secondary);
             color: var(--text-primary);
-            font-size: 12px;
+            font-size: 11px;
             font-family: inherit;
             cursor: pointer;
         }
 
-        .theme-selector select:focus {
-            outline: none;
-            border-color: var(--accent-primary);
+        .save-btn {
+            padding: 8px 12px;
+            background: var(--accent-primary);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        /* Main Layout */
-        .main-layout {
+        .save-btn:active { transform: scale(0.98); }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Desktop Layout */
+        .desktop-layout {
             display: grid;
-            grid-template-columns: 360px 1fr;
-            min-height: calc(100vh - 60px);
+            grid-template-columns: 340px 1fr;
+            min-height: calc(100vh - 53px);
         }
 
-        @media (max-width: 1024px) {
-            .main-layout {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 900px) {
+            .desktop-layout { display: none; }
         }
 
-        /* Sidebar */
+        /* Mobile Layout */
+        .mobile-layout {
+            display: none;
+            flex-direction: column;
+            min-height: calc(100vh - 53px);
+            padding-bottom: 60px;
+        }
+
+        @media (max-width: 900px) {
+            .mobile-layout { display: flex; }
+        }
+
+        /* Sidebar (Desktop) */
         .sidebar {
             background: var(--bg-secondary);
             border-right: 1px solid var(--border-color);
-            padding: 24px;
+            padding: 16px;
             overflow-y: auto;
-            max-height: calc(100vh - 60px);
+            max-height: calc(100vh - 53px);
             position: sticky;
-            top: 60px;
+            top: 53px;
         }
 
-        @media (max-width: 1024px) {
-            .sidebar {
-                max-height: none;
-                position: relative;
-                top: 0;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-            }
-        }
-
-        .section {
-            margin-bottom: 28px;
-        }
+        .section { margin-bottom: 20px; }
 
         .section-title {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
             color: var(--text-muted);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         /* Type Selector */
         .type-selector {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
         }
 
         .type-btn {
-            padding: 12px 8px;
+            padding: 10px 4px;
             border: 2px solid transparent;
             border-radius: 8px;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -343,48 +266,31 @@
         .type-btn.activism { background: var(--color-activism); }
         .type-btn.personal { background: var(--color-personal); }
         .type-btn.wellness { background: var(--color-wellness); }
-
-        .type-btn.active {
-            border-color: var(--text-primary);
-            transform: scale(1.02);
-        }
-
-        .type-btn .avail {
-            display: block;
-            font-size: 10px;
-            font-weight: 500;
-            opacity: 0.8;
-            margin-top: 2px;
-        }
+        .type-btn.active { border-color: var(--text-primary); transform: scale(1.02); }
+        .type-btn .avail { display: block; font-size: 9px; font-weight: 500; opacity: 0.8; margin-top: 2px; }
 
         /* Form Elements */
-        .input-group {
-            margin-bottom: 12px;
-        }
-
+        .input-group { margin-bottom: 10px; }
         .input-group label {
             display: block;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 500;
             color: var(--text-secondary);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
 
-        .input-group input,
-        .input-group select {
+        .input-group input, .input-group select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border: 1px solid var(--border-color);
             border-radius: 6px;
             background: var(--bg-primary);
             color: var(--text-primary);
-            font-size: 14px;
+            font-size: 13px;
             font-family: inherit;
-            transition: border-color 0.2s;
         }
 
-        .input-group input:focus,
-        .input-group select:focus {
+        .input-group input:focus, .input-group select:focus {
             outline: none;
             border-color: var(--accent-primary);
         }
@@ -392,410 +298,138 @@
         .input-group input[readonly] {
             background: var(--bg-tertiary);
             color: var(--text-muted);
-            cursor: not-allowed;
         }
 
-        .input-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-        }
+        .input-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+        .input-row-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 
-        .input-row-3 {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
+        .custom-pto-fields { display: none; margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; }
+        .custom-pto-fields.visible { display: block; }
 
-        /* Custom PTO fields - hidden by default */
-        .custom-pto-fields {
-            display: none;
-        }
-
-        .custom-pto-fields.visible {
-            display: block;
-            margin-top: 12px;
-            padding: 12px;
-            background: var(--bg-tertiary);
-            border-radius: 6px;
-        }
-
-        /* Collapsible Sections */
+        /* Collapsible */
         .collapsible-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            padding: 8px 0;
-            user-select: none;
+            padding: 6px 0;
         }
 
-        .collapsible-header:hover .section-title {
-            color: var(--accent-primary);
-        }
+        .collapsible-header:hover .section-title { color: var(--accent-primary); }
+        .toggle-icon { font-size: 10px; color: var(--text-muted); transition: transform 0.2s; }
+        .toggle-icon.open { transform: rotate(180deg); }
+        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
+        .collapsible-content.open { max-height: 600px; }
 
-        .toggle-icon {
-            font-size: 12px;
-            color: var(--text-muted);
-            transition: transform 0.2s;
-        }
-
-        .toggle-icon.open {
-            transform: rotate(180deg);
-        }
-
-        .collapsible-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-
-        .collapsible-content.open {
-            max-height: 800px;
-        }
-
-        /* Holiday Checkboxes */
-        .holiday-list {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
+        /* Holiday List */
+        .holiday-list { display: flex; flex-direction: column; gap: 2px; max-height: 180px; overflow-y: auto; }
         .holiday-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            padding: 8px;
-            border-radius: 6px;
+            gap: 6px;
+            padding: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 13px;
-            transition: background 0.2s;
+            font-size: 12px;
         }
+        .holiday-item:hover { background: var(--bg-tertiary); }
+        .holiday-item input { accent-color: var(--accent-primary); }
 
-        .holiday-item:hover {
-            background: var(--bg-tertiary);
-        }
-
-        .holiday-item input {
-            accent-color: var(--accent-primary);
-        }
-
-        /* Stats Cards */
+        /* Stats */
         .stat-card {
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 14px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
         }
-
         .stat-card.success { border-left: 3px solid var(--color-success); }
         .stat-card.warning { border-left: 3px solid var(--color-warning); }
         .stat-card.danger { border-left: 3px solid var(--color-danger); }
+        .stat-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+        .stat-value { font-size: 22px; font-weight: 600; margin: 2px 0; }
+        .stat-detail { font-size: 11px; color: var(--text-secondary); }
 
-        .stat-label {
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 600;
-            margin: 4px 0;
-        }
-
-        .stat-detail {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* Balance Grid */
-        .balance-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
+        .balance-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
         .balance-card {
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 10px;
             border-left: 3px solid;
         }
-
         .balance-card.pto { border-left-color: var(--color-pto); }
         .balance-card.activism { border-left-color: var(--color-activism); }
         .balance-card.personal { border-left-color: var(--color-personal); }
         .balance-card.wellness { border-left-color: var(--color-wellness); }
-
-        .balance-card .label {
-            font-size: 10px;
-            font-weight: 500;
-            text-transform: uppercase;
-            color: var(--text-muted);
-        }
-
-        .balance-card .value {
-            font-size: 18px;
-            font-weight: 600;
-            margin: 2px 0;
-        }
-
-        .balance-card .detail {
-            font-size: 10px;
-            color: var(--text-secondary);
-        }
+        .balance-card .label { font-size: 9px; font-weight: 500; text-transform: uppercase; color: var(--text-muted); }
+        .balance-card .value { font-size: 16px; font-weight: 600; margin: 2px 0; }
+        .balance-card .detail { font-size: 9px; color: var(--text-secondary); }
 
         /* Quick Select */
-        .quick-section {
-            margin-bottom: 16px;
-        }
-
-        .quick-section-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .quick-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
+        .quick-section { margin-bottom: 12px; }
+        .quick-section-title { font-size: 10px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
+        .quick-actions { display: flex; flex-wrap: wrap; gap: 4px; }
         .quick-btn {
-            padding: 8px 12px;
-            font-size: 11px;
+            padding: 6px 10px;
+            font-size: 10px;
             font-weight: 500;
-            border-radius: 6px;
+            border-radius: 4px;
             border: 1px solid var(--border-color);
             background: var(--bg-primary);
             color: var(--text-primary);
             cursor: pointer;
-            transition: all 0.2s;
         }
-
-        .quick-btn:hover {
-            border-color: var(--accent-primary);
-            color: var(--accent-primary);
-        }
-
-        .quick-btn.accent {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            color: #fff;
-        }
-
-        .quick-btn.accent:hover {
-            background: var(--accent-secondary);
-            border-color: var(--accent-secondary);
-        }
-
-        .quick-btn.clear {
-            background: transparent;
-            border-color: var(--color-danger);
-            color: var(--color-danger);
-        }
-
-        .quick-btn.disabled {
-            opacity: 0.4;
-            cursor: default;
-        }
-
-        .quick-btn.disabled:hover {
-            border-color: var(--border-color);
-            color: var(--text-primary);
-        }
+        .quick-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .quick-btn.accent { background: var(--accent-primary); border-color: var(--accent-primary); color: #fff; }
+        .quick-btn.accent:hover { background: var(--accent-secondary); border-color: var(--accent-secondary); }
+        .quick-btn.clear { border-color: var(--color-danger); color: var(--color-danger); }
+        .quick-btn.disabled { opacity: 0.4; cursor: default; }
 
         /* Opportunities */
-        .opportunity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .opp-group-header {
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            margin: 12px 0 6px;
-            letter-spacing: 0.5px;
-        }
-
+        .opportunity-list { display: flex; flex-direction: column; gap: 6px; max-height: 250px; overflow-y: auto; }
+        .opp-group-header { font-size: 9px; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin: 10px 0 4px; }
         .opportunity-item {
             background: var(--bg-primary);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 6px;
+            padding: 10px;
             cursor: pointer;
-            transition: all 0.2s;
         }
-
-        .opportunity-item:hover {
-            border-color: var(--accent-primary);
-        }
-
-        .opportunity-item.selected {
-            border-color: var(--color-pto);
-            background: rgba(236, 72, 153, 0.05);
-        }
-
-        .opportunity-item .title {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .opportunity-item .details {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .opportunity-item .badges {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .badge {
-            font-size: 10px;
-            font-weight: 600;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
-        .badge-hours {
-            background: var(--accent-highlight);
-            color: #fff;
-        }
-
-        .badge-days {
-            background: var(--color-success);
-            color: #fff;
-        }
+        .opportunity-item:hover { border-color: var(--accent-primary); }
+        .opportunity-item.selected { border-color: var(--color-pto); background: rgba(236, 72, 153, 0.05); }
+        .opportunity-item .title { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+        .opportunity-item .details { font-size: 10px; color: var(--text-secondary); }
+        .opportunity-item .badges { display: flex; gap: 4px; margin-top: 6px; }
+        .badge { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 3px; }
+        .badge-hours { background: var(--accent-highlight); color: #fff; }
+        .badge-days { background: var(--color-success); color: #fff; }
 
         /* Content Area */
-        .content-area {
-            padding: 24px;
-            overflow-y: auto;
-        }
+        .content-area { padding: 16px; overflow-y: auto; }
 
-        @media (max-width: 768px) {
-            .content-area {
-                padding: 16px;
-            }
-        }
-
-        /* Info Card */
-        .info-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 24px;
-        }
-
-        .info-card h3 {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .info-card ul {
-            font-size: 13px;
-            color: var(--text-secondary);
-            padding-left: 20px;
-        }
-
-        .info-card li {
-            margin-bottom: 4px;
-        }
-
-        /* Chart Section */
+        /* Charts */
         .chart-section {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .chart-section h3 {
-            font-size: 14px;
-            font-weight: 600;
+            padding: 16px;
             margin-bottom: 16px;
         }
-
-        .projection-chart {
-            height: 100px;
-            position: relative;
-            background: var(--bg-tertiary);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-
-        .chart-bar {
-            position: absolute;
-            bottom: 0;
-            background: var(--color-success);
-            border-radius: 2px 2px 0 0;
-            transition: height 0.3s;
-        }
-
+        .chart-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+        .projection-chart { height: 80px; position: relative; background: var(--bg-tertiary); border-radius: 6px; overflow: hidden; }
+        .chart-bar { position: absolute; bottom: 0; background: var(--color-success); border-radius: 2px 2px 0 0; }
         .chart-bar.warning { background: var(--color-warning); }
         .chart-bar.danger { background: var(--color-danger); }
-
-        .chart-max-line {
-            position: absolute;
-            left: 0;
-            right: 0;
-            border-top: 2px dashed var(--color-danger);
-            opacity: 0.6;
-        }
-
-        .chart-data-table {
-            margin-top: 16px;
-            overflow-x: auto;
-            font-size: 11px;
-        }
-
-        .chart-data-table table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 500px;
-        }
-
-        .chart-data-table th,
-        .chart-data-table td {
-            padding: 6px 8px;
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .chart-data-table th {
-            font-weight: 500;
-            color: var(--text-muted);
-            text-align: left;
-            background: var(--bg-tertiary);
-            position: sticky;
-            left: 0;
-        }
-
+        .chart-max-line { position: absolute; left: 0; right: 0; border-top: 2px dashed var(--color-danger); opacity: 0.6; }
+        .chart-data-table { margin-top: 12px; overflow-x: auto; font-size: 10px; }
+        .chart-data-table table { width: 100%; border-collapse: collapse; min-width: 400px; }
+        .chart-data-table th, .chart-data-table td { padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .chart-data-table th { font-weight: 500; color: var(--text-muted); text-align: left; background: var(--bg-tertiary); position: sticky; left: 0; }
         .chart-data-table tr.pto-row td { color: var(--color-pto); font-weight: 600; }
         .chart-data-table tr.wellness-row td { color: var(--color-wellness); font-weight: 600; }
         .chart-data-table tr.activism-row td { color: var(--color-activism); font-weight: 600; }
         .chart-data-table tr.personal-row td { color: var(--color-personal); font-weight: 600; }
-
         .chart-data-table td.warning { color: var(--color-warning) !important; }
         .chart-data-table td.danger { color: var(--color-danger) !important; }
 
@@ -803,103 +437,50 @@
         .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: 16px;
+            gap: 12px;
             justify-content: center;
-            padding: 16px;
+            padding: 12px;
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
+        .legend-item { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--text-secondary); }
+        .legend-color { width: 14px; height: 14px; border-radius: 3px; }
+        .legend-color.split { background: linear-gradient(135deg, var(--color-holiday) 50%, var(--color-nine80) 50%); }
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-        }
-
-        /* Diagonal split for holiday + 9/80 overlap */
-        .legend-color.split {
-            background: linear-gradient(135deg, var(--color-holiday) 50%, var(--color-nine80) 50%);
-        }
-
-        /* Calendar */
+        /* Calendar Grid */
         .calendar-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 16px;
-        }
-
-        @media (max-width: 600px) {
-            .calendar-container {
-                grid-template-columns: 1fr;
-            }
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
         }
 
         .month-card {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            padding: 16px;
+            padding: 12px;
         }
 
-        .month-title {
-            font-size: 14px;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 12px;
-        }
-
-        .weekday-header {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            margin-bottom: 4px;
-        }
-
-        .weekday-header span {
-            text-align: center;
-            font-size: 10px;
-            font-weight: 600;
-            color: var(--text-muted);
-            padding: 4px;
-        }
-
-        .days-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-        }
+        .month-title { font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 8px; }
+        .weekday-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; margin-bottom: 2px; }
+        .weekday-header span { text-align: center; font-size: 9px; font-weight: 600; color: var(--text-muted); padding: 2px; }
+        .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
 
         .day {
             aspect-ratio: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
-            border-radius: 6px;
+            border-radius: 4px;
             background: var(--bg-primary);
             position: relative;
             cursor: pointer;
-            transition: all 0.15s;
             user-select: none;
             border: 1px solid transparent;
-        }
-
-        @media (max-width: 600px) {
-            .day {
-                font-size: 12px;
-                min-height: 40px;
-            }
         }
 
         .day:hover:not(.empty):not(.weekend):not(.holiday):not(.nine80):not(.holiday-nine80) {
@@ -908,51 +489,17 @@
             z-index: 5;
         }
 
-        .day.empty {
-            background: transparent;
-            cursor: default;
-        }
-
-        .day.weekend {
-            background: var(--color-weekend);
-            color: var(--text-muted);
-            cursor: default;
-        }
-
-        .day.holiday {
-            background: var(--color-holiday);
-            color: #fff;
-            font-weight: 600;
-            cursor: default;
-        }
-
-        .day.nine80 {
-            background: var(--color-nine80);
-            color: #fff;
-            font-weight: 600;
-            cursor: default;
-        }
-
-        /* Holiday + 9/80 overlap with diagonal split */
-        .day.holiday-nine80 {
-            background: linear-gradient(135deg, var(--color-holiday) 50%, var(--color-nine80) 50%);
-            color: #fff;
-            font-weight: 600;
-            cursor: default;
-        }
-
-        .day.past {
-            opacity: 0.4;
-        }
-
+        .day.empty { background: transparent; cursor: default; }
+        .day.weekend { background: var(--color-weekend); color: var(--text-muted); cursor: default; }
+        .day.holiday { background: var(--color-holiday); color: #fff; font-weight: 600; cursor: default; }
+        .day.nine80 { background: var(--color-nine80); color: #fff; font-weight: 600; cursor: default; }
+        .day.holiday-nine80 { background: linear-gradient(135deg, var(--color-holiday) 50%, var(--color-nine80) 50%); color: #fff; font-weight: 600; cursor: default; }
+        .day.past { opacity: 0.4; }
         .day.pto-selected { background: var(--color-pto); color: #fff; font-weight: 600; }
         .day.activism-selected { background: var(--color-activism); color: #fff; font-weight: 600; }
         .day.personal-selected { background: var(--color-personal); color: #fff; font-weight: 600; }
         .day.wellness-selected { background: var(--color-wellness); color: #fff; font-weight: 600; }
-
-        .day.today {
-            box-shadow: 0 0 0 2px var(--accent-highlight);
-        }
+        .day.today { box-shadow: 0 0 0 2px var(--accent-highlight); }
 
         .day .tooltip {
             display: none;
@@ -962,140 +509,280 @@
             transform: translateX(-50%);
             background: var(--text-primary);
             color: var(--bg-primary);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
             white-space: nowrap;
             z-index: 100;
-            margin-bottom: 6px;
-            pointer-events: none;
+            margin-bottom: 4px;
         }
 
-        .day:hover .tooltip {
-            display: block;
-        }
-
+        .day:hover .tooltip { display: block; }
         .day .hours-badge {
             position: absolute;
-            bottom: 2px;
-            right: 2px;
-            font-size: 8px;
+            bottom: 1px;
+            right: 1px;
+            font-size: 7px;
             font-weight: 600;
             background: rgba(0,0,0,0.3);
             color: #fff;
-            padding: 1px 3px;
-            border-radius: 3px;
+            padding: 1px 2px;
+            border-radius: 2px;
         }
 
-        /* Summary Row */
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
-        }
-
-        .summary-row:last-child {
-            border-bottom: none;
-        }
-
-        .summary-row .label {
-            color: var(--text-secondary);
-        }
-
-        .summary-row .value {
-            font-weight: 600;
-        }
-
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
+        /* Mobile Bottom Navigation */
+        .bottom-nav {
             display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-primary);
+            border-top: 1px solid var(--border-color);
+            z-index: 100;
+            padding: 8px 0;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
+        }
+
+        @media (max-width: 900px) {
+            .bottom-nav { display: flex; }
+        }
+
+        .nav-items { display: flex; justify-content: space-around; width: 100%; }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 4px 12px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 500;
+            border: none;
+            background: none;
+        }
+        .nav-item.active { color: var(--accent-primary); }
+        .nav-item svg { width: 22px; height: 22px; }
+
+        /* Mobile Tab Content */
+        .mobile-tab { display: none; padding: 16px; }
+        .mobile-tab.active { display: block; }
+
+        /* Mobile Year View */
+        .year-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 400px) {
+            .year-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .mini-month {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .mini-month:active { transform: scale(0.98); }
+        .mini-month-title { font-size: 11px; font-weight: 600; text-align: center; margin-bottom: 4px; }
+        .mini-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+        .mini-day {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 2px;
+            font-size: 6px;
+        }
+        .mini-day.empty { background: transparent; }
+        .mini-day.weekend { background: var(--color-weekend); }
+        .mini-day.holiday { background: var(--color-holiday); }
+        .mini-day.nine80 { background: var(--color-nine80); }
+        .mini-day.holiday-nine80 { background: linear-gradient(135deg, var(--color-holiday) 50%, var(--color-nine80) 50%); }
+        .mini-day.pto-selected { background: var(--color-pto); }
+        .mini-day.activism-selected { background: var(--color-activism); }
+        .mini-day.personal-selected { background: var(--color-personal); }
+        .mini-day.wellness-selected { background: var(--color-wellness); }
+        .mini-day.today { box-shadow: inset 0 0 0 1px var(--accent-highlight); }
+
+        /* Mobile Month View */
+        .month-swiper { overflow: hidden; position: relative; }
+        .month-swiper-track { display: flex; transition: transform 0.3s ease-out; }
+        .month-swiper-slide { flex: 0 0 100%; padding: 0 4px; }
+        .swipe-hint { text-align: center; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+        .month-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .month-nav-btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        .month-nav-title { font-size: 16px; font-weight: 600; }
+
+        /* Mobile Stats */
+        .mobile-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+        .mobile-stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .mobile-stat-card .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+        .mobile-stat-card .value { font-size: 20px; font-weight: 600; margin: 4px 0; }
+        .mobile-stat-card .detail { font-size: 10px; color: var(--text-secondary); }
+        .mobile-stat-card.pto { border-top: 3px solid var(--color-pto); }
+        .mobile-stat-card.activism { border-top: 3px solid var(--color-activism); }
+        .mobile-stat-card.personal { border-top: 3px solid var(--color-personal); }
+        .mobile-stat-card.wellness { border-top: 3px solid var(--color-wellness); }
+        .mobile-stat-card.work { border-top: 3px solid var(--accent-primary); }
+
+        /* Mobile Settings */
+        .settings-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+        .settings-section-title { font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+
+        /* FAB */
+        .fab {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
             background: var(--accent-primary);
             color: #fff;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             cursor: pointer;
+            z-index: 90;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 900px) {
+            .fab { display: flex; }
+        }
+
+        .fab svg { width: 24px; height: 24px; }
+
+        .fab-menu {
+            display: none;
+            position: fixed;
+            bottom: 145px;
+            right: 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 90;
+            overflow: hidden;
+        }
+
+        .fab-menu.open { display: block; }
+        .fab-menu-item {
+            display: block;
             width: 100%;
-            margin-bottom: 16px;
+            padding: 12px 16px;
+            border: none;
+            background: none;
+            text-align: left;
+            font-size: 13px;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+        .fab-menu-item:hover { background: var(--bg-secondary); }
+        .fab-menu-item.danger { color: var(--color-danger); }
+
+        /* Mobile type selector */
+        .mobile-type-bar {
+            display: flex;
+            gap: 6px;
+            padding: 8px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
         }
 
-        @media (max-width: 1024px) {
-            .mobile-menu-toggle {
-                display: block;
-            }
-
-            .sidebar.collapsed .section:not(:first-child) {
-                display: none;
-            }
+        .mobile-type-btn {
+            flex: 0 0 auto;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 2px solid transparent;
+            cursor: pointer;
+            color: #000;
+            white-space: nowrap;
         }
+
+        .mobile-type-btn.pto { background: var(--color-pto); }
+        .mobile-type-btn.activism { background: var(--color-activism); }
+        .mobile-type-btn.personal { background: var(--color-personal); }
+        .mobile-type-btn.wellness { background: var(--color-wellness); }
+        .mobile-type-btn.active { border-color: var(--text-primary); }
     </style>
 </head>
 <body data-theme="light-default">
     <header class="header">
         <h1>Time Off Optimizer</h1>
         <div class="header-controls">
-            <div class="theme-selector">
-                <label>Theme:</label>
-                <select id="themeSelect" onchange="changeTheme(this.value)">
-                    <optgroup label="Light">
-                        <option value="light-default" selected>Light - Default</option>
-                        <option value="light-minimal">Light - Minimal</option>
-                        <option value="light-coastal">Light - Coastal</option>
-                        <option value="light-bold">Light - Bold</option>
-                    </optgroup>
-                    <optgroup label="Dark">
-                        <option value="dark-default">Dark - Default</option>
-                        <option value="dark-minimal">Dark - Minimal</option>
-                        <option value="dark-coastal">Dark - Coastal</option>
-                        <option value="dark-bold">Dark - Bold</option>
-                    </optgroup>
-                </select>
-            </div>
+            <select class="theme-select" id="themeSelect" onchange="changeTheme(this.value)">
+                <optgroup label="Light">
+                    <option value="light-default">Default</option>
+                    <option value="light-minimal">Minimal</option>
+                    <option value="light-coastal">Coastal</option>
+                    <option value="light-bold">Bold</option>
+                </optgroup>
+                <optgroup label="Dark">
+                    <option value="dark-default">Dark</option>
+                    <option value="dark-minimal">Dark Minimal</option>
+                    <option value="dark-coastal">Dark Coastal</option>
+                    <option value="dark-bold">Dark Bold</option>
+                </optgroup>
+            </select>
+            <button class="save-btn" onclick="saveAndShare()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+                Save
+            </button>
         </div>
     </header>
 
-    <div class="main-layout">
-        <aside class="sidebar" id="sidebar">
-            <button class="mobile-menu-toggle" onclick="toggleSidebar()">
-                <span id="menuText">Show Settings</span>
-            </button>
+    <div class="toast" id="toast"></div>
 
-            <!-- Time Off Type Selector -->
+    <!-- Desktop Layout -->
+    <div class="desktop-layout">
+        <aside class="sidebar" id="sidebar">
             <div class="section">
                 <div class="section-title">Select Time Off Type</div>
                 <div class="type-selector">
-                    <button class="type-btn pto active" onclick="setTimeOffType('pto')">
-                        PTO
-                        <span class="avail" id="ptoAvailDisplay">0h</span>
-                    </button>
-                    <button class="type-btn activism" onclick="setTimeOffType('activism')">
-                        Activism
-                        <span class="avail" id="activismAvailDisplay">0h</span>
-                    </button>
-                    <button class="type-btn personal" onclick="setTimeOffType('personal')">
-                        Personal
-                        <span class="avail" id="personalAvailDisplay">0 days</span>
-                    </button>
-                    <button class="type-btn wellness" onclick="setTimeOffType('wellness')">
-                        Wellness
-                        <span class="avail" id="wellnessAvailDisplay">0h</span>
-                    </button>
+                    <button class="type-btn pto active" onclick="setTimeOffType('pto')">PTO<span class="avail" id="ptoAvailDisplay">0h</span></button>
+                    <button class="type-btn activism" onclick="setTimeOffType('activism')">Activism<span class="avail" id="activismAvailDisplay">0h</span></button>
+                    <button class="type-btn personal" onclick="setTimeOffType('personal')">Personal<span class="avail" id="personalAvailDisplay">0d</span></button>
+                    <button class="type-btn wellness" onclick="setTimeOffType('wellness')">Wellness<span class="avail" id="wellnessAvailDisplay">0h</span></button>
                 </div>
             </div>
 
-            <!-- Settings -->
             <div class="section">
                 <div class="collapsible-header" onclick="toggleSection('settingsContent', this)">
-                    <span class="section-title" style="margin-bottom: 0;">Settings</span>
+                    <span class="section-title" style="margin-bottom:0">Settings</span>
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="settingsContent" class="collapsible-content open">
-                    <div class="input-row" style="margin-top: 12px;">
+                    <div class="input-row" style="margin-top:10px">
                         <div class="input-group">
                             <label>Year</label>
                             <select id="year" onchange="regenerate()"></select>
@@ -1113,77 +800,43 @@
                     </div>
                     <div id="customPtoFields" class="custom-pto-fields">
                         <div class="input-row">
-                            <div class="input-group">
-                                <label>PTO per Paycheck</label>
-                                <input type="number" id="customPtoPerPaycheck" step="0.01" value="3.07" onchange="applyCustomPto()">
-                            </div>
-                            <div class="input-group">
-                                <label>Max Cap</label>
-                                <input type="number" id="customMaxPto" step="1" value="120" onchange="applyCustomPto()">
-                            </div>
+                            <div class="input-group"><label>PTO/Paycheck</label><input type="number" id="customPtoPerPaycheck" step="0.01" value="3.07" onchange="applyCustomPto()"></div>
+                            <div class="input-group"><label>Max Cap</label><input type="number" id="customMaxPto" value="120" onchange="applyCustomPto()"></div>
                         </div>
                     </div>
                     <div class="input-row">
-                        <div class="input-group">
-                            <label>First Paycheck of Year</label>
-                            <input type="date" id="nextPaycheck" onchange="regenerate()">
-                        </div>
-                        <div class="input-group">
-                            <label>First 9/80 Friday of Year</label>
-                            <input type="date" id="next980Friday" onchange="regenerate()">
-                        </div>
+                        <div class="input-group"><label>First Paycheck</label><input type="date" id="nextPaycheck" onchange="regenerate()"></div>
+                        <div class="input-group"><label>First 9/80 Friday</label><input type="date" id="next980Friday" onchange="regenerate()"></div>
                     </div>
-                    <div class="input-group">
-                        <label>End-of-Year PTO Goal (optional)</label>
-                        <input type="number" id="yearEndGoal" placeholder="Target balance" onchange="recalculate()">
-                    </div>
+                    <div class="input-group"><label>Year-End PTO Goal</label><input type="number" id="yearEndGoal" placeholder="Optional" onchange="recalculate()"></div>
                 </div>
             </div>
 
-            <!-- Balances -->
             <div class="section">
                 <div class="collapsible-header" onclick="toggleSection('balancesContent', this)">
-                    <span class="section-title" style="margin-bottom: 0;">Current Balances</span>
+                    <span class="section-title" style="margin-bottom:0">Current Balances</span>
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="balancesContent" class="collapsible-content open">
-                    <div style="margin-top: 12px;">
-                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 8px;">PTO / Vacation</label>
+                    <div style="margin-top:10px">
+                        <label style="font-size:10px;color:var(--text-muted)">PTO / Vacation</label>
                         <div class="input-row-3">
-                            <div class="input-group">
-                                <label>Current</label>
-                                <input type="number" id="currentPto" step="0.01" value="0" onchange="recalculate()">
-                            </div>
-                            <div class="input-group">
-                                <label>Per Paycheck</label>
-                                <input type="number" id="ptoPerPaycheck" value="3.07" readonly>
-                            </div>
-                            <div class="input-group">
-                                <label>Max Cap</label>
-                                <input type="number" id="maxPto" value="120" readonly>
-                            </div>
+                            <div class="input-group"><label>Current</label><input type="number" id="currentPto" step="0.01" value="0" onchange="recalculate()"></div>
+                            <div class="input-group"><label>Per Pay</label><input type="number" id="ptoPerPaycheck" value="3.07" readonly></div>
+                            <div class="input-group"><label>Max</label><input type="number" id="maxPto" value="120" readonly></div>
                         </div>
                     </div>
-
-                    <div style="margin-top: 12px;">
-                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 8px;">Activism (18 hrs/year)</label>
+                    <div style="margin-top:8px">
+                        <label style="font-size:10px;color:var(--text-muted)">Activism (18h/yr)</label>
                         <div class="input-row">
-                            <div class="input-group">
-                                <label>Current Balance</label>
-                                <input type="number" id="currentActivism" step="0.01" value="0" min="0" max="18" onchange="recalculate()">
-                            </div>
-                            <div class="input-group">
-                                <label>Yearly Allowance</label>
-                                <input type="number" value="18" readonly>
-                            </div>
+                            <div class="input-group"><label>Current</label><input type="number" id="currentActivism" step="0.01" value="0" min="0" max="18" onchange="recalculate()"></div>
+                            <div class="input-group"><label>Yearly</label><input type="number" value="18" readonly></div>
                         </div>
                     </div>
-
-                    <div style="margin-top: 12px;">
-                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 8px;">Personal Days (5 days/year)</label>
+                    <div style="margin-top:8px">
+                        <label style="font-size:10px;color:var(--text-muted)">Personal Days (5/yr)</label>
                         <div class="input-row">
-                            <div class="input-group">
-                                <label>Current Days</label>
+                            <div class="input-group"><label>Current</label>
                                 <select id="currentPersonal" onchange="recalculate()">
                                     <option value="0" selected>0 days</option>
                                     <option value="1">1 day</option>
@@ -1193,45 +846,30 @@
                                     <option value="5">5 days</option>
                                 </select>
                             </div>
-                            <div class="input-group">
-                                <label>Max Per Year</label>
-                                <input type="text" value="5 days" readonly>
-                            </div>
+                            <div class="input-group"><label>Max</label><input type="text" value="5 days" readonly></div>
                         </div>
                     </div>
-
-                    <div style="margin-top: 12px;">
-                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 8px;">Wellness / Sick</label>
+                    <div style="margin-top:8px">
+                        <label style="font-size:10px;color:var(--text-muted)">Wellness / Sick</label>
                         <div class="input-row-3">
-                            <div class="input-group">
-                                <label>Current</label>
-                                <input type="number" id="currentWellness" step="0.01" value="0" onchange="recalculate()">
-                            </div>
-                            <div class="input-group">
-                                <label>Per Paycheck</label>
-                                <input type="text" value="2.76" readonly>
-                            </div>
-                            <div class="input-group">
-                                <label>Max Rollover</label>
-                                <input type="text" value="108" readonly>
-                            </div>
+                            <div class="input-group"><label>Current</label><input type="number" id="currentWellness" step="0.01" value="0" onchange="recalculate()"></div>
+                            <div class="input-group"><label>Per Pay</label><input type="text" value="2.76" readonly></div>
+                            <div class="input-group"><label>Max</label><input type="text" value="108" readonly></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Holidays -->
             <div class="section">
                 <div class="collapsible-header" onclick="toggleSection('holidaysContent', this)">
-                    <span class="section-title" style="margin-bottom: 0;">Your Holidays</span>
+                    <span class="section-title" style="margin-bottom:0">Holidays</span>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div id="holidaysContent" class="collapsible-content">
-                    <div class="holiday-list" id="holidayCheckboxes" style="margin-top: 12px;"></div>
+                    <div class="holiday-list" id="holidayCheckboxes" style="margin-top:10px"></div>
                 </div>
             </div>
 
-            <!-- Projected Balances -->
             <div class="section">
                 <div class="section-title">Projected Year-End</div>
                 <div class="stat-card" id="statBoxPto">
@@ -1240,169 +878,203 @@
                     <div class="stat-detail" id="ptoDetail">-</div>
                 </div>
                 <div class="balance-grid">
-                    <div class="balance-card activism">
-                        <div class="label">Activism</div>
-                        <div class="value" id="projectedActivism">0h</div>
-                        <div class="detail" id="activismDetail">-</div>
-                    </div>
-                    <div class="balance-card personal">
-                        <div class="label">Personal</div>
-                        <div class="value" id="projectedPersonal">0</div>
-                        <div class="detail" id="personalDetail">-</div>
-                    </div>
-                    <div class="balance-card wellness">
-                        <div class="label">Wellness</div>
-                        <div class="value" id="projectedWellness">0h</div>
-                        <div class="detail" id="wellnessDetail">-</div>
-                    </div>
-                    <div class="balance-card pto">
-                        <div class="label">Work Days Off</div>
-                        <div class="value" id="countWorkDaysOff">0</div>
-                        <div class="detail" id="totalDaysDetail">-</div>
-                    </div>
+                    <div class="balance-card activism"><div class="label">Activism</div><div class="value" id="projectedActivism">0h</div><div class="detail" id="activismDetail">-</div></div>
+                    <div class="balance-card personal"><div class="label">Personal</div><div class="value" id="projectedPersonal">0</div><div class="detail" id="personalDetail">-</div></div>
+                    <div class="balance-card wellness"><div class="label">Wellness</div><div class="value" id="projectedWellness">0h</div><div class="detail" id="wellnessDetail">-</div></div>
+                    <div class="balance-card pto"><div class="label">Work Days Off</div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
                 </div>
             </div>
 
-            <!-- Quick Select -->
             <div class="section">
                 <div class="section-title">Quick Select</div>
-
                 <div class="quick-section">
                     <div class="quick-section-title">Combos</div>
                     <div class="quick-actions">
-                        <button class="quick-btn accent" onclick="selectAllType('mega')">Mega Combos</button>
-                        <button class="quick-btn accent" onclick="selectAllType('super')">Super Combos</button>
-                        <button class="quick-btn" onclick="selectAllType('4day')">4-Day Weekends</button>
+                        <button class="quick-btn accent" onclick="selectAllType('mega')">Mega</button>
+                        <button class="quick-btn accent" onclick="selectAllType('super')">Super</button>
+                        <button class="quick-btn" onclick="selectAllType('4day')">4-Day</button>
                     </div>
                 </div>
-
                 <div class="quick-section">
                     <div class="quick-section-title">Fridays</div>
                     <div class="quick-actions">
-                        <button class="quick-btn" onclick="selectAllType('allFridays')">Every Friday Off</button>
-                        <button class="quick-btn" onclick="selectAllType('summer')">Summer Fridays</button>
+                        <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
+                        <button class="quick-btn" onclick="selectAllType('summer')">Summer</button>
                     </div>
                 </div>
-
-                <div class="quick-section" id="twoForFiveSection">
-                    <div class="quick-section-title">2 for 5 Fridays (by month)</div>
-                    <div class="quick-actions" id="twoForFiveButtons"></div>
-                </div>
-
-                <div class="quick-section" id="threeForFiveSection">
-                    <div class="quick-section-title">3 for 5 Fridays (by month)</div>
-                    <div class="quick-actions" id="threeForFiveButtons"></div>
-                </div>
-
-                <div class="quick-section">
-                    <div class="quick-actions">
-                        <button class="quick-btn clear" onclick="clearAllSelections()">Clear All Selections</button>
-                    </div>
-                </div>
+                <div class="quick-section" id="twoForFiveSection"><div class="quick-section-title">2 for 5 Fridays</div><div class="quick-actions" id="twoForFiveButtons"></div></div>
+                <div class="quick-section" id="threeForFiveSection"><div class="quick-section-title">3 for 5 Fridays</div><div class="quick-actions" id="threeForFiveButtons"></div></div>
+                <div class="quick-section"><div class="quick-actions"><button class="quick-btn clear" onclick="clearAllSelections()">Clear All</button></div></div>
             </div>
 
-            <!-- Opportunities -->
             <div class="section">
                 <div class="collapsible-header" onclick="toggleSection('opportunitiesContent', this)">
-                    <span class="section-title" style="margin-bottom: 0;">Opportunities</span>
+                    <span class="section-title" style="margin-bottom:0">Opportunities</span>
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="opportunitiesContent" class="collapsible-content open">
-                    <div class="opportunity-list" id="opportunityList" style="margin-top: 12px;"></div>
+                    <div class="opportunity-list" id="opportunityList" style="margin-top:10px"></div>
                 </div>
             </div>
         </aside>
 
         <main class="content-area">
-            <div class="info-card">
-                <h3>How to Use</h3>
-                <ul>
-                    <li><strong>Select a time-off type</strong> above, then click calendar days to toggle</li>
-                    <li><strong>Past dates</strong> are dimmed and don't affect balance calculations</li>
-                    <li><strong>Mega Combos</strong> = Super Combo + Friday before + Monday after</li>
-                    <li><strong>Personal days</strong> count as 1 day regardless of day of week</li>
-                </ul>
-            </div>
-
             <div class="chart-section">
                 <h3>PTO Balance Projection</h3>
                 <div class="projection-chart" id="projectionChart"></div>
                 <div class="chart-data-table" id="ptoDataTable"></div>
             </div>
-
             <div class="chart-section">
                 <h3>Wellness Balance Projection</h3>
                 <div class="projection-chart" id="wellnessProjectionChart"></div>
                 <div class="chart-data-table" id="wellnessDataTable"></div>
             </div>
-
-            <div class="chart-section">
-                <h3>Activism & Personal by Pay Period</h3>
-                <div class="chart-data-table" id="otherDataTable"></div>
-            </div>
-
             <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background: var(--color-weekend);"></div>
-                    <span>Weekend</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: var(--color-holiday);"></div>
-                    <span>Holiday</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: var(--color-nine80);"></div>
-                    <span>9/80 Friday</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color split"></div>
-                    <span>Holiday + 9/80</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: var(--color-pto);"></div>
-                    <span>PTO</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: var(--color-activism);"></div>
-                    <span>Activism</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: var(--color-personal);"></div>
-                    <span>Personal</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: var(--color-wellness);"></div>
-                    <span>Wellness</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="box-shadow: 0 0 0 2px var(--accent-highlight);"></div>
-                    <span>Today</span>
-                </div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-weekend)"></div><span>Weekend</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-holiday)"></div><span>Holiday</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-nine80)"></div><span>9/80</span></div>
+                <div class="legend-item"><div class="legend-color split"></div><span>Holiday+9/80</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-pto)"></div><span>PTO</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-activism)"></div><span>Activism</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-personal)"></div><span>Personal</span></div>
+                <div class="legend-item"><div class="legend-color" style="background:var(--color-wellness)"></div><span>Wellness</span></div>
             </div>
-
             <div class="calendar-container" id="calendarContainer"></div>
         </main>
     </div>
 
+    <!-- Mobile Layout -->
+    <div class="mobile-layout">
+        <div class="mobile-type-bar" id="mobileTypeBar">
+            <button class="mobile-type-btn pto active" onclick="setTimeOffType('pto')">PTO</button>
+            <button class="mobile-type-btn activism" onclick="setTimeOffType('activism')">Activism</button>
+            <button class="mobile-type-btn personal" onclick="setTimeOffType('personal')">Personal</button>
+            <button class="mobile-type-btn wellness" onclick="setTimeOffType('wellness')">Wellness</button>
+        </div>
+
+        <div id="mobileYearTab" class="mobile-tab active">
+            <div class="year-grid" id="yearGrid"></div>
+        </div>
+
+        <div id="mobileMonthTab" class="mobile-tab">
+            <div class="month-nav">
+                <button class="month-nav-btn" onclick="prevMonth()">← Prev</button>
+                <span class="month-nav-title" id="currentMonthTitle">January</span>
+                <button class="month-nav-btn" onclick="nextMonth()">Next →</button>
+            </div>
+            <div id="mobileMonthCalendar"></div>
+        </div>
+
+        <div id="mobileStatsTab" class="mobile-tab">
+            <div class="mobile-stats-grid">
+                <div class="mobile-stat-card pto"><div class="label">PTO</div><div class="value" id="mProjPto">0h</div><div class="detail" id="mPtoDetail">-</div></div>
+                <div class="mobile-stat-card activism"><div class="label">Activism</div><div class="value" id="mProjActivism">0h</div><div class="detail" id="mActivismDetail">-</div></div>
+                <div class="mobile-stat-card personal"><div class="label">Personal</div><div class="value" id="mProjPersonal">0d</div><div class="detail" id="mPersonalDetail">-</div></div>
+                <div class="mobile-stat-card wellness"><div class="label">Wellness</div><div class="value" id="mProjWellness">0h</div><div class="detail" id="mWellnessDetail">-</div></div>
+                <div class="mobile-stat-card work"><div class="label">Work Days Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">-</div></div>
+            </div>
+            <div class="quick-section">
+                <div class="quick-section-title">Quick Actions</div>
+                <div class="quick-actions">
+                    <button class="quick-btn accent" onclick="selectAllType('mega')">Mega Combos</button>
+                    <button class="quick-btn accent" onclick="selectAllType('super')">Super Combos</button>
+                    <button class="quick-btn" onclick="selectAllType('4day')">4-Day Weekends</button>
+                    <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
+                </div>
+            </div>
+            <div class="opportunity-list" id="mobileOpportunityList" style="margin-top:16px"></div>
+        </div>
+
+        <div id="mobileSettingsTab" class="mobile-tab">
+            <div class="settings-section">
+                <div class="settings-section-title">General</div>
+                <div class="input-row">
+                    <div class="input-group"><label>Year</label><select id="mYear" onchange="document.getElementById('year').value=this.value;regenerate()"></select></div>
+                    <div class="input-group"><label>Service Years</label>
+                        <select id="mYearsOfService" onchange="document.getElementById('yearsOfService').value=this.value;applyServicePreset()">
+                            <option value="0-3" selected>0-3 yrs</option>
+                            <option value="4-6">4-6 yrs</option>
+                            <option value="7-9">7-9 yrs</option>
+                            <option value="10+">10+ yrs</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group"><label>First Paycheck</label><input type="date" id="mNextPaycheck" onchange="document.getElementById('nextPaycheck').value=this.value;regenerate()"></div>
+                    <div class="input-group"><label>First 9/80 Fri</label><input type="date" id="mNext980Friday" onchange="document.getElementById('next980Friday').value=this.value;regenerate()"></div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title">Current Balances</div>
+                <div class="input-row">
+                    <div class="input-group"><label>PTO Hours</label><input type="number" id="mCurrentPto" step="0.01" value="0" onchange="document.getElementById('currentPto').value=this.value;recalculate()"></div>
+                    <div class="input-group"><label>Activism</label><input type="number" id="mCurrentActivism" step="0.01" value="0" onchange="document.getElementById('currentActivism').value=this.value;recalculate()"></div>
+                </div>
+                <div class="input-row">
+                    <div class="input-group"><label>Personal Days</label>
+                        <select id="mCurrentPersonal" onchange="document.getElementById('currentPersonal').value=this.value;recalculate()">
+                            <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="input-group"><label>Wellness</label><input type="number" id="mCurrentWellness" step="0.01" value="0" onchange="document.getElementById('currentWellness').value=this.value;recalculate()"></div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title">Holidays</div>
+                <div class="holiday-list" id="mHolidayCheckboxes"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <button class="nav-item active" onclick="switchMobileTab('year', this)">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                Year
+            </button>
+            <button class="nav-item" onclick="switchMobileTab('month', this)">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+                Month
+            </button>
+            <button class="nav-item" onclick="switchMobileTab('stats', this)">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+                Stats
+            </button>
+            <button class="nav-item" onclick="switchMobileTab('settings', this)">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                Settings
+            </button>
+        </div>
+    </nav>
+
+    <!-- FAB -->
+    <button class="fab" id="fab" onclick="toggleFabMenu()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <div class="fab-menu" id="fabMenu">
+        <button class="fab-menu-item" onclick="selectAllType('mega');closeFabMenu()">Add Mega Combos</button>
+        <button class="fab-menu-item" onclick="selectAllType('super');closeFabMenu()">Add Super Combos</button>
+        <button class="fab-menu-item" onclick="selectAllType('4day');closeFabMenu()">Add 4-Day Weekends</button>
+        <button class="fab-menu-item danger" onclick="clearAllSelections();closeFabMenu()">Clear All</button>
+    </div>
+
     <script>
-        // Global state
+        // State
         let state = {
             year: new Date().getFullYear(),
             holidays: {},
             nine80Fridays: {},
             paycheckDates: [],
-            selectedDays: {
-                pto: new Set(),
-                activism: new Set(),
-                personal: new Set(),
-                wellness: new Set()
-            },
+            selectedDays: { pto: new Set(), activism: new Set(), personal: new Set(), wellness: new Set() },
             currentTimeOffType: 'pto',
             opportunities: [],
             selectedOpportunities: new Set(),
             twoForFiveMonths: [],
             threeForFiveMonths: [],
-            allThreeForFiveMonths: [] // Includes past months for display
+            allThreeForFiveMonths: [],
+            currentMobileMonth: new Date().getMonth()
         };
 
         const SERVICE_PRESETS = {
@@ -1427,21 +1099,101 @@
             { id: 'christmas', name: "Christmas Day", default: true }
         ];
 
-        const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
-                           'July', 'August', 'September', 'October', 'November', 'December'];
+        const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        // Theme change
+        // URL State Management
+        function encodeState() {
+            const data = {
+                y: state.year,
+                pp: document.getElementById('nextPaycheck').value,
+                ff: document.getElementById('next980Friday').value,
+                yos: document.getElementById('yearsOfService').value,
+                cp: document.getElementById('currentPto').value,
+                ca: document.getElementById('currentActivism').value,
+                cpr: document.getElementById('currentPersonal').value,
+                cw: document.getElementById('currentWellness').value,
+                g: document.getElementById('yearEndGoal').value,
+                h: ALL_HOLIDAYS.filter(h => document.getElementById(`holiday_${h.id}`)?.checked).map(h => h.id),
+                pto: [...state.selectedDays.pto],
+                act: [...state.selectedDays.activism],
+                per: [...state.selectedDays.personal],
+                wel: [...state.selectedDays.wellness],
+                t: document.body.getAttribute('data-theme')
+            };
+            if (document.getElementById('yearsOfService').value === 'custom') {
+                data.cpp = document.getElementById('customPtoPerPaycheck').value;
+                data.cmp = document.getElementById('customMaxPto').value;
+            }
+            return btoa(JSON.stringify(data));
+        }
+
+        function decodeState(encoded) {
+            try {
+                const data = JSON.parse(atob(encoded));
+                if (data.y) document.getElementById('year').value = data.y;
+                if (data.pp) document.getElementById('nextPaycheck').value = data.pp;
+                if (data.ff) document.getElementById('next980Friday').value = data.ff;
+                if (data.yos) document.getElementById('yearsOfService').value = data.yos;
+                if (data.cp) document.getElementById('currentPto').value = data.cp;
+                if (data.ca) document.getElementById('currentActivism').value = data.ca;
+                if (data.cpr) document.getElementById('currentPersonal').value = data.cpr;
+                if (data.cw) document.getElementById('currentWellness').value = data.cw;
+                if (data.g) document.getElementById('yearEndGoal').value = data.g;
+                if (data.t) { document.body.setAttribute('data-theme', data.t); document.getElementById('themeSelect').value = data.t; }
+                if (data.cpp) document.getElementById('customPtoPerPaycheck').value = data.cpp;
+                if (data.cmp) document.getElementById('customMaxPto').value = data.cmp;
+
+                ALL_HOLIDAYS.forEach(h => {
+                    const cb = document.getElementById(`holiday_${h.id}`);
+                    if (cb) cb.checked = data.h ? data.h.includes(h.id) : h.default;
+                });
+
+                applyServicePreset();
+                regenerate();
+
+                if (data.pto) data.pto.forEach(d => state.selectedDays.pto.add(d));
+                if (data.act) data.act.forEach(d => state.selectedDays.activism.add(d));
+                if (data.per) data.per.forEach(d => state.selectedDays.personal.add(d));
+                if (data.wel) data.wel.forEach(d => state.selectedDays.wellness.add(d));
+
+                renderCalendar();
+                renderMobileYearView();
+                renderMobileMonth();
+                recalculate();
+                return true;
+            } catch (e) {
+                console.error('Failed to decode state:', e);
+                return false;
+            }
+        }
+
+        function saveAndShare() {
+            const encoded = encodeState();
+            const url = `${window.location.origin}${window.location.pathname}#${encoded}`;
+
+            history.replaceState(null, '', `#${encoded}`);
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('Link copied! Share it to access from any device.');
+                });
+            } else {
+                showToast('URL updated. Copy from address bar.');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Theme
         function changeTheme(theme) {
             document.body.setAttribute('data-theme', theme);
             localStorage.setItem('preferredTheme', theme);
-        }
-
-        // Mobile sidebar toggle
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const menuText = document.getElementById('menuText');
-            sidebar.classList.toggle('collapsed');
-            menuText.textContent = sidebar.classList.contains('collapsed') ? 'Show Settings' : 'Hide Settings';
         }
 
         // Helper functions
@@ -1491,31 +1243,14 @@
             }
         }
 
-        function dateKey(date) {
-            return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-        }
-
-        function formatShortDate(date) {
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        }
-
-        function getHoursForDay(date) {
-            const day = date.getDay();
-            if (day === 0 || day === 6) return 0;
-            if (day === 5) return 8;
-            return 9;
-        }
-
-        function isPastDate(key) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const date = new Date(key + 'T12:00:00');
-            return date < today;
-        }
+        function dateKey(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; }
+        function formatShortDate(date) { return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+        function getHoursForDay(date) { const day = date.getDay(); if (day === 0 || day === 6) return 0; if (day === 5) return 8; return 9; }
+        function isPastDate(key) { const today = new Date(); today.setHours(0,0,0,0); return new Date(key + 'T12:00:00') < today; }
 
         function setTimeOffType(type) {
             state.currentTimeOffType = type;
-            document.querySelectorAll('.type-btn').forEach(btn => {
+            document.querySelectorAll('.type-btn, .mobile-type-btn').forEach(btn => {
                 btn.classList.remove('active');
                 if (btn.classList.contains(type)) btn.classList.add('active');
             });
@@ -1524,7 +1259,6 @@
         function applyServicePreset() {
             const preset = document.getElementById('yearsOfService').value;
             const customFields = document.getElementById('customPtoFields');
-
             if (preset === 'custom') {
                 customFields.classList.add('visible');
                 applyCustomPto();
@@ -1539,10 +1273,8 @@
         }
 
         function applyCustomPto() {
-            const customPtoPerPaycheck = parseFloat(document.getElementById('customPtoPerPaycheck').value) || 0;
-            const customMaxPto = parseFloat(document.getElementById('customMaxPto').value) || 0;
-            document.getElementById('ptoPerPaycheck').value = customPtoPerPaycheck;
-            document.getElementById('maxPto').value = customMaxPto;
+            document.getElementById('ptoPerPaycheck').value = document.getElementById('customPtoPerPaycheck').value;
+            document.getElementById('maxPto').value = document.getElementById('customMaxPto').value;
             recalculate();
         }
 
@@ -1553,164 +1285,136 @@
             icon.classList.toggle('open');
         }
 
+        // Mobile navigation
+        function switchMobileTab(tab, btnEl) {
+            document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(`mobile${tab.charAt(0).toUpperCase() + tab.slice(1)}Tab`).classList.add('active');
+            btnEl.classList.add('active');
+            if (tab === 'month') renderMobileMonth();
+        }
+
+        function prevMonth() { state.currentMobileMonth = Math.max(0, state.currentMobileMonth - 1); renderMobileMonth(); }
+        function nextMonth() { state.currentMobileMonth = Math.min(11, state.currentMobileMonth + 1); renderMobileMonth(); }
+
+        function toggleFabMenu() { document.getElementById('fabMenu').classList.toggle('open'); }
+        function closeFabMenu() { document.getElementById('fabMenu').classList.remove('open'); }
+
         // Initialize
         function init() {
-            // Load saved theme
             const savedTheme = localStorage.getItem('preferredTheme');
-            if (savedTheme) {
-                document.body.setAttribute('data-theme', savedTheme);
-                document.getElementById('themeSelect').value = savedTheme;
-            }
+            if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); document.getElementById('themeSelect').value = savedTheme; }
 
-            const yearSelect = document.getElementById('year');
             const currentYear = new Date().getFullYear();
-            for (let y = currentYear - 1; y <= currentYear + 2; y++) {
-                const option = document.createElement('option');
-                option.value = y;
-                option.textContent = y;
-                if (y === currentYear) option.selected = true;
-                yearSelect.appendChild(option);
-            }
-
-            const year = new Date().getFullYear();
-            document.getElementById('nextPaycheck').value = `${year}-01-08`;
-            document.getElementById('next980Friday').value = `${year}-01-09`;
-
-            const container = document.getElementById('holidayCheckboxes');
-            ALL_HOLIDAYS.forEach(h => {
-                const label = document.createElement('label');
-                label.className = 'holiday-item';
-                label.innerHTML = `
-                    <input type="checkbox" id="holiday_${h.id}" ${h.default ? 'checked' : ''} onchange="regenerate()">
-                    <span>${h.name}</span>
-                `;
-                container.appendChild(label);
+            [document.getElementById('year'), document.getElementById('mYear')].forEach(sel => {
+                for (let y = currentYear - 1; y <= currentYear + 2; y++) {
+                    const opt = document.createElement('option');
+                    opt.value = y; opt.textContent = y;
+                    if (y === currentYear) opt.selected = true;
+                    sel.appendChild(opt);
+                }
             });
 
+            const year = currentYear;
+            document.getElementById('nextPaycheck').value = `${year}-01-08`;
+            document.getElementById('next980Friday').value = `${year}-01-09`;
+            document.getElementById('mNextPaycheck').value = `${year}-01-08`;
+            document.getElementById('mNext980Friday').value = `${year}-01-09`;
+
+            [document.getElementById('holidayCheckboxes'), document.getElementById('mHolidayCheckboxes')].forEach(container => {
+                ALL_HOLIDAYS.forEach(h => {
+                    const label = document.createElement('label');
+                    label.className = 'holiday-item';
+                    const id = container.id === 'mHolidayCheckboxes' ? `m_holiday_${h.id}` : `holiday_${h.id}`;
+                    label.innerHTML = `<input type="checkbox" id="${id}" ${h.default ? 'checked' : ''} onchange="syncHoliday('${h.id}', this.checked)"><span>${h.name}</span>`;
+                    container.appendChild(label);
+                });
+            });
+
+            // Check for URL state
+            if (window.location.hash.length > 1) {
+                decodeState(window.location.hash.slice(1));
+            } else {
+                regenerate();
+            }
+        }
+
+        function syncHoliday(id, checked) {
+            const desktop = document.getElementById(`holiday_${id}`);
+            const mobile = document.getElementById(`m_holiday_${id}`);
+            if (desktop) desktop.checked = checked;
+            if (mobile) mobile.checked = checked;
             regenerate();
         }
 
         function regenerate() {
             state.year = parseInt(document.getElementById('year').value);
-
-            // Calculate holidays
             state.holidays = {};
             ALL_HOLIDAYS.forEach(h => {
-                const checkbox = document.getElementById(`holiday_${h.id}`);
-                if (checkbox && checkbox.checked) {
+                const cb = document.getElementById(`holiday_${h.id}`);
+                if (cb?.checked) {
                     const date = getHolidayDate(h.id, state.year);
                     if (date) state.holidays[dateKey(date)] = h.name;
                 }
             });
 
-            // Calculate 9/80 Fridays
             const next980 = new Date(document.getElementById('next980Friday').value + 'T12:00:00');
             state.nine80Fridays = {};
             let current = new Date(next980);
-
             let temp = new Date(current);
-            while (temp.getFullYear() >= state.year - 1) {
-                temp.setDate(temp.getDate() - 14);
-                if (temp.getFullYear() === state.year) state.nine80Fridays[dateKey(temp)] = true;
-                else if (temp.getFullYear() < state.year) break;
-            }
+            while (temp.getFullYear() >= state.year - 1) { temp.setDate(temp.getDate() - 14); if (temp.getFullYear() === state.year) state.nine80Fridays[dateKey(temp)] = true; else if (temp.getFullYear() < state.year) break; }
+            while (current.getFullYear() <= state.year) { if (current.getFullYear() === state.year) state.nine80Fridays[dateKey(current)] = true; current.setDate(current.getDate() + 14); }
 
-            while (current.getFullYear() <= state.year) {
-                if (current.getFullYear() === state.year) state.nine80Fridays[dateKey(current)] = true;
-                current.setDate(current.getDate() + 14);
-            }
-
-            // Calculate paycheck dates
             const nextPaycheck = new Date(document.getElementById('nextPaycheck').value + 'T12:00:00');
             state.paycheckDates = [];
             current = new Date(nextPaycheck);
-
             temp = new Date(current);
-            while (temp.getFullYear() >= state.year - 1) {
-                temp.setDate(temp.getDate() - 14);
-                if (temp.getFullYear() === state.year) state.paycheckDates.unshift(new Date(temp));
-                else if (temp.getFullYear() < state.year) break;
-            }
-
-            while (current.getFullYear() <= state.year) {
-                if (current.getFullYear() === state.year) state.paycheckDates.push(new Date(current));
-                current.setDate(current.getDate() + 14);
-            }
+            while (temp.getFullYear() >= state.year - 1) { temp.setDate(temp.getDate() - 14); if (temp.getFullYear() === state.year) state.paycheckDates.unshift(new Date(temp)); else if (temp.getFullYear() < state.year) break; }
+            while (current.getFullYear() <= state.year) { if (current.getFullYear() === state.year) state.paycheckDates.push(new Date(current)); current.setDate(current.getDate() + 14); }
 
             findOpportunities();
             calculateFridayDeals();
 
-            // Clear invalid selections
             const validDates = new Set();
-            const startOfYear = new Date(state.year, 0, 1);
-            const endOfYear = new Date(state.year, 11, 31);
-            for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
+            for (let d = new Date(state.year, 0, 1); d <= new Date(state.year, 11, 31); d.setDate(d.getDate() + 1)) {
                 const key = dateKey(d);
                 const dow = d.getDay();
-                if (dow !== 0 && dow !== 6 && !state.holidays[key] && !state.nine80Fridays[key]) {
-                    validDates.add(key);
-                }
+                if (dow !== 0 && dow !== 6 && !state.holidays[key] && !state.nine80Fridays[key]) validDates.add(key);
             }
-
             Object.keys(state.selectedDays).forEach(type => {
                 state.selectedDays[type] = new Set([...state.selectedDays[type]].filter(k => validDates.has(k)));
             });
 
             renderCalendar();
+            renderMobileYearView();
+            renderMobileMonth();
             renderOpportunities();
             renderFridayDealButtons();
             recalculate();
         }
 
         function calculateFridayDeals() {
-            state.twoForFiveMonths = [];
-            state.threeForFiveMonths = [];
-            state.allThreeForFiveMonths = [];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
+            state.twoForFiveMonths = []; state.threeForFiveMonths = []; state.allThreeForFiveMonths = [];
+            const today = new Date(); today.setHours(0,0,0,0);
             for (let month = 0; month < 12; month++) {
                 const firstDay = new Date(state.year, month, 1);
                 const lastDay = new Date(state.year, month + 1, 0);
-
-                let totalFridays = 0;
-                let nine80Count = 0;
-                let workingFridays = [];
-                let allWorkingFridays = [];
-
+                let totalFridays = 0, nine80Count = 0, workingFridays = [], allWorkingFridays = [];
                 for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
                     if (d.getDay() === 5) {
                         totalFridays++;
                         const key = dateKey(d);
-                        if (state.nine80Fridays[key] || state.holidays[key]) {
-                            nine80Count++;
-                        } else {
-                            allWorkingFridays.push(key);
-                            if (d >= today) {
-                                workingFridays.push(key);
-                            }
-                        }
+                        if (state.nine80Fridays[key] || state.holidays[key]) nine80Count++;
+                        else { allWorkingFridays.push(key); if (d >= today) workingFridays.push(key); }
                     }
                 }
-
                 if (totalFridays === 5) {
                     const fridaysNeeded = 5 - nine80Count;
-                    if (fridaysNeeded === 2) {
-                        if (workingFridays.length >= 2) {
-                            state.twoForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: workingFridays, isPast: false });
-                        }
-                    } else if (fridaysNeeded === 3) {
-                        // Track all 3-for-5 months for display, mark if past
+                    if (fridaysNeeded === 2 && workingFridays.length >= 2) state.twoForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: workingFridays });
+                    else if (fridaysNeeded === 3) {
                         const isPast = workingFridays.length < 3;
-                        state.allThreeForFiveMonths.push({
-                            month,
-                            name: MONTH_NAMES[month],
-                            fridays: isPast ? allWorkingFridays : workingFridays,
-                            isPast
-                        });
-                        if (!isPast) {
-                            state.threeForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: workingFridays, isPast: false });
-                        }
+                        state.allThreeForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: isPast ? allWorkingFridays : workingFridays, isPast });
+                        if (!isPast) state.threeForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: workingFridays });
                     }
                 }
             }
@@ -1721,229 +1425,81 @@
             const twoButtons = document.getElementById('twoForFiveButtons');
             const threeSection = document.getElementById('threeForFiveSection');
             const threeButtons = document.getElementById('threeForFiveButtons');
-
-            twoButtons.innerHTML = '';
-            threeButtons.innerHTML = '';
-
+            twoButtons.innerHTML = ''; threeButtons.innerHTML = '';
             if (state.twoForFiveMonths.length > 0) {
                 twoSection.style.display = 'block';
-                state.twoForFiveMonths.forEach(m => {
-                    const btn = document.createElement('button');
-                    btn.className = 'quick-btn';
-                    btn.textContent = m.name;
-                    btn.onclick = () => selectMonthFridays(m.month);
-                    twoButtons.appendChild(btn);
-                });
-            } else {
-                twoSection.style.display = 'none';
-            }
-
-            // Always show 3-for-5 section with all months (past ones greyed out)
+                state.twoForFiveMonths.forEach(m => { const btn = document.createElement('button'); btn.className = 'quick-btn'; btn.textContent = m.name; btn.onclick = () => selectMonthFridays(m.month); twoButtons.appendChild(btn); });
+            } else twoSection.style.display = 'none';
             if (state.allThreeForFiveMonths.length > 0) {
                 threeSection.style.display = 'block';
-                state.allThreeForFiveMonths.forEach(m => {
-                    const btn = document.createElement('button');
-                    btn.className = 'quick-btn' + (m.isPast ? ' disabled' : '');
-                    btn.textContent = m.name;
-                    if (!m.isPast) {
-                        btn.onclick = () => selectMonthFridays(m.month);
-                    }
-                    threeButtons.appendChild(btn);
-                });
-            } else {
-                threeSection.style.display = 'none';
-            }
+                state.allThreeForFiveMonths.forEach(m => { const btn = document.createElement('button'); btn.className = 'quick-btn' + (m.isPast ? ' disabled' : ''); btn.textContent = m.name; if (!m.isPast) btn.onclick = () => selectMonthFridays(m.month); threeButtons.appendChild(btn); });
+            } else threeSection.style.display = 'none';
         }
 
         function findOpportunities() {
             state.opportunities = [];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Super and Mega combos
+            const today = new Date(); today.setHours(0,0,0,0);
             for (const [key, holidayName] of Object.entries(state.holidays)) {
                 const holidayDate = new Date(key + 'T12:00:00');
                 if (holidayDate < today) continue;
-
                 if (holidayDate.getDay() === 1) {
-                    const friday = new Date(holidayDate);
-                    friday.setDate(friday.getDate() + 4);
-
+                    const friday = new Date(holidayDate); friday.setDate(friday.getDate() + 4);
                     if (state.nine80Fridays[dateKey(friday)]) {
-                        // Super Combo
                         const superDates = [];
-                        for (let i = 1; i <= 3; i++) {
-                            const d = new Date(holidayDate);
-                            d.setDate(d.getDate() + i);
-                            superDates.push(dateKey(d));
-                        }
-                        state.opportunities.push({
-                            id: `super_${key}`,
-                            type: 'super',
-                            title: `${holidayName} Super Combo`,
-                            description: `Take Tue-Thu for 9 days off`,
-                            dates: superDates,
-                            hours: 27,
-                            daysOff: 9
-                        });
-
-                        // Mega Combo
-                        const fridayBefore = new Date(holidayDate);
-                        fridayBefore.setDate(fridayBefore.getDate() - 3);
-                        const mondayAfter = new Date(friday);
-                        mondayAfter.setDate(mondayAfter.getDate() + 3);
-
+                        for (let i = 1; i <= 3; i++) { const d = new Date(holidayDate); d.setDate(d.getDate() + i); superDates.push(dateKey(d)); }
+                        state.opportunities.push({ id: `super_${key}`, type: 'super', title: `${holidayName} Super`, description: 'Tue-Thu = 9 days off', dates: superDates, hours: 27, daysOff: 9 });
+                        const fridayBefore = new Date(holidayDate); fridayBefore.setDate(fridayBefore.getDate() - 3);
+                        const mondayAfter = new Date(friday); mondayAfter.setDate(mondayAfter.getDate() + 3);
                         const megaDates = [...superDates];
-                        const fridayBeforeKey = dateKey(fridayBefore);
-                        const mondayAfterKey = dateKey(mondayAfter);
-
-                        if (!state.holidays[fridayBeforeKey] && !state.nine80Fridays[fridayBeforeKey]) {
-                            megaDates.unshift(fridayBeforeKey);
-                        }
-                        if (!state.holidays[mondayAfterKey] && mondayAfter.getFullYear() === state.year) {
-                            megaDates.push(mondayAfterKey);
-                        }
-
+                        const fridayBeforeKey = dateKey(fridayBefore), mondayAfterKey = dateKey(mondayAfter);
+                        if (!state.holidays[fridayBeforeKey] && !state.nine80Fridays[fridayBeforeKey]) megaDates.unshift(fridayBeforeKey);
+                        if (!state.holidays[mondayAfterKey] && mondayAfter.getFullYear() === state.year) megaDates.push(mondayAfterKey);
                         if (megaDates.length > superDates.length) {
-                            const extraHours = (megaDates.length - superDates.length) * 9 - (megaDates.includes(fridayBeforeKey) ? 1 : 0);
-                            state.opportunities.push({
-                                id: `mega_${key}`,
-                                type: 'mega',
-                                title: `${holidayName} MEGA Combo`,
-                                description: `Super Combo + Fri before + Mon after`,
-                                dates: megaDates,
-                                hours: 27 + (megaDates.length - 3) * 9 - (megaDates.includes(fridayBeforeKey) ? 1 : 0),
-                                daysOff: 9 + (megaDates.length - 3) + 2
-                            });
+                            state.opportunities.push({ id: `mega_${key}`, type: 'mega', title: `${holidayName} MEGA`, description: 'Max consecutive days', dates: megaDates, hours: 27 + (megaDates.length - 3) * 9 - (megaDates.includes(fridayBeforeKey) ? 1 : 0), daysOff: 9 + (megaDates.length - 3) + 2 });
                         }
                     }
                 }
             }
-
-            // 4-day weekends
             for (const fridayKey of Object.keys(state.nine80Fridays)) {
                 const friday = new Date(fridayKey + 'T12:00:00');
                 if (friday < today) continue;
-
-                const monday = new Date(friday);
-                monday.setDate(monday.getDate() + 3);
+                const monday = new Date(friday); monday.setDate(monday.getDate() + 3);
                 const mondayKey = dateKey(monday);
-
-                if (state.holidays[mondayKey]) continue;
-                if (monday.getFullYear() !== state.year) continue;
-
-                state.opportunities.push({
-                    id: `4day_${fridayKey}`,
-                    type: '4day',
-                    title: `4-Day Weekend`,
-                    description: `Take Mon ${formatShortDate(monday)}`,
-                    dates: [mondayKey],
-                    hours: 9,
-                    daysOff: 4
-                });
+                if (state.holidays[mondayKey] || monday.getFullYear() !== state.year) continue;
+                state.opportunities.push({ id: `4day_${fridayKey}`, type: '4day', title: '4-Day Weekend', description: `Mon ${formatShortDate(monday)}`, dates: [mondayKey], hours: 9, daysOff: 4 });
             }
-
-            // All Fridays
             const allFridays = [];
-            const startOfYear = new Date(state.year, 0, 1);
-            const endOfYear = new Date(state.year, 11, 31);
-
-            for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
-                if (d < today) continue;
-                if (d.getDay() !== 5) continue;
+            for (let d = new Date(state.year, 0, 1); d <= new Date(state.year, 11, 31); d.setDate(d.getDate() + 1)) {
+                if (d < today || d.getDay() !== 5) continue;
                 const key = dateKey(d);
-                if (!state.nine80Fridays[key] && !state.holidays[key]) {
-                    allFridays.push(key);
-                }
+                if (!state.nine80Fridays[key] && !state.holidays[key]) allFridays.push(key);
             }
-
-            if (allFridays.length > 0) {
-                state.opportunities.push({
-                    id: 'all_fridays',
-                    type: 'allFridays',
-                    title: 'Every Friday Off',
-                    description: `Take ${allFridays.length} Fridays for all Fridays off`,
-                    dates: allFridays,
-                    hours: allFridays.length * 8,
-                    daysOff: 52
-                });
-            }
-
-            // Summer Fridays
+            if (allFridays.length > 0) state.opportunities.push({ id: 'all_fridays', type: 'allFridays', title: 'Every Friday', description: `${allFridays.length} Fridays`, dates: allFridays, hours: allFridays.length * 8, daysOff: 52 });
             const summerFridays = [];
             for (let month = 4; month <= 7; month++) {
-                const firstDay = new Date(state.year, month, 1);
-                const lastDay = new Date(state.year, month + 1, 0);
-                for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
-                    if (d.getDay() === 5 && d >= today) {
-                        const key = dateKey(d);
-                        if (!state.nine80Fridays[key] && !state.holidays[key]) {
-                            summerFridays.push(key);
-                        }
-                    }
+                for (let d = new Date(state.year, month, 1); d <= new Date(state.year, month + 1, 0); d.setDate(d.getDate() + 1)) {
+                    if (d.getDay() === 5 && d >= today) { const key = dateKey(d); if (!state.nine80Fridays[key] && !state.holidays[key]) summerFridays.push(key); }
                 }
             }
-
-            if (summerFridays.length > 0) {
-                state.opportunities.push({
-                    id: 'summer_fridays',
-                    type: 'summer',
-                    title: 'Summer Fridays (May-Aug)',
-                    description: `Take ${summerFridays.length} Fridays`,
-                    dates: summerFridays,
-                    hours: summerFridays.length * 8,
-                    daysOff: summerFridays.length + Object.keys(state.nine80Fridays).filter(k => {
-                        const m = parseInt(k.split('-')[1]);
-                        return m >= 5 && m <= 8;
-                    }).length
-                });
-            }
-
-            state.opportunities.sort((a, b) => {
-                const order = { mega: 0, super: 1, '4day': 2, allFridays: 3, summer: 4 };
-                if (order[a.type] !== order[b.type]) return order[a.type] - order[b.type];
-                return a.dates[0].localeCompare(b.dates[0]);
-            });
+            if (summerFridays.length > 0) state.opportunities.push({ id: 'summer_fridays', type: 'summer', title: 'Summer Fridays', description: `May-Aug (${summerFridays.length})`, dates: summerFridays, hours: summerFridays.length * 8, daysOff: summerFridays.length });
+            state.opportunities.sort((a, b) => { const order = { mega: 0, super: 1, '4day': 2, allFridays: 3, summer: 4 }; if (order[a.type] !== order[b.type]) return order[a.type] - order[b.type]; return a.dates[0].localeCompare(b.dates[0]); });
         }
 
         function renderOpportunities() {
-            const container = document.getElementById('opportunityList');
-            container.innerHTML = '';
-
-            const groups = {
-                mega: { title: 'Mega Combos', items: [] },
-                super: { title: 'Super Combos', items: [] },
-                '4day': { title: '4-Day Weekends', items: [] },
-                allFridays: { title: 'All Fridays', items: [] },
-                summer: { title: 'Summer Package', items: [] }
-            };
-
-            state.opportunities.forEach(opp => {
-                if (groups[opp.type]) groups[opp.type].items.push(opp);
-            });
-
-            Object.values(groups).forEach(group => {
-                if (group.items.length === 0) return;
-
-                const header = document.createElement('div');
-                header.className = 'opp-group-header';
-                header.textContent = `${group.title} (${group.items.length})`;
-                container.appendChild(header);
-
-                group.items.slice(0, 10).forEach(opp => {
-                    const isSelected = state.selectedOpportunities.has(opp.id);
-                    const item = document.createElement('div');
-                    item.className = `opportunity-item ${isSelected ? 'selected' : ''}`;
-                    item.onclick = () => toggleOpportunity(opp.id);
-                    item.innerHTML = `
-                        <div class="title">${opp.title}</div>
-                        <div class="details">${opp.description}</div>
-                        <div class="badges">
-                            <span class="badge badge-hours">${opp.hours}h PTO</span>
-                            <span class="badge badge-days">${opp.daysOff} days off</span>
-                        </div>
-                    `;
-                    container.appendChild(item);
+            [document.getElementById('opportunityList'), document.getElementById('mobileOpportunityList')].forEach(container => {
+                container.innerHTML = '';
+                const groups = { mega: { title: 'Mega', items: [] }, super: { title: 'Super', items: [] }, '4day': { title: '4-Day', items: [] }, allFridays: { title: 'All Fridays', items: [] }, summer: { title: 'Summer', items: [] } };
+                state.opportunities.forEach(opp => { if (groups[opp.type]) groups[opp.type].items.push(opp); });
+                Object.values(groups).forEach(group => {
+                    if (group.items.length === 0) return;
+                    const header = document.createElement('div'); header.className = 'opp-group-header'; header.textContent = `${group.title} (${group.items.length})`; container.appendChild(header);
+                    group.items.slice(0, 8).forEach(opp => {
+                        const isSelected = state.selectedOpportunities.has(opp.id);
+                        const item = document.createElement('div'); item.className = `opportunity-item ${isSelected ? 'selected' : ''}`;
+                        item.onclick = () => toggleOpportunity(opp.id);
+                        item.innerHTML = `<div class="title">${opp.title}</div><div class="details">${opp.description}</div><div class="badges"><span class="badge badge-hours">${opp.hours}h</span><span class="badge badge-days">${opp.daysOff}d</span></div>`;
+                        container.appendChild(item);
+                    });
                 });
             });
         }
@@ -1951,83 +1507,42 @@
         function toggleOpportunity(oppId) {
             const opp = state.opportunities.find(o => o.id === oppId);
             if (!opp) return;
-
-            if (state.selectedOpportunities.has(oppId)) {
-                state.selectedOpportunities.delete(oppId);
-                opp.dates.forEach(d => state.selectedDays.pto.delete(d));
-            } else {
-                state.selectedOpportunities.add(oppId);
-                opp.dates.forEach(d => state.selectedDays.pto.add(d));
-            }
-
-            renderCalendar();
-            renderOpportunities();
-            recalculate();
+            if (state.selectedOpportunities.has(oppId)) { state.selectedOpportunities.delete(oppId); opp.dates.forEach(d => state.selectedDays.pto.delete(d)); }
+            else { state.selectedOpportunities.add(oppId); opp.dates.forEach(d => state.selectedDays.pto.add(d)); }
+            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
         }
 
         function selectAllType(type) {
-            state.opportunities.filter(o => o.type === type).forEach(opp => {
-                state.selectedOpportunities.add(opp.id);
-                opp.dates.forEach(d => state.selectedDays.pto.add(d));
-            });
-            renderCalendar();
-            renderOpportunities();
-            recalculate();
+            state.opportunities.filter(o => o.type === type).forEach(opp => { state.selectedOpportunities.add(opp.id); opp.dates.forEach(d => state.selectedDays.pto.add(d)); });
+            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
         }
 
         function selectMonthFridays(monthNum) {
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const firstDay = new Date(state.year, monthNum, 1);
-            const lastDay = new Date(state.year, monthNum + 1, 0);
-
-            for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
-                if (d.getDay() === 5 && d >= today) {
-                    const key = dateKey(d);
-                    if (!state.nine80Fridays[key] && !state.holidays[key]) {
-                        state.selectedDays.pto.add(key);
-                    }
-                }
+            const today = new Date(); today.setHours(0,0,0,0);
+            for (let d = new Date(state.year, monthNum, 1); d <= new Date(state.year, monthNum + 1, 0); d.setDate(d.getDate() + 1)) {
+                if (d.getDay() === 5 && d >= today) { const key = dateKey(d); if (!state.nine80Fridays[key] && !state.holidays[key]) state.selectedDays.pto.add(key); }
             }
-            renderCalendar();
-            renderOpportunities();
-            recalculate();
+            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
         }
 
         function clearAllSelections() {
             Object.keys(state.selectedDays).forEach(type => state.selectedDays[type].clear());
             state.selectedOpportunities.clear();
-            renderCalendar();
-            renderOpportunities();
-            recalculate();
+            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
         }
 
         function toggleDay(key) {
             const type = state.currentTimeOffType;
             let existingType = null;
-            Object.keys(state.selectedDays).forEach(t => {
-                if (state.selectedDays[t].has(key)) existingType = t;
-            });
-
+            Object.keys(state.selectedDays).forEach(t => { if (state.selectedDays[t].has(key)) existingType = t; });
             if (existingType) {
                 state.selectedDays[existingType].delete(key);
-                state.opportunities.forEach(opp => {
-                    if (opp.dates.includes(key)) state.selectedOpportunities.delete(opp.id);
-                });
+                state.opportunities.forEach(opp => { if (opp.dates.includes(key)) state.selectedOpportunities.delete(opp.id); });
             } else {
                 state.selectedDays[type].add(key);
-                if (type === 'pto') {
-                    state.opportunities.forEach(opp => {
-                        if (opp.dates.every(d => state.selectedDays.pto.has(d))) {
-                            state.selectedOpportunities.add(opp.id);
-                        }
-                    });
-                }
+                if (type === 'pto') state.opportunities.forEach(opp => { if (opp.dates.every(d => state.selectedDays.pto.has(d))) state.selectedOpportunities.add(opp.id); });
             }
-
-            renderCalendar();
-            renderOpportunities();
-            recalculate();
+            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
         }
 
         function recalculate() {
@@ -2035,21 +1550,16 @@
             const currentPto = parseFloat(document.getElementById('currentPto').value) || 0;
             const maxPto = parseFloat(document.getElementById('maxPto').value) || 999;
             const yearEndGoal = document.getElementById('yearEndGoal').value ? parseFloat(document.getElementById('yearEndGoal').value) : null;
-
             const currentActivism = parseFloat(document.getElementById('currentActivism').value) || 0;
             const currentPersonal = parseInt(document.getElementById('currentPersonal').value) || 0;
             const currentWellness = parseFloat(document.getElementById('currentWellness').value) || 0;
-            const wellnessPerPaycheck = 2.76;
-            const maxWellness = 108;
+            const wellnessPerPaycheck = 2.76, maxWellness = 108;
 
-            // Calculate future usage
             let futurePtoUsed = 0, futureActivismUsed = 0, futurePersonalUsed = 0, futureWellnessUsed = 0;
-
             Object.keys(state.selectedDays).forEach(type => {
                 state.selectedDays[type].forEach(key => {
                     if (!isPastDate(key)) {
-                        const date = new Date(key + 'T12:00:00');
-                        const hours = getHoursForDay(date);
+                        const hours = getHoursForDay(new Date(key + 'T12:00:00'));
                         if (type === 'pto') futurePtoUsed += hours;
                         else if (type === 'activism') futureActivismUsed += hours;
                         else if (type === 'personal') futurePersonalUsed += 1;
@@ -2058,391 +1568,244 @@
                 });
             });
 
-            // PTO balance simulation
             let ptoBalance = currentPto;
             const sortedPtoDays = [...state.selectedDays.pto].filter(k => !isPastDate(k)).sort();
             let ptoIndex = 0;
-
             for (const paycheck of state.paycheckDates) {
                 const paycheckKey = dateKey(paycheck);
-                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) {
-                    ptoBalance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00'));
-                    ptoIndex++;
-                }
+                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) { ptoBalance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00')); ptoIndex++; }
                 ptoBalance = Math.min(ptoBalance + ptoPerPaycheck, maxPto);
             }
-            while (ptoIndex < sortedPtoDays.length) {
-                ptoBalance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00'));
-                ptoIndex++;
-            }
+            while (ptoIndex < sortedPtoDays.length) { ptoBalance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00')); ptoIndex++; }
 
             const activismBalance = currentActivism - futureActivismUsed;
             const personalBalance = currentPersonal - futurePersonalUsed;
 
-            // Wellness balance simulation
             let wellnessBalance = currentWellness;
             const sortedWellnessDays = [...state.selectedDays.wellness].filter(k => !isPastDate(k)).sort();
             let wellnessIndex = 0;
-
             for (const paycheck of state.paycheckDates) {
                 const paycheckKey = dateKey(paycheck);
-                while (wellnessIndex < sortedWellnessDays.length && sortedWellnessDays[wellnessIndex] < paycheckKey) {
-                    wellnessBalance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00'));
-                    wellnessIndex++;
-                }
+                while (wellnessIndex < sortedWellnessDays.length && sortedWellnessDays[wellnessIndex] < paycheckKey) { wellnessBalance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00')); wellnessIndex++; }
                 wellnessBalance += wellnessPerPaycheck;
             }
-            while (wellnessIndex < sortedWellnessDays.length) {
-                wellnessBalance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00'));
-                wellnessIndex++;
-            }
+            while (wellnessIndex < sortedWellnessDays.length) { wellnessBalance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00')); wellnessIndex++; }
 
-            // Update displays
-            document.getElementById('projectedPto').textContent = ptoBalance.toFixed(1) + 'h';
-            document.getElementById('projectedActivism').textContent = activismBalance.toFixed(1) + 'h';
-            document.getElementById('projectedPersonal').textContent = personalBalance + ' days';
-            document.getElementById('projectedWellness').textContent = wellnessBalance.toFixed(1) + 'h';
+            // Update all displays
+            ['', 'm'].forEach(prefix => {
+                const ptoEl = document.getElementById(prefix ? 'mProjPto' : 'projectedPto');
+                const actEl = document.getElementById(prefix ? 'mProjActivism' : 'projectedActivism');
+                const perEl = document.getElementById(prefix ? 'mProjPersonal' : 'projectedPersonal');
+                const welEl = document.getElementById(prefix ? 'mProjWellness' : 'projectedWellness');
+                if (ptoEl) ptoEl.textContent = ptoBalance.toFixed(1) + 'h';
+                if (actEl) actEl.textContent = activismBalance.toFixed(1) + 'h';
+                if (perEl) perEl.textContent = personalBalance + (prefix ? 'd' : ' days');
+                if (welEl) welEl.textContent = wellnessBalance.toFixed(1) + 'h';
+            });
 
             document.getElementById('ptoAvailDisplay').textContent = ptoBalance.toFixed(0) + 'h';
             document.getElementById('activismAvailDisplay').textContent = activismBalance.toFixed(0) + 'h';
-            document.getElementById('personalAvailDisplay').textContent = personalBalance + ' days';
+            document.getElementById('personalAvailDisplay').textContent = personalBalance + 'd';
             document.getElementById('wellnessAvailDisplay').textContent = wellnessBalance.toFixed(0) + 'h';
 
-            // Details
-            document.getElementById('activismDetail').textContent = activismBalance < 0 ? 'Over limit!' : 'Use it or lose it';
-            document.getElementById('personalDetail').textContent = personalBalance < 0 ? 'Over limit!' : 'Max 5 days/year';
+            const actDetail = activismBalance < 0 ? 'Over limit!' : 'Use or lose';
+            const perDetail = personalBalance < 0 ? 'Over limit!' : 'Max 5/yr';
+            const welDetail = wellnessBalance < 0 ? 'Negative!' : wellnessBalance > maxWellness ? `Lose ${(wellnessBalance - maxWellness).toFixed(0)}h` : 'Rolls over';
 
-            if (wellnessBalance < 0) {
-                document.getElementById('wellnessDetail').textContent = 'Negative!';
-            } else if (wellnessBalance > maxWellness) {
-                document.getElementById('wellnessDetail').textContent = `Will lose ${(wellnessBalance - maxWellness).toFixed(0)}h`;
-            } else {
-                document.getElementById('wellnessDetail').textContent = 'All rolls over';
-            }
+            ['activismDetail', 'mActivismDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = actDetail; });
+            ['personalDetail', 'mPersonalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = perDetail; });
+            ['wellnessDetail', 'mWellnessDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = welDetail; });
 
-            // PTO status
             const statBox = document.getElementById('statBoxPto');
             statBox.className = 'stat-card';
+            let ptoDetail = '';
             if (yearEndGoal !== null) {
                 const diff = ptoBalance - yearEndGoal;
-                if (Math.abs(diff) < 5) {
-                    statBox.classList.add('success');
-                    document.getElementById('ptoDetail').textContent = `On target! Goal: ${yearEndGoal}h`;
-                } else if (diff > 0) {
-                    statBox.classList.add('warning');
-                    document.getElementById('ptoDetail').textContent = `${diff.toFixed(0)}h over goal`;
-                } else {
-                    statBox.classList.add('danger');
-                    document.getElementById('ptoDetail').textContent = `${Math.abs(diff).toFixed(0)}h under goal`;
-                }
+                if (Math.abs(diff) < 5) { statBox.classList.add('success'); ptoDetail = `On target! Goal: ${yearEndGoal}h`; }
+                else if (diff > 0) { statBox.classList.add('warning'); ptoDetail = `${diff.toFixed(0)}h over goal`; }
+                else { statBox.classList.add('danger'); ptoDetail = `${Math.abs(diff).toFixed(0)}h under goal`; }
             } else {
-                if (ptoBalance >= maxPto) {
-                    statBox.classList.add('danger');
-                    document.getElementById('ptoDetail').textContent = 'At max! Use more PTO';
-                } else if (ptoBalance >= maxPto * 0.9) {
-                    statBox.classList.add('warning');
-                    document.getElementById('ptoDetail').textContent = 'Approaching max';
-                } else if (ptoBalance < 0) {
-                    statBox.classList.add('danger');
-                    document.getElementById('ptoDetail').textContent = 'Not enough PTO';
-                } else {
-                    statBox.classList.add('success');
-                    document.getElementById('ptoDetail').textContent = 'Healthy balance';
-                }
+                if (ptoBalance >= maxPto) { statBox.classList.add('danger'); ptoDetail = 'At max!'; }
+                else if (ptoBalance >= maxPto * 0.9) { statBox.classList.add('warning'); ptoDetail = 'Near max'; }
+                else if (ptoBalance < 0) { statBox.classList.add('danger'); ptoDetail = 'Not enough'; }
+                else { statBox.classList.add('success'); ptoDetail = 'Healthy'; }
             }
+            ['ptoDetail', 'mPtoDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ptoDetail; });
 
-            // Count days off
-            let workDaysOff = 0;
-            let totalDaysOff = 0;
-            const startOfYear = new Date(state.year, 0, 1);
-            const endOfYear = new Date(state.year, 11, 31);
-
-            for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
-                const key = dateKey(d);
-                const dow = d.getDay();
-                const isWeekend = dow === 0 || dow === 6;
-                const isHoliday = state.holidays[key];
-                const is980 = state.nine80Fridays[key];
+            let workDaysOff = 0, totalDaysOff = 0;
+            for (let d = new Date(state.year, 0, 1); d <= new Date(state.year, 11, 31); d.setDate(d.getDate() + 1)) {
+                const key = dateKey(d), dow = d.getDay();
+                const isWeekend = dow === 0 || dow === 6, isHoliday = state.holidays[key], is980 = state.nine80Fridays[key];
                 const isSelectedAny = Object.values(state.selectedDays).some(set => set.has(key));
-
-                if (isWeekend || isHoliday || is980 || isSelectedAny) {
-                    totalDaysOff++;
-                    if (!isWeekend) workDaysOff++;
-                }
+                if (isWeekend || isHoliday || is980 || isSelectedAny) { totalDaysOff++; if (!isWeekend) workDaysOff++; }
             }
 
-            document.getElementById('countWorkDaysOff').textContent = workDaysOff;
-            document.getElementById('totalDaysDetail').textContent = `${totalDaysOff} total incl. weekends`;
+            ['countWorkDaysOff', 'mWorkDays'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = workDaysOff; });
+            ['totalDaysDetail', 'mTotalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = `${totalDaysOff} total`; });
 
-            renderProjectionChart(currentPto, ptoPerPaycheck, maxPto, yearEndGoal);
+            renderProjectionChart(currentPto, ptoPerPaycheck, maxPto);
             renderWellnessChart(currentWellness, wellnessPerPaycheck, maxWellness);
-            renderOtherBalancesTable(currentActivism, currentPersonal);
         }
 
-        function renderProjectionChart(startBalance, ptoPerPaycheck, maxPto, yearEndGoal) {
+        function renderProjectionChart(startBalance, ptoPerPaycheck, maxPto) {
             const container = document.getElementById('projectionChart');
             const dataTable = document.getElementById('ptoDataTable');
-            container.innerHTML = '';
-            dataTable.innerHTML = '';
-
-            const chartHeight = 100;
-            const maxValue = Math.max(maxPto * 1.1, startBalance + state.paycheckDates.length * ptoPerPaycheck);
-
-            const maxLineY = chartHeight - (maxPto / maxValue * chartHeight);
-            const maxLine = document.createElement('div');
-            maxLine.className = 'chart-max-line';
-            maxLine.style.top = `${maxLineY}px`;
-            container.appendChild(maxLine);
-
+            container.innerHTML = ''; dataTable.innerHTML = '';
+            const chartHeight = 80, maxValue = Math.max(maxPto * 1.1, startBalance + state.paycheckDates.length * ptoPerPaycheck);
+            const maxLine = document.createElement('div'); maxLine.className = 'chart-max-line'; maxLine.style.top = `${chartHeight - (maxPto / maxValue * chartHeight)}px`; container.appendChild(maxLine);
             let balance = startBalance;
             const sortedPtoDays = [...state.selectedDays.pto].filter(k => !isPastDate(k)).sort();
             let ptoIndex = 0;
-            const barWidth = Math.max(6, Math.floor((container.offsetWidth || 500) / state.paycheckDates.length) - 3);
-
+            const barWidth = Math.max(4, Math.floor((container.offsetWidth || 400) / state.paycheckDates.length) - 2);
             const tableData = { dates: [], balances: [] };
-
             state.paycheckDates.forEach((paycheck, i) => {
                 const paycheckKey = dateKey(paycheck);
-                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) {
-                    balance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00'));
-                    ptoIndex++;
-                }
+                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) { balance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00')); ptoIndex++; }
                 balance = Math.min(balance + ptoPerPaycheck, maxPto);
-
-                tableData.dates.push(paycheck);
-                tableData.balances.push({ value: balance, danger: balance >= maxPto || balance < 0, warning: balance >= maxPto * 0.9 });
-
+                tableData.dates.push(paycheck); tableData.balances.push({ value: balance, danger: balance >= maxPto || balance < 0, warning: balance >= maxPto * 0.9 });
                 const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
-                const bar = document.createElement('div');
-                bar.className = 'chart-bar';
-                if (balance >= maxPto || balance < 0) bar.classList.add('danger');
-                else if (balance >= maxPto * 0.9) bar.classList.add('warning');
-                bar.style.height = `${height}px`;
-                bar.style.left = `${i * (barWidth + 2)}px`;
-                bar.style.width = `${barWidth}px`;
-                bar.title = `${paycheck.toLocaleDateString()}: ${balance.toFixed(1)}h`;
+                const bar = document.createElement('div'); bar.className = 'chart-bar';
+                if (balance >= maxPto || balance < 0) bar.classList.add('danger'); else if (balance >= maxPto * 0.9) bar.classList.add('warning');
+                bar.style.cssText = `height:${height}px;left:${i * (barWidth + 1)}px;width:${barWidth}px`; bar.title = `${paycheck.toLocaleDateString()}: ${balance.toFixed(1)}h`;
                 container.appendChild(bar);
             });
-
-            let tableHTML = '<table><tr><th>Date</th>';
-            tableData.dates.forEach(d => tableHTML += `<td>${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>`);
-            tableHTML += '</tr><tr class="pto-row"><th>PTO</th>';
-            tableData.balances.forEach(b => {
-                const cls = b.danger ? 'danger' : (b.warning ? 'warning' : '');
-                tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`;
-            });
-            tableHTML += '</tr></table>';
-            dataTable.innerHTML = tableHTML;
+            let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
+            tableHTML += '</tr><tr class="pto-row"><th>PTO</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.warning ? 'warning' : ''); tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`; });
+            tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
         }
 
         function renderWellnessChart(startBalance, wellnessPerPaycheck, maxWellness) {
             const container = document.getElementById('wellnessProjectionChart');
             const dataTable = document.getElementById('wellnessDataTable');
-            container.innerHTML = '';
-            dataTable.innerHTML = '';
-
-            const chartHeight = 100;
-            const projectedMax = startBalance + state.paycheckDates.length * wellnessPerPaycheck;
+            container.innerHTML = ''; dataTable.innerHTML = '';
+            const chartHeight = 80, projectedMax = startBalance + state.paycheckDates.length * wellnessPerPaycheck;
             const maxValue = Math.max(maxWellness * 1.5, projectedMax);
-
-            const maxLineY = chartHeight - (maxWellness / maxValue * chartHeight);
-            const maxLine = document.createElement('div');
-            maxLine.className = 'chart-max-line';
-            maxLine.style.top = `${maxLineY}px`;
-            container.appendChild(maxLine);
-
+            const maxLine = document.createElement('div'); maxLine.className = 'chart-max-line'; maxLine.style.top = `${chartHeight - (maxWellness / maxValue * chartHeight)}px`; container.appendChild(maxLine);
             let balance = startBalance;
             const sortedWellnessDays = [...state.selectedDays.wellness].filter(k => !isPastDate(k)).sort();
             let wellnessIndex = 0;
-            const barWidth = Math.max(6, Math.floor((container.offsetWidth || 500) / state.paycheckDates.length) - 3);
-
+            const barWidth = Math.max(4, Math.floor((container.offsetWidth || 400) / state.paycheckDates.length) - 2);
             const tableData = { dates: [], balances: [] };
-
             state.paycheckDates.forEach((paycheck, i) => {
                 const paycheckKey = dateKey(paycheck);
-                while (wellnessIndex < sortedWellnessDays.length && sortedWellnessDays[wellnessIndex] < paycheckKey) {
-                    balance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00'));
-                    wellnessIndex++;
-                }
+                while (wellnessIndex < sortedWellnessDays.length && sortedWellnessDays[wellnessIndex] < paycheckKey) { balance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00')); wellnessIndex++; }
                 balance += wellnessPerPaycheck;
-
-                tableData.dates.push(paycheck);
-                tableData.balances.push({ value: balance, over: balance > maxWellness, danger: balance < 0 });
-
+                tableData.dates.push(paycheck); tableData.balances.push({ value: balance, over: balance > maxWellness, danger: balance < 0 });
                 const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
-                const bar = document.createElement('div');
-                bar.className = 'chart-bar';
-                if (balance < 0) bar.classList.add('danger');
-                else if (balance > maxWellness) bar.classList.add('warning');
-                bar.style.height = `${height}px`;
-                bar.style.left = `${i * (barWidth + 2)}px`;
-                bar.style.width = `${barWidth}px`;
-                bar.title = `${paycheck.toLocaleDateString()}: ${balance.toFixed(1)}h`;
+                const bar = document.createElement('div'); bar.className = 'chart-bar';
+                if (balance < 0) bar.classList.add('danger'); else if (balance > maxWellness) bar.classList.add('warning');
+                bar.style.cssText = `height:${height}px;left:${i * (barWidth + 1)}px;width:${barWidth}px`; bar.title = `${paycheck.toLocaleDateString()}: ${balance.toFixed(1)}h`;
                 container.appendChild(bar);
             });
-
-            let tableHTML = '<table><tr><th>Date</th>';
-            tableData.dates.forEach(d => tableHTML += `<td>${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>`);
-            tableHTML += '</tr><tr class="wellness-row"><th>Wellness</th>';
-            tableData.balances.forEach(b => {
-                const cls = b.danger ? 'danger' : (b.over ? 'warning' : '');
-                tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`;
-            });
-            tableHTML += '</tr></table>';
-            dataTable.innerHTML = tableHTML;
-        }
-
-        function renderOtherBalancesTable(currentActivism, currentPersonal) {
-            const dataTable = document.getElementById('otherDataTable');
-            dataTable.innerHTML = '';
-
-            const activismDays = [...state.selectedDays.activism].filter(k => !isPastDate(k)).sort();
-            const personalDaysList = [...state.selectedDays.personal].filter(k => !isPastDate(k)).sort();
-
-            let activismBalance = currentActivism;
-            let personalBalance = currentPersonal;
-            let activismIndex = 0, personalIndex = 0;
-
-            const tableData = { dates: [], activism: [], personal: [] };
-
-            state.paycheckDates.forEach(paycheck => {
-                const paycheckKey = dateKey(paycheck);
-
-                while (activismIndex < activismDays.length && activismDays[activismIndex] < paycheckKey) {
-                    activismBalance -= getHoursForDay(new Date(activismDays[activismIndex] + 'T12:00:00'));
-                    activismIndex++;
-                }
-                while (personalIndex < personalDaysList.length && personalDaysList[personalIndex] < paycheckKey) {
-                    personalBalance -= 1;
-                    personalIndex++;
-                }
-
-                tableData.dates.push(paycheck);
-                tableData.activism.push({ value: activismBalance, danger: activismBalance < 0 });
-                tableData.personal.push({ value: personalBalance, danger: personalBalance < 0 });
-            });
-
-            let tableHTML = '<table><tr><th>Date</th>';
-            tableData.dates.forEach(d => tableHTML += `<td>${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</td>`);
-            tableHTML += '</tr><tr class="activism-row"><th>Activism</th>';
-            tableData.activism.forEach(b => tableHTML += `<td class="${b.danger ? 'danger' : ''}">${b.value.toFixed(0)}</td>`);
-            tableHTML += '</tr><tr class="personal-row"><th>Personal</th>';
-            tableData.personal.forEach(b => tableHTML += `<td class="${b.danger ? 'danger' : ''}">${b.value}</td>`);
-            tableHTML += '</tr></table>';
-            dataTable.innerHTML = tableHTML;
+            let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
+            tableHTML += '</tr><tr class="wellness-row"><th>Well</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.over ? 'warning' : ''); tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`; });
+            tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
         }
 
         function renderCalendar() {
             const container = document.getElementById('calendarContainer');
             container.innerHTML = '';
-
             const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+            const today = new Date(); today.setHours(0,0,0,0);
             const todayKey = dateKey(today);
-
             for (let month = 0; month < 12; month++) {
-                const card = document.createElement('div');
-                card.className = 'month-card';
-
-                const title = document.createElement('div');
-                title.className = 'month-title';
-                title.textContent = MONTH_NAMES[month];
-                card.appendChild(title);
-
-                const header = document.createElement('div');
-                header.className = 'weekday-header';
-                weekdays.forEach(day => {
-                    const span = document.createElement('span');
-                    span.textContent = day;
-                    header.appendChild(span);
-                });
+                const card = document.createElement('div'); card.className = 'month-card';
+                const title = document.createElement('div'); title.className = 'month-title'; title.textContent = MONTH_NAMES[month]; card.appendChild(title);
+                const header = document.createElement('div'); header.className = 'weekday-header';
+                weekdays.forEach(day => { const span = document.createElement('span'); span.textContent = day; header.appendChild(span); });
                 card.appendChild(header);
-
-                const grid = document.createElement('div');
-                grid.className = 'days-grid';
-
-                const firstDay = new Date(state.year, month, 1);
-                const lastDay = new Date(state.year, month + 1, 0);
-
-                for (let i = 0; i < firstDay.getDay(); i++) {
-                    const empty = document.createElement('div');
-                    empty.className = 'day empty';
-                    grid.appendChild(empty);
-                }
-
+                const grid = document.createElement('div'); grid.className = 'days-grid';
+                const firstDay = new Date(state.year, month, 1), lastDay = new Date(state.year, month + 1, 0);
+                for (let i = 0; i < firstDay.getDay(); i++) { const empty = document.createElement('div'); empty.className = 'day empty'; grid.appendChild(empty); }
                 for (let day = 1; day <= lastDay.getDate(); day++) {
-                    const date = new Date(state.year, month, day);
-                    const key = dateKey(date);
-                    const dow = date.getDay();
-                    const isPast = date < today;
-
-                    const cell = document.createElement('div');
-                    cell.className = 'day';
-                    cell.textContent = day;
-
-                    const tooltip = document.createElement('div');
-                    tooltip.className = 'tooltip';
-
-                    const isHoliday = state.holidays[key];
-                    const is980 = state.nine80Fridays[key];
-                    const isWeekend = dow === 0 || dow === 6;
-                    const isToday = key === todayKey;
-
-                    let selectedType = null;
-                    Object.keys(state.selectedDays).forEach(t => {
-                        if (state.selectedDays[t].has(key)) selectedType = t;
-                    });
-
+                    const date = new Date(state.year, month, day), key = dateKey(date), dow = date.getDay(), isPast = date < today;
+                    const cell = document.createElement('div'); cell.className = 'day'; cell.textContent = day;
+                    const tooltip = document.createElement('div'); tooltip.className = 'tooltip';
+                    const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6, isToday = key === todayKey;
+                    let selectedType = null; Object.keys(state.selectedDays).forEach(t => { if (state.selectedDays[t].has(key)) selectedType = t; });
                     let canClick = false;
-
                     if (selectedType) {
-                        cell.classList.add(`${selectedType}-selected`);
-                        if (isPast) cell.classList.add('past');
-                        const hours = selectedType === 'personal' ? '1 day' : getHoursForDay(date) + 'h';
-                        tooltip.textContent = isPast ? `${selectedType} (past)` : `${selectedType} (${hours})`;
+                        cell.classList.add(`${selectedType}-selected`); if (isPast) cell.classList.add('past');
+                        tooltip.textContent = isPast ? `${selectedType} (past)` : `${selectedType} (${selectedType === 'personal' ? '1d' : getHoursForDay(date) + 'h'})`;
                         canClick = true;
-                        if (selectedType !== 'personal') {
-                            const badge = document.createElement('span');
-                            badge.className = 'hours-badge';
-                            badge.textContent = getHoursForDay(date) + 'h';
-                            cell.appendChild(badge);
-                        }
-                    } else if (isHoliday && is980) {
-                        // Both holiday and 9/80 Friday - show diagonal split
-                        cell.classList.add('holiday-nine80');
-                        if (isPast) cell.classList.add('past');
-                        tooltip.textContent = `${isHoliday} + 9/80 Friday`;
-                    } else if (isHoliday) {
-                        cell.classList.add('holiday');
-                        if (isPast) cell.classList.add('past');
-                        tooltip.textContent = isHoliday;
-                    } else if (is980) {
-                        cell.classList.add('nine80');
-                        if (isPast) cell.classList.add('past');
-                        tooltip.textContent = '9/80 Friday';
-                    } else if (isWeekend) {
-                        cell.classList.add('weekend');
-                        tooltip.textContent = dow === 0 ? 'Sunday' : 'Saturday';
-                    } else {
-                        if (isPast) cell.classList.add('past');
-                        tooltip.textContent = isPast ? 'Past' : `Click to add (${getHoursForDay(date)}h)`;
-                        canClick = true;
-                    }
-
+                        if (selectedType !== 'personal') { const badge = document.createElement('span'); badge.className = 'hours-badge'; badge.textContent = getHoursForDay(date) + 'h'; cell.appendChild(badge); }
+                    } else if (isHoliday && is980) { cell.classList.add('holiday-nine80'); if (isPast) cell.classList.add('past'); tooltip.textContent = `${isHoliday} + 9/80`; }
+                    else if (isHoliday) { cell.classList.add('holiday'); if (isPast) cell.classList.add('past'); tooltip.textContent = isHoliday; }
+                    else if (is980) { cell.classList.add('nine80'); if (isPast) cell.classList.add('past'); tooltip.textContent = '9/80 Friday'; }
+                    else if (isWeekend) { cell.classList.add('weekend'); tooltip.textContent = dow === 0 ? 'Sunday' : 'Saturday'; }
+                    else { if (isPast) cell.classList.add('past'); tooltip.textContent = isPast ? 'Past' : `Add (${getHoursForDay(date)}h)`; canClick = true; }
                     if (isToday) cell.classList.add('today');
                     if (canClick) cell.onclick = () => toggleDay(key);
-
-                    cell.appendChild(tooltip);
-                    grid.appendChild(cell);
+                    cell.appendChild(tooltip); grid.appendChild(cell);
                 }
-
-                card.appendChild(grid);
-                container.appendChild(card);
+                card.appendChild(grid); container.appendChild(card);
             }
         }
 
+        function renderMobileYearView() {
+            const grid = document.getElementById('yearGrid');
+            grid.innerHTML = '';
+            const today = new Date(); today.setHours(0,0,0,0);
+            const todayKey = dateKey(today);
+            for (let month = 0; month < 12; month++) {
+                const card = document.createElement('div'); card.className = 'mini-month';
+                card.onclick = () => { state.currentMobileMonth = month; switchMobileTab('month', document.querySelectorAll('.nav-item')[1]); };
+                const title = document.createElement('div'); title.className = 'mini-month-title'; title.textContent = SHORT_MONTHS[month]; card.appendChild(title);
+                const days = document.createElement('div'); days.className = 'mini-days';
+                const firstDay = new Date(state.year, month, 1), lastDay = new Date(state.year, month + 1, 0);
+                for (let i = 0; i < firstDay.getDay(); i++) { const empty = document.createElement('div'); empty.className = 'mini-day empty'; days.appendChild(empty); }
+                for (let day = 1; day <= lastDay.getDate(); day++) {
+                    const date = new Date(state.year, month, day), key = dateKey(date), dow = date.getDay();
+                    const cell = document.createElement('div'); cell.className = 'mini-day';
+                    const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6;
+                    let selectedType = null; Object.keys(state.selectedDays).forEach(t => { if (state.selectedDays[t].has(key)) selectedType = t; });
+                    if (selectedType) cell.classList.add(`${selectedType}-selected`);
+                    else if (isHoliday && is980) cell.classList.add('holiday-nine80');
+                    else if (isHoliday) cell.classList.add('holiday');
+                    else if (is980) cell.classList.add('nine80');
+                    else if (isWeekend) cell.classList.add('weekend');
+                    if (key === todayKey) cell.classList.add('today');
+                    days.appendChild(cell);
+                }
+                card.appendChild(days); grid.appendChild(card);
+            }
+        }
+
+        function renderMobileMonth() {
+            const container = document.getElementById('mobileMonthCalendar');
+            container.innerHTML = '';
+            document.getElementById('currentMonthTitle').textContent = MONTH_NAMES[state.currentMobileMonth];
+            const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            const today = new Date(); today.setHours(0,0,0,0);
+            const todayKey = dateKey(today);
+            const card = document.createElement('div'); card.className = 'month-card';
+            const header = document.createElement('div'); header.className = 'weekday-header';
+            weekdays.forEach(day => { const span = document.createElement('span'); span.textContent = day; header.appendChild(span); });
+            card.appendChild(header);
+            const grid = document.createElement('div'); grid.className = 'days-grid';
+            const firstDay = new Date(state.year, state.currentMobileMonth, 1), lastDay = new Date(state.year, state.currentMobileMonth + 1, 0);
+            for (let i = 0; i < firstDay.getDay(); i++) { const empty = document.createElement('div'); empty.className = 'day empty'; grid.appendChild(empty); }
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(state.year, state.currentMobileMonth, day), key = dateKey(date), dow = date.getDay(), isPast = date < today;
+                const cell = document.createElement('div'); cell.className = 'day'; cell.textContent = day;
+                const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6, isToday = key === todayKey;
+                let selectedType = null; Object.keys(state.selectedDays).forEach(t => { if (state.selectedDays[t].has(key)) selectedType = t; });
+                let canClick = false;
+                if (selectedType) { cell.classList.add(`${selectedType}-selected`); if (isPast) cell.classList.add('past'); canClick = true; }
+                else if (isHoliday && is980) { cell.classList.add('holiday-nine80'); if (isPast) cell.classList.add('past'); }
+                else if (isHoliday) { cell.classList.add('holiday'); if (isPast) cell.classList.add('past'); }
+                else if (is980) { cell.classList.add('nine80'); if (isPast) cell.classList.add('past'); }
+                else if (isWeekend) { cell.classList.add('weekend'); }
+                else { if (isPast) cell.classList.add('past'); canClick = true; }
+                if (isToday) cell.classList.add('today');
+                if (canClick) cell.onclick = () => toggleDay(key);
+                grid.appendChild(cell);
+            }
+            card.appendChild(grid); container.appendChild(card);
+        }
+
         document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('click', (e) => { if (!e.target.closest('.fab') && !e.target.closest('.fab-menu')) closeFabMenu(); });
     </script>
 </body>
 </html>
