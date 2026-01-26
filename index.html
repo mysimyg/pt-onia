@@ -893,6 +893,7 @@
                                 <option value="4-6">4-6 years</option>
                                 <option value="7-9">7-9 years</option>
                                 <option value="10+" selected>10+ years</option>
+                                <option value="custom">Custom</option>
                             </select>
                         </div>
                     </div>
@@ -929,11 +930,11 @@
                             </div>
                             <div class="input-group">
                                 <label>Per Paycheck</label>
-                                <input type="number" id="ptoPerPaycheck" value="7.69" readonly>
+                                <input type="number" id="ptoPerPaycheck" value="3.07" step="0.01" readonly onchange="recalculate()">
                             </div>
                             <div class="input-group">
                                 <label>Max Cap</label>
-                                <input type="number" id="maxPto" value="300" readonly>
+                                <input type="number" id="maxPto" value="120" step="1" readonly onchange="recalculate()">
                             </div>
                         </div>
                     </div>
@@ -943,7 +944,7 @@
                         <div class="input-row">
                             <div class="input-group">
                                 <label>Current Balance</label>
-                                <input type="number" id="currentActivism" step="0.01" value="18" min="0" max="18" onchange="recalculate()">
+                                <input type="number" id="currentActivism" step="0.01" value="0" min="0" max="18" onchange="recalculate()">
                             </div>
                             <div class="input-group">
                                 <label>Yearly Allowance</label>
@@ -958,12 +959,12 @@
                             <div class="input-group">
                                 <label>Current Days</label>
                                 <select id="currentPersonal" onchange="recalculate()">
-                                    <option value="0">0 days</option>
+                                    <option value="0" selected>0 days</option>
                                     <option value="1">1 day</option>
                                     <option value="2">2 days</option>
                                     <option value="3">3 days</option>
                                     <option value="4">4 days</option>
-                                    <option value="5" selected>5 days</option>
+                                    <option value="5">5 days</option>
                                 </select>
                             </div>
                             <div class="input-group">
@@ -1299,11 +1300,31 @@
 
         function applyServicePreset() {
             const preset = document.getElementById('yearsOfService').value;
-            if (SERVICE_PRESETS[preset]) {
-                document.getElementById('ptoPerPaycheck').value = SERVICE_PRESETS[preset].ptoPerPaycheck;
-                document.getElementById('maxPto').value = SERVICE_PRESETS[preset].maxPto;
+            const ptoPerPaycheckEl = document.getElementById('ptoPerPaycheck');
+            const maxPtoEl = document.getElementById('maxPto');
+
+            if (preset === 'custom') {
+                // Only unlock these two fields for custom tuning
+                ptoPerPaycheckEl.removeAttribute('readonly');
+                maxPtoEl.removeAttribute('readonly');
+                ptoPerPaycheckEl.style.cursor = 'text';
+                maxPtoEl.style.cursor = 'text';
                 recalculate();
+                return;
             }
+
+            // Lock the fields for standard presets
+            ptoPerPaycheckEl.setAttribute('readonly', 'readonly');
+            maxPtoEl.setAttribute('readonly', 'readonly');
+            ptoPerPaycheckEl.style.cursor = 'not-allowed';
+            maxPtoEl.style.cursor = 'not-allowed';
+
+            if (SERVICE_PRESETS[preset]) {
+                ptoPerPaycheckEl.value = SERVICE_PRESETS[preset].ptoPerPaycheck;
+                maxPtoEl.value = SERVICE_PRESETS[preset].maxPto;
+            }
+
+            recalculate();
         }
 
         function toggleSection(contentId, headerEl) {
@@ -1340,6 +1361,7 @@
                 container.appendChild(label);
             });
 
+            applyServicePreset();
             regenerate();
         }
 
@@ -1435,7 +1457,7 @@
                         const key = dateKey(d);
                         if (state.nine80Fridays[key] || state.holidays[key]) {
                             nine80Fridays++;
-                        } else if (d >= today) {
+                        } else {
                             workingFridays.push(key);
                         }
                     }
@@ -1443,10 +1465,12 @@
 
                 if (totalFridays === 5) {
                     const fridaysNeeded = 5 - nine80Fridays;
-                    if (fridaysNeeded === 2 && workingFridays.length >= 2) {
-                        state.twoForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: workingFridays });
-                    } else if (fridaysNeeded === 3 && workingFridays.length >= 3) {
-                        state.threeForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: workingFridays });
+                    const futureWorkingFridays = workingFridays.filter(k => !isPastDate(k));
+
+                    if (fridaysNeeded === 2 && futureWorkingFridays.length >= 2) {
+                        state.twoForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: futureWorkingFridays });
+                    } else if (fridaysNeeded === 3 && futureWorkingFridays.length >= 3) {
+                        state.threeForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: futureWorkingFridays });
                     }
                 }
             }
