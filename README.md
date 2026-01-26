@@ -20,6 +20,8 @@ A visual, interactive time-off planning tool designed for employees on a **9/80 
   - **Gray** - Weekends
 - **Past dates** are dimmed and don't affect future balance calculations
 - **Hover tooltips** show details for each day
+- **Light/Dark mode toggle** for your preference
+- **Fully mobile responsive** - works on phones and tablets
 
 ### Multiple Time-Off Types
 Track four different types of leave, each with their own color and rules:
@@ -28,21 +30,39 @@ Track four different types of leave, each with their own color and rules:
 |------|---------|----------|-------|
 | **PTO/Vacation** | Per paycheck (based on years of service) | Up to max cap | 9 hrs Mon-Thu, 8 hrs Friday |
 | **Activism** | 18 hrs/year (flat) | None - use it or lose it | For volunteer/charitable activities |
-| **Personal Days** | 5 days/year | N/A | Counts as full day regardless of day of week |
+| **Personal Days** | 5 days/year | N/A | Counts as 1 full day regardless of day of week |
 | **Wellness/Sick** | 2.76 hrs/paycheck | Max 108 hrs | Can accrue over 108 during year, but excess is lost at year-end |
 
 ### Smart Optimization Suggestions
-The tool identifies high-value time-off opportunities:
 
-- **Super Combos** - When a Monday holiday aligns with a 9/80 Friday, take Tue-Wed-Thu off for **9 consecutive days** using only 27 hours of PTO
-- **4-Day Weekends** - Take the Monday after a 9/80 Friday off for an extended weekend
-- **Monthly Friday Packages** - See how many Fridays you need to take off to have every Friday in a month off
-- **Summer Fridays** - Package deal for all Fridays May through August
+#### Mega Combos (NEW!)
+The ultimate time-off hack! When a Monday holiday aligns with a 9/80 Friday:
+- Take the **Friday before** off
+- Take **Tue-Wed-Thu** off (the Super Combo)
+- Take the **Monday after** off
+- **Result**: Up to 16 consecutive days off!
+
+#### Super Combos
+When a Monday holiday falls in the same week as your 9/80 Friday:
+- Monday = Holiday (free)
+- Tuesday, Wednesday, Thursday = PTO (27 hrs)
+- Friday = 9/80 day off (free)
+- **Result**: 9 consecutive days off for 27 hours of PTO!
+
+#### 4-Day Weekends
+Take the Monday after a 9/80 Friday off for an extended weekend (9 hrs PTO).
+
+#### Friday Packages
+- **Every Friday Off** - Take all working Fridays off for the year
+- **Summer Fridays** - All Fridays May through August
+- **2 for 5 Fridays** - Months where taking 2 Fridays gives you all 5 Fridays off
+- **3 for 5 Fridays** - Months where taking 3 Fridays gives you all 5 Fridays off
 
 ### Balance Projections
 - **PTO Bar Chart** - Visual projection of your PTO balance throughout the year
 - **Wellness Bar Chart** - Track wellness hours and see if you'll exceed the rollover limit
 - **Data Tables** - See exact balances at each pay period for all time-off types
+- **Work Days Off Counter** - Shows how many actual work days you're taking off (separate from total including weekends)
 - **Year-End Goal Tracking** - Set a target balance and get feedback on whether you're on track
 
 ### Years of Service Presets
@@ -65,13 +85,13 @@ Automatically sets your PTO accrual rate and max cap based on tenure:
 
 1. **Year** - Select the calendar year you're planning
 2. **Years of Service** - Choose your tenure bracket to auto-fill PTO rates
-3. **Next Paycheck** - Enter your next paycheck date (used to calculate all pay periods)
-4. **Next 9/80 Friday** - Enter your next scheduled 9/80 Friday off
+3. **First Paycheck of Year** - Enter the first paycheck date (used to calculate all pay periods)
+4. **First 9/80 Friday of Year** - Enter the first 9/80 Friday off
 5. **End-of-Year PTO Goal** (optional) - Set a target balance if you want to roll over hours
 
 ### 2. Enter Your Current Balances
 
-**Under "Current Balances & Limits":**
+**Under "Current Balances":**
 
 - **PTO Current Balance** - How many PTO hours you have right now
 - **Activism Current Balance** - Remaining activism hours (default: 18)
@@ -95,7 +115,7 @@ Check/uncheck holidays based on what your company observes. Common options:
 **Three ways to add time off:**
 
 1. **Click the Calendar** - Select a time-off type (PTO, Activism, Personal, Wellness) then click any workday
-2. **Use Quick Select** - Click buttons like "Super Combos" or "Summer Fridays" to auto-fill optimization opportunities
+2. **Use Quick Select** - Click buttons for combos, Friday packages, or month-specific deals
 3. **Click Opportunities** - In the sidebar, click specific opportunities to toggle them
 
 ### 5. Review Your Plan
@@ -103,8 +123,9 @@ Check/uncheck holidays based on what your company observes. Common options:
 **Monitor your balances in real-time:**
 
 - **Projected Year-End Balances** - See where each balance will be at year-end
+- **Work Days Off** - Number of actual work days off (PTO, wellness, activism, personal, 9/80)
+- **Total Days Off** - Including weekends and holidays
 - **Balance Projection Charts** - Visual bar charts for PTO and Wellness
-- **Data Tables** - Exact balance at each pay period
 - **Warnings** - Yellow/red indicators when approaching limits
 
 ---
@@ -125,23 +146,26 @@ This affects PTO calculations:
 
 ## Optimization Strategies
 
-### Maximize Long Weekends
-- **9/80 Fridays** already give you a 3-day weekend every other week
-- Take the **Monday after** a 9/80 Friday for a 4-day weekend (9 hrs PTO)
-- Take a **working Friday** for a 3-day weekend (only 8 hrs PTO)
+### Mega Combos - Maximum Time Off
+For the absolute maximum consecutive days off:
+1. Find a week where a Monday holiday aligns with your 9/80 Friday
+2. Take the Friday before (if it's a working Friday)
+3. Take Tuesday, Wednesday, Thursday
+4. Take the Monday after
 
-### Super Combo Opportunities
+**Example**: Presidents Day week could give you up to 16 days off!
+
+### Super Combos - Best Value
 When a Monday holiday falls in the same week as your 9/80 Friday:
-- Monday = Holiday (free)
-- Tuesday, Wednesday, Thursday = PTO (27 hrs)
-- Friday = 9/80 day off (free)
-- **Result**: 9 consecutive days off for 27 hours of PTO!
+- 27 hours of PTO = 9 consecutive days off
+- Look for these around MLK Day, Presidents Day, Memorial Day, Labor Day
 
-Look for these around:
-- MLK Day (January)
-- Presidents Day (February)
-- Memorial Day (May)
-- Labor Day (September)
+### 2 for 5 and 3 for 5 Fridays
+In months with 5 Fridays, depending on how your 9/80 schedule aligns:
+- **2 for 5**: Take just 2 Fridays off to have every Friday in the month off
+- **3 for 5**: Take 3 Fridays off to have every Friday in the month off
+
+The tool automatically calculates which months qualify based on your 9/80 schedule!
 
 ### Avoid Losing Hours
 - Watch the **PTO projection chart** for when you approach your max cap
@@ -149,10 +173,18 @@ Look for these around:
 - Set an **End-of-Year Goal** to track against a specific target
 - **Wellness hours** over 108 will be lost at year-end
 
-### Monthly Friday Strategy
-In months with 5 Fridays, you might only need to take 2 Fridays off to have every Friday off (thanks to 9/80 Fridays). Check:
-- **May** - Often has favorable Friday alignment
-- **October** - Another good month for Friday packages
+---
+
+## Design
+
+The interface is inspired by [Patagonia.com](https://patagonia.com) - clean, minimal, and functional with:
+- **Light and Dark modes** - Toggle in the header
+- **Inter font family** - Clean, modern typography
+- **Patagonia accent colors** used tastefully:
+  - Orange: rgb(255, 42, 0)
+  - Purple: rgb(89, 0, 125)
+  - Blue: rgb(0, 61, 167)
+- **Mobile-first responsive design** - Works great on phones, tablets, and desktop
 
 ---
 
@@ -160,8 +192,8 @@ In months with 5 Fridays, you might only need to take 2 Fridays off to have ever
 
 ### Browser Compatibility
 - Works in all modern browsers (Chrome, Firefox, Safari, Edge)
-- Responsive design works on desktop and tablet
-- Best experience on screens 1200px+ wide
+- Responsive design works on all screen sizes
+- Touch-friendly for mobile devices
 
 ### Data Storage
 - All data is stored locally in your browser session
@@ -174,7 +206,7 @@ In months with 5 Fridays, you might only need to take 2 Fridays off to have ever
 - Wellness accrues each paycheck but can exceed 108 during the year
 - Wellness over 108 at year-end is lost
 - Activism doesn't accrue - you get 18 hrs at start of year
-- Personal days don't accrue - you get 5 days at start of year
+- Personal days are counted as whole days (not hours)
 
 ---
 
