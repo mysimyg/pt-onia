@@ -13,6 +13,7 @@ A visual, interactive time-off planning tool designed for employees on a **9/80 
 - **Color-coded days** for easy visualization:
   - **Green** - Company holidays
   - **Blue** - 9/80 Fridays (already off)
+  - **Diagonal split** - Days that are both a holiday and 9/80 Friday
   - **Pink** - PTO/Vacation
   - **Purple** - Activism hours
   - **Gold** - Personal days
@@ -20,7 +21,7 @@ A visual, interactive time-off planning tool designed for employees on a **9/80 
   - **Gray** - Weekends
 - **Past dates** are dimmed and don't affect future balance calculations
 - **Hover tooltips** show details for each day
-- **Light/Dark mode toggle** for your preference
+- **8 theme options** - 4 light and 4 dark themes to choose from
 - **Fully mobile responsive** - works on phones and tablets
 
 ### Multiple Time-Off Types
@@ -35,7 +36,7 @@ Track four different types of leave, each with their own color and rules:
 
 ### Smart Optimization Suggestions
 
-#### Mega Combos (NEW!)
+#### Mega Combos
 The ultimate time-off hack! When a Monday holiday aligns with a 9/80 Friday:
 - Take the **Friday before** off
 - Take **Tue-Wed-Thu** off (the Super Combo)
@@ -74,6 +75,7 @@ Automatically sets your PTO accrual rate and max cap based on tenure:
 | 4-6 years | 4.61 hrs | 180 hrs |
 | 7-9 years | 6.15 hrs | 240 hrs |
 | 10+ years | 7.69 hrs | 300 hrs |
+| Custom | User-defined | User-defined |
 
 ---
 
@@ -84,7 +86,7 @@ Automatically sets your PTO accrual rate and max cap based on tenure:
 **In the sidebar, set up your profile:**
 
 1. **Year** - Select the calendar year you're planning
-2. **Years of Service** - Choose your tenure bracket to auto-fill PTO rates
+2. **Years of Service** - Choose your tenure bracket to auto-fill PTO rates, or select "Custom" to enter your own values
 3. **First Paycheck of Year** - Enter the first paycheck date (used to calculate all pay periods)
 4. **First 9/80 Friday of Year** - Enter the first 9/80 Friday off
 5. **End-of-Year PTO Goal** (optional) - Set a target balance if you want to roll over hours
@@ -94,7 +96,7 @@ Automatically sets your PTO accrual rate and max cap based on tenure:
 **Under "Current Balances":**
 
 - **PTO Current Balance** - How many PTO hours you have right now
-- **Activism Current Balance** - Remaining activism hours (default: 18)
+- **Activism Current Balance** - Remaining activism hours
 - **Personal Days** - Select how many personal days you have (0-5)
 - **Wellness Current Balance** - Your current wellness/sick hour balance
 
@@ -107,7 +109,7 @@ Check/uncheck holidays based on what your company observes. Common options:
 - Juneteenth, Independence Day, Labor Day
 - Columbus Day (often not observed)
 - Veterans Day (often not observed)
-- Thanksgiving + Day After
+- Thanksgiving
 - Christmas Eve + Christmas Day
 
 ### 4. Plan Your Time Off
@@ -175,16 +177,23 @@ The tool automatically calculates which months qualify based on your 9/80 schedu
 
 ---
 
-## Design
+## Themes
 
-The interface is inspired by [Patagonia.com](https://patagonia.com) - clean, minimal, and functional with:
-- **Light and Dark modes** - Toggle in the header
-- **Inter font family** - Clean, modern typography
-- **Patagonia accent colors** used tastefully:
-  - Orange: rgb(255, 42, 0)
-  - Purple: rgb(89, 0, 125)
-  - Blue: rgb(0, 61, 167)
-- **Mobile-first responsive design** - Works great on phones, tablets, and desktop
+The application includes 8 color themes to suit your preference:
+
+**Light Themes:**
+- **Default** - Clean and modern
+- **Minimal** - Muted, earthy tones
+- **Coastal** - Ocean-inspired blues and teals
+- **Bold** - Vibrant, high-contrast colors
+
+**Dark Themes:**
+- **Default** - Standard dark mode
+- **Minimal** - Warm, subdued earth tones
+- **Coastal** - Deep ocean night colors
+- **Bold** - Neon-inspired vibrant accents
+
+Your theme preference is saved in your browser.
 
 ---
 
@@ -197,8 +206,9 @@ The interface is inspired by [Patagonia.com](https://patagonia.com) - clean, min
 
 ### Data Storage
 - All data is stored locally in your browser session
+- Theme preference is saved to localStorage
 - No server, no accounts, no data collection
-- Refresh the page to reset (your selections won't persist)
+- Refresh the page to reset selections (theme preference persists)
 
 ### Calculations
 - PTO accrues each paycheck (every 2 weeks)

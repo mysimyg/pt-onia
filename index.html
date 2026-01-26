@@ -9,10 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Patagonia-inspired colors */
-            --pat-orange: rgb(255, 42, 0);
-            --pat-purple: rgb(89, 0, 125);
-            --pat-blue: rgb(0, 61, 167);
+            /* Accent colors */
+            --accent-primary: #2563eb;
+            --accent-secondary: #7c3aed;
+            --accent-highlight: #dc2626;
 
             /* Light mode (default) */
             --bg-primary: #ffffff;
@@ -39,7 +39,95 @@
             --color-danger: #ef4444;
         }
 
-        [data-theme="dark"] {
+        /* Light Theme: Default */
+        [data-theme="light-default"] {
+            --accent-primary: #2563eb;
+            --accent-secondary: #7c3aed;
+            --accent-highlight: #dc2626;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f7f7f7;
+            --bg-tertiary: #eeeeee;
+            --text-primary: #1a1a1a;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border-color: #e0e0e0;
+            --color-holiday: #22c55e;
+            --color-nine80: #3b82f6;
+            --color-pto: #ec4899;
+            --color-activism: #8b5cf6;
+            --color-personal: #f59e0b;
+            --color-wellness: #14b8a6;
+            --color-weekend: #d1d5db;
+        }
+
+        /* Light Theme: Minimal (Japanese Muji-inspired) */
+        [data-theme="light-minimal"] {
+            --accent-primary: #666666;
+            --accent-secondary: #888888;
+            --accent-highlight: #333333;
+            --bg-primary: #fafafa;
+            --bg-secondary: #f5f5f5;
+            --bg-tertiary: #ebebeb;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border-color: #e5e5e5;
+            --color-holiday: #6b9080;
+            --color-nine80: #7d8597;
+            --color-pto: #a5a58d;
+            --color-activism: #b7b7a4;
+            --color-personal: #ddbea9;
+            --color-wellness: #9db4c0;
+            --color-weekend: #e0e0e0;
+        }
+
+        /* Light Theme: Coastal (Japanese sea-inspired) */
+        [data-theme="light-coastal"] {
+            --accent-primary: #0077b6;
+            --accent-secondary: #00a8e8;
+            --accent-highlight: #ff6b6b;
+            --bg-primary: #f8fbfc;
+            --bg-secondary: #e8f4f8;
+            --bg-tertiary: #d6eaf2;
+            --text-primary: #1b4965;
+            --text-secondary: #457b9d;
+            --text-muted: #7da3b7;
+            --border-color: #bee3f0;
+            --color-holiday: #52b788;
+            --color-nine80: #4895ef;
+            --color-pto: #f77f92;
+            --color-activism: #9d80cb;
+            --color-personal: #f9c74f;
+            --color-wellness: #43aa8b;
+            --color-weekend: #cce3de;
+        }
+
+        /* Light Theme: Bold (Japanese vibrant) */
+        [data-theme="light-bold"] {
+            --accent-primary: #e63946;
+            --accent-secondary: #ff006e;
+            --accent-highlight: #fb5607;
+            --bg-primary: #ffffff;
+            --bg-secondary: #fff5f5;
+            --bg-tertiary: #ffe8e8;
+            --text-primary: #2b2d42;
+            --text-secondary: #555b6e;
+            --text-muted: #8d93a5;
+            --border-color: #ebd5d5;
+            --color-holiday: #06d6a0;
+            --color-nine80: #4361ee;
+            --color-pto: #ff006e;
+            --color-activism: #8338ec;
+            --color-personal: #ffbe0b;
+            --color-wellness: #3a86a8;
+            --color-weekend: #e8e8e8;
+        }
+
+        /* Dark Theme: Default */
+        [data-theme="dark-default"] {
+            --accent-primary: #60a5fa;
+            --accent-secondary: #a78bfa;
+            --accent-highlight: #f87171;
             --bg-primary: #121212;
             --bg-secondary: #1e1e1e;
             --bg-tertiary: #2a2a2a;
@@ -47,8 +135,76 @@
             --text-secondary: #b0b0b0;
             --text-muted: #808080;
             --border-color: #333333;
-            --shadow: rgba(0, 0, 0, 0.3);
+            --color-holiday: #4ade80;
+            --color-nine80: #60a5fa;
+            --color-pto: #f472b6;
+            --color-activism: #a78bfa;
+            --color-personal: #fbbf24;
+            --color-wellness: #2dd4bf;
             --color-weekend: #404040;
+        }
+
+        /* Dark Theme: Minimal (Japanese Wabi-sabi) */
+        [data-theme="dark-minimal"] {
+            --accent-primary: #a8a29e;
+            --accent-secondary: #d6d3d1;
+            --accent-highlight: #78716c;
+            --bg-primary: #1c1917;
+            --bg-secondary: #292524;
+            --bg-tertiary: #3a3432;
+            --text-primary: #e7e5e4;
+            --text-secondary: #a8a29e;
+            --text-muted: #78716c;
+            --border-color: #44403c;
+            --color-holiday: #84a98c;
+            --color-nine80: #8a9a9e;
+            --color-pto: #c9ada7;
+            --color-activism: #a5a58d;
+            --color-personal: #d4a574;
+            --color-wellness: #7eb09b;
+            --color-weekend: #3a3a3a;
+        }
+
+        /* Dark Theme: Coastal (Japanese night sea) */
+        [data-theme="dark-coastal"] {
+            --accent-primary: #38bdf8;
+            --accent-secondary: #22d3ee;
+            --accent-highlight: #fb7185;
+            --bg-primary: #0c1821;
+            --bg-secondary: #132632;
+            --bg-tertiary: #1b3847;
+            --text-primary: #e0f2fe;
+            --text-secondary: #7dd3fc;
+            --text-muted: #5891a8;
+            --border-color: #1e4052;
+            --color-holiday: #34d399;
+            --color-nine80: #38bdf8;
+            --color-pto: #fb7185;
+            --color-activism: #c084fc;
+            --color-personal: #fcd34d;
+            --color-wellness: #2dd4bf;
+            --color-weekend: #1a2f3d;
+        }
+
+        /* Dark Theme: Bold (Japanese neon) */
+        [data-theme="dark-bold"] {
+            --accent-primary: #ff3366;
+            --accent-secondary: #ff00ff;
+            --accent-highlight: #ff6600;
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #15151e;
+            --bg-tertiary: #1f1f2e;
+            --text-primary: #ffffff;
+            --text-secondary: #c0c0d0;
+            --text-muted: #8080a0;
+            --border-color: #2a2a40;
+            --color-holiday: #00ff88;
+            --color-nine80: #00aaff;
+            --color-pto: #ff3399;
+            --color-activism: #aa55ff;
+            --color-personal: #ffcc00;
+            --color-wellness: #00ddcc;
+            --color-weekend: #1a1a2e;
         }
 
         * {
@@ -87,25 +243,34 @@
         .header-controls {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
-        .theme-toggle {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 6px 12px;
-            cursor: pointer;
-            font-size: 13px;
-            color: var(--text-primary);
+        .theme-selector {
             display: flex;
             align-items: center;
-            gap: 6px;
-            transition: all 0.2s;
+            gap: 8px;
         }
 
-        .theme-toggle:hover {
-            border-color: var(--pat-blue);
+        .theme-selector label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .theme-selector select {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 12px;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .theme-selector select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
         }
 
         /* Main Layout */
@@ -221,7 +386,7 @@
         .input-group input:focus,
         .input-group select:focus {
             outline: none;
-            border-color: var(--pat-blue);
+            border-color: var(--accent-primary);
         }
 
         .input-group input[readonly] {
@@ -242,6 +407,19 @@
             gap: 12px;
         }
 
+        /* Custom PTO fields - hidden by default */
+        .custom-pto-fields {
+            display: none;
+        }
+
+        .custom-pto-fields.visible {
+            display: block;
+            margin-top: 12px;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+        }
+
         /* Collapsible Sections */
         .collapsible-header {
             display: flex;
@@ -253,7 +431,7 @@
         }
 
         .collapsible-header:hover .section-title {
-            color: var(--pat-blue);
+            color: var(--accent-primary);
         }
 
         .toggle-icon {
@@ -301,7 +479,7 @@
         }
 
         .holiday-item input {
-            accent-color: var(--pat-blue);
+            accent-color: var(--accent-primary);
         }
 
         /* Stats Cards */
@@ -405,25 +583,35 @@
         }
 
         .quick-btn:hover {
-            border-color: var(--pat-blue);
-            color: var(--pat-blue);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
         }
 
         .quick-btn.accent {
-            background: var(--pat-blue);
-            border-color: var(--pat-blue);
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
             color: #fff;
         }
 
         .quick-btn.accent:hover {
-            background: var(--pat-purple);
-            border-color: var(--pat-purple);
+            background: var(--accent-secondary);
+            border-color: var(--accent-secondary);
         }
 
         .quick-btn.clear {
             background: transparent;
             border-color: var(--color-danger);
             color: var(--color-danger);
+        }
+
+        .quick-btn.disabled {
+            opacity: 0.4;
+            cursor: default;
+        }
+
+        .quick-btn.disabled:hover {
+            border-color: var(--border-color);
+            color: var(--text-primary);
         }
 
         /* Opportunities */
@@ -454,7 +642,7 @@
         }
 
         .opportunity-item:hover {
-            border-color: var(--pat-blue);
+            border-color: var(--accent-primary);
         }
 
         .opportunity-item.selected {
@@ -487,7 +675,7 @@
         }
 
         .badge-hours {
-            background: var(--pat-orange);
+            background: var(--accent-highlight);
             color: #fff;
         }
 
@@ -638,6 +826,11 @@
             border-radius: 4px;
         }
 
+        /* Diagonal split for holiday + 9/80 overlap */
+        .legend-color.split {
+            background: linear-gradient(135deg, var(--color-holiday) 50%, var(--color-nine80) 50%);
+        }
+
         /* Calendar */
         .calendar-container {
             display: grid;
@@ -709,8 +902,8 @@
             }
         }
 
-        .day:hover:not(.empty):not(.weekend):not(.holiday):not(.nine80) {
-            border-color: var(--pat-blue);
+        .day:hover:not(.empty):not(.weekend):not(.holiday):not(.nine80):not(.holiday-nine80) {
+            border-color: var(--accent-primary);
             transform: scale(1.05);
             z-index: 5;
         }
@@ -740,6 +933,14 @@
             cursor: default;
         }
 
+        /* Holiday + 9/80 overlap with diagonal split */
+        .day.holiday-nine80 {
+            background: linear-gradient(135deg, var(--color-holiday) 50%, var(--color-nine80) 50%);
+            color: #fff;
+            font-weight: 600;
+            cursor: default;
+        }
+
         .day.past {
             opacity: 0.4;
         }
@@ -750,7 +951,7 @@
         .day.wellness-selected { background: var(--color-wellness); color: #fff; font-weight: 600; }
 
         .day.today {
-            box-shadow: 0 0 0 2px var(--pat-orange);
+            box-shadow: 0 0 0 2px var(--accent-highlight);
         }
 
         .day .tooltip {
@@ -811,7 +1012,7 @@
         /* Mobile Menu Toggle */
         .mobile-menu-toggle {
             display: none;
-            background: var(--pat-blue);
+            background: var(--accent-primary);
             color: #fff;
             border: none;
             padding: 12px 20px;
@@ -834,14 +1035,27 @@
         }
     </style>
 </head>
-<body data-theme="light">
+<body data-theme="light-default">
     <header class="header">
         <h1>Time Off Optimizer</h1>
         <div class="header-controls">
-            <button class="theme-toggle" onclick="toggleTheme()">
-                <span id="themeIcon">🌙</span>
-                <span id="themeText">Dark</span>
-            </button>
+            <div class="theme-selector">
+                <label>Theme:</label>
+                <select id="themeSelect" onchange="changeTheme(this.value)">
+                    <optgroup label="Light">
+                        <option value="light-default" selected>Light - Default</option>
+                        <option value="light-minimal">Light - Minimal</option>
+                        <option value="light-coastal">Light - Coastal</option>
+                        <option value="light-bold">Light - Bold</option>
+                    </optgroup>
+                    <optgroup label="Dark">
+                        <option value="dark-default">Dark - Default</option>
+                        <option value="dark-minimal">Dark - Minimal</option>
+                        <option value="dark-coastal">Dark - Coastal</option>
+                        <option value="dark-bold">Dark - Bold</option>
+                    </optgroup>
+                </select>
+            </div>
         </div>
     </header>
 
@@ -889,12 +1103,24 @@
                         <div class="input-group">
                             <label>Years of Service</label>
                             <select id="yearsOfService" onchange="applyServicePreset()">
-                                <option value="0-3">0-3 years</option>
+                                <option value="0-3" selected>0-3 years</option>
                                 <option value="4-6">4-6 years</option>
                                 <option value="7-9">7-9 years</option>
-                                <option value="10+" selected>10+ years</option>
+                                <option value="10+">10+ years</option>
                                 <option value="custom">Custom</option>
                             </select>
+                        </div>
+                    </div>
+                    <div id="customPtoFields" class="custom-pto-fields">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>PTO per Paycheck</label>
+                                <input type="number" id="customPtoPerPaycheck" step="0.01" value="3.07" onchange="applyCustomPto()">
+                            </div>
+                            <div class="input-group">
+                                <label>Max Cap</label>
+                                <input type="number" id="customMaxPto" step="1" value="120" onchange="applyCustomPto()">
+                            </div>
                         </div>
                     </div>
                     <div class="input-row">
@@ -930,11 +1156,11 @@
                             </div>
                             <div class="input-group">
                                 <label>Per Paycheck</label>
-                                <input type="number" id="ptoPerPaycheck" value="3.07" step="0.01" readonly onchange="recalculate()">
+                                <input type="number" id="ptoPerPaycheck" value="3.07" readonly>
                             </div>
                             <div class="input-group">
                                 <label>Max Cap</label>
-                                <input type="number" id="maxPto" value="120" step="1" readonly onchange="recalculate()">
+                                <input type="number" id="maxPto" value="120" readonly>
                             </div>
                         </div>
                     </div>
@@ -1058,12 +1284,12 @@
                     </div>
                 </div>
 
-                <div class="quick-section" id="twoForFiveSection" style="display: none;">
+                <div class="quick-section" id="twoForFiveSection">
                     <div class="quick-section-title">2 for 5 Fridays (by month)</div>
                     <div class="quick-actions" id="twoForFiveButtons"></div>
                 </div>
 
-                <div class="quick-section" id="threeForFiveSection" style="display: none;">
+                <div class="quick-section" id="threeForFiveSection">
                     <div class="quick-section-title">3 for 5 Fridays (by month)</div>
                     <div class="quick-actions" id="threeForFiveButtons"></div>
                 </div>
@@ -1129,6 +1355,10 @@
                     <span>9/80 Friday</span>
                 </div>
                 <div class="legend-item">
+                    <div class="legend-color split"></div>
+                    <span>Holiday + 9/80</span>
+                </div>
+                <div class="legend-item">
                     <div class="legend-color" style="background: var(--color-pto);"></div>
                     <span>PTO</span>
                 </div>
@@ -1145,7 +1375,7 @@
                     <span>Wellness</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="box-shadow: 0 0 0 2px var(--pat-orange);"></div>
+                    <div class="legend-color" style="box-shadow: 0 0 0 2px var(--accent-highlight);"></div>
                     <span>Today</span>
                 </div>
             </div>
@@ -1171,7 +1401,8 @@
             opportunities: [],
             selectedOpportunities: new Set(),
             twoForFiveMonths: [],
-            threeForFiveMonths: []
+            threeForFiveMonths: [],
+            allThreeForFiveMonths: [] // Includes past months for display
         };
 
         const SERVICE_PRESETS = {
@@ -1192,7 +1423,6 @@
             { id: 'columbus', name: "Columbus Day", default: false },
             { id: 'veterans', name: "Veterans Day", default: false },
             { id: 'thanksgiving', name: "Thanksgiving", default: true },
-            { id: 'thanksgivingfri', name: "Day After Thanksgiving", default: true },
             { id: 'christmaseve', name: "Christmas Eve", default: true },
             { id: 'christmas', name: "Christmas Day", default: true }
         ];
@@ -1200,13 +1430,10 @@
         const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June',
                            'July', 'August', 'September', 'October', 'November', 'December'];
 
-        // Theme toggle
-        function toggleTheme() {
-            const body = document.body;
-            const isDark = body.getAttribute('data-theme') === 'dark';
-            body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-            document.getElementById('themeIcon').textContent = isDark ? '🌙' : '☀️';
-            document.getElementById('themeText').textContent = isDark ? 'Dark' : 'Light';
+        // Theme change
+        function changeTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            localStorage.setItem('preferredTheme', theme);
         }
 
         // Mobile sidebar toggle
@@ -1253,10 +1480,6 @@
                 case 'columbus': return nthWeekday(year, 9, 1, 2);
                 case 'veterans': return observedDate(new Date(year, 10, 11));
                 case 'thanksgiving': return nthWeekday(year, 10, 4, 4);
-                case 'thanksgivingfri': {
-                    const tg = nthWeekday(year, 10, 4, 4);
-                    return new Date(tg.getFullYear(), tg.getMonth(), tg.getDate() + 1);
-                }
                 case 'christmaseve': {
                     const xmasEve = new Date(year, 11, 24);
                     const day = xmasEve.getDay();
@@ -1300,30 +1523,26 @@
 
         function applyServicePreset() {
             const preset = document.getElementById('yearsOfService').value;
-            const ptoPerPaycheckEl = document.getElementById('ptoPerPaycheck');
-            const maxPtoEl = document.getElementById('maxPto');
+            const customFields = document.getElementById('customPtoFields');
 
             if (preset === 'custom') {
-                // Only unlock these two fields for custom tuning
-                ptoPerPaycheckEl.removeAttribute('readonly');
-                maxPtoEl.removeAttribute('readonly');
-                ptoPerPaycheckEl.style.cursor = 'text';
-                maxPtoEl.style.cursor = 'text';
-                recalculate();
-                return;
+                customFields.classList.add('visible');
+                applyCustomPto();
+            } else {
+                customFields.classList.remove('visible');
+                if (SERVICE_PRESETS[preset]) {
+                    document.getElementById('ptoPerPaycheck').value = SERVICE_PRESETS[preset].ptoPerPaycheck;
+                    document.getElementById('maxPto').value = SERVICE_PRESETS[preset].maxPto;
+                    recalculate();
+                }
             }
+        }
 
-            // Lock the fields for standard presets
-            ptoPerPaycheckEl.setAttribute('readonly', 'readonly');
-            maxPtoEl.setAttribute('readonly', 'readonly');
-            ptoPerPaycheckEl.style.cursor = 'not-allowed';
-            maxPtoEl.style.cursor = 'not-allowed';
-
-            if (SERVICE_PRESETS[preset]) {
-                ptoPerPaycheckEl.value = SERVICE_PRESETS[preset].ptoPerPaycheck;
-                maxPtoEl.value = SERVICE_PRESETS[preset].maxPto;
-            }
-
+        function applyCustomPto() {
+            const customPtoPerPaycheck = parseFloat(document.getElementById('customPtoPerPaycheck').value) || 0;
+            const customMaxPto = parseFloat(document.getElementById('customMaxPto').value) || 0;
+            document.getElementById('ptoPerPaycheck').value = customPtoPerPaycheck;
+            document.getElementById('maxPto').value = customMaxPto;
             recalculate();
         }
 
@@ -1336,6 +1555,13 @@
 
         // Initialize
         function init() {
+            // Load saved theme
+            const savedTheme = localStorage.getItem('preferredTheme');
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme);
+                document.getElementById('themeSelect').value = savedTheme;
+            }
+
             const yearSelect = document.getElementById('year');
             const currentYear = new Date().getFullYear();
             for (let y = currentYear - 1; y <= currentYear + 2; y++) {
@@ -1361,7 +1587,6 @@
                 container.appendChild(label);
             });
 
-            applyServicePreset();
             regenerate();
         }
 
@@ -1440,6 +1665,7 @@
         function calculateFridayDeals() {
             state.twoForFiveMonths = [];
             state.threeForFiveMonths = [];
+            state.allThreeForFiveMonths = [];
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
@@ -1448,29 +1674,43 @@
                 const lastDay = new Date(state.year, month + 1, 0);
 
                 let totalFridays = 0;
-                let nine80Fridays = 0;
+                let nine80Count = 0;
                 let workingFridays = [];
+                let allWorkingFridays = [];
 
                 for (let d = new Date(firstDay); d <= lastDay; d.setDate(d.getDate() + 1)) {
                     if (d.getDay() === 5) {
                         totalFridays++;
                         const key = dateKey(d);
                         if (state.nine80Fridays[key] || state.holidays[key]) {
-                            nine80Fridays++;
+                            nine80Count++;
                         } else {
-                            workingFridays.push(key);
+                            allWorkingFridays.push(key);
+                            if (d >= today) {
+                                workingFridays.push(key);
+                            }
                         }
                     }
                 }
 
                 if (totalFridays === 5) {
-                    const fridaysNeeded = 5 - nine80Fridays;
-                    const futureWorkingFridays = workingFridays.filter(k => !isPastDate(k));
-
-                    if (fridaysNeeded === 2 && futureWorkingFridays.length >= 2) {
-                        state.twoForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: futureWorkingFridays });
-                    } else if (fridaysNeeded === 3 && futureWorkingFridays.length >= 3) {
-                        state.threeForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: futureWorkingFridays });
+                    const fridaysNeeded = 5 - nine80Count;
+                    if (fridaysNeeded === 2) {
+                        if (workingFridays.length >= 2) {
+                            state.twoForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: workingFridays, isPast: false });
+                        }
+                    } else if (fridaysNeeded === 3) {
+                        // Track all 3-for-5 months for display, mark if past
+                        const isPast = workingFridays.length < 3;
+                        state.allThreeForFiveMonths.push({
+                            month,
+                            name: MONTH_NAMES[month],
+                            fridays: isPast ? allWorkingFridays : workingFridays,
+                            isPast
+                        });
+                        if (!isPast) {
+                            state.threeForFiveMonths.push({ month, name: MONTH_NAMES[month], fridays: workingFridays, isPast: false });
+                        }
                     }
                 }
             }
@@ -1498,13 +1738,16 @@
                 twoSection.style.display = 'none';
             }
 
-            if (state.threeForFiveMonths.length > 0) {
+            // Always show 3-for-5 section with all months (past ones greyed out)
+            if (state.allThreeForFiveMonths.length > 0) {
                 threeSection.style.display = 'block';
-                state.threeForFiveMonths.forEach(m => {
+                state.allThreeForFiveMonths.forEach(m => {
                     const btn = document.createElement('button');
-                    btn.className = 'quick-btn';
+                    btn.className = 'quick-btn' + (m.isPast ? ' disabled' : '');
                     btn.textContent = m.name;
-                    btn.onclick = () => selectMonthFridays(m.month);
+                    if (!m.isPast) {
+                        btn.onclick = () => selectMonthFridays(m.month);
+                    }
                     threeButtons.appendChild(btn);
                 });
             } else {
@@ -2165,6 +2408,11 @@
                             badge.textContent = getHoursForDay(date) + 'h';
                             cell.appendChild(badge);
                         }
+                    } else if (isHoliday && is980) {
+                        // Both holiday and 9/80 Friday - show diagonal split
+                        cell.classList.add('holiday-nine80');
+                        if (isPast) cell.classList.add('past');
+                        tooltip.textContent = `${isHoliday} + 9/80 Friday`;
                     } else if (isHoliday) {
                         cell.classList.add('holiday');
                         if (isPast) cell.classList.add('past');
