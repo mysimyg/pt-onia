@@ -929,6 +929,10 @@
                 <div class="projection-chart" id="wellnessProjectionChart"></div>
                 <div class="chart-data-table" id="wellnessDataTable"></div>
             </div>
+            <div class="chart-section">
+                <h3>Personal Days &amp; Activism Hours</h3>
+                <div class="chart-data-table" id="activismPersonalDataTable"></div>
+            </div>
             <div class="legend">
                 <div class="legend-item"><div class="legend-color" style="background:var(--color-weekend)"></div><span>Weekend</span></div>
                 <div class="legend-item"><div class="legend-color" style="background:var(--color-holiday)"></div><span>Holiday</span></div>
@@ -1688,6 +1692,7 @@
 
             renderProjectionChart(currentPto, ptoPerPaycheck, maxPto);
             renderWellnessChart(currentWellness, wellnessPerPaycheck, maxWellness);
+            renderActivismPersonalTable();
         }
 
         function renderProjectionChart(startBalance, ptoPerPaycheck, maxPto) {
@@ -1714,6 +1719,30 @@
             });
             let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
             tableHTML += '</tr><tr class="pto-row"><th>PTO</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.warning ? 'warning' : ''); tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`; });
+            tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
+        }
+
+        function renderActivismPersonalTable() {
+            const dataTable = document.getElementById('activismPersonalDataTable');
+            dataTable.innerHTML = '';
+            const currentActivism = parseFloat(document.getElementById('currentActivism').value) || 0;
+            const currentPersonal = parseInt(document.getElementById('currentPersonal').value) || 0;
+            let actBalance = currentActivism, perBalance = currentPersonal;
+            const sortedActDays = [...state.selectedDays.activism].filter(k => !isPastDate(k)).sort();
+            const sortedPerDays = [...state.selectedDays.personal].filter(k => !isPastDate(k)).sort();
+            let actIndex = 0, perIndex = 0;
+            const tableData = { dates: [], activismBalances: [], personalBalances: [] };
+            state.paycheckDates.forEach(paycheck => {
+                const paycheckKey = dateKey(paycheck);
+                while (actIndex < sortedActDays.length && sortedActDays[actIndex] < paycheckKey) { actBalance -= getHoursForDay(new Date(sortedActDays[actIndex] + 'T12:00:00')); actIndex++; }
+                while (perIndex < sortedPerDays.length && sortedPerDays[perIndex] < paycheckKey) { perBalance -= 1; perIndex++; }
+                tableData.dates.push(paycheck);
+                tableData.activismBalances.push({ value: actBalance, danger: actBalance < 0 });
+                tableData.personalBalances.push({ value: perBalance, danger: perBalance < 0 });
+            });
+            let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
+            tableHTML += '</tr><tr class="activism-row"><th>Act</th>'; tableData.activismBalances.forEach(b => { const cls = b.danger ? 'danger' : ''; tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`; });
+            tableHTML += '</tr><tr class="personal-row"><th>Per</th>'; tableData.personalBalances.forEach(b => { const cls = b.danger ? 'danger' : ''; tableHTML += `<td class="${cls}">${b.value}</td>`; });
             tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
         }
 
