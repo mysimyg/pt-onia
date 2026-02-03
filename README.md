@@ -26,12 +26,6 @@ You work 9-hour days Monday through Thursday. Fridays alternate: one week you wo
 
 Taking a Monday-Thursday off costs 9 hours of PTO. A working Friday costs 8 hours. Personal days always count as 1 day.
 
-## Files
-
-| File | What it is |
-|------|------------|
-| `index.html` | The entire app (single file, runs in any browser) |
-| `cloudflare-worker.js` | Optional short URL service for Cloudflare Workers |
 
 ## License
 
