@@ -1172,6 +1172,35 @@
             }
         }
 
+        async function requestShortUrl(longUrl, timeoutMs = 1500) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+            try {
+                const response = await fetch('/api/shorten', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: longUrl }),
+                    signal: controller.signal
+                });
+
+                if (!response.ok) return null;
+
+                let data;
+                try {
+                    data = await response.json();
+                } catch {
+                    return null;
+                }
+
+                return typeof data.shortUrl === 'string' ? data.shortUrl : null;
+            } catch {
+                return null;
+            } finally {
+                clearTimeout(timeoutId);
+            }
+        }
+
         async function saveAndShare() {
             const btn = document.getElementById('saveBtn');
             const btnText = document.getElementById('saveBtnText');
@@ -1191,27 +1220,11 @@
             let urlToCopy = longUrl;
             let message = 'Link copied! Share it to access from any device.';
 
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
-
-                const response = await fetch('/api/shorten', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url: longUrl }),
-                    signal: controller.signal
-                });
-
-                clearTimeout(timeoutId);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.shortUrl) {
-                        urlToCopy = data.shortUrl;
-                        message = 'Short link copied! ' + data.shortUrl;
-                    }
-                }
-            } catch (e) {
+            const shortUrl = await requestShortUrl(longUrl);
+            if (shortUrl) {
+                urlToCopy = shortUrl;
+                message = 'Short link copied! ' + shortUrl;
+            } else {
                 // Short URL service not available, use long URL
                 console.log('Short URL service not available, using long URL');
             }
@@ -1222,9 +1235,12 @@
             btnIcon.style.opacity = '1';
 
             if (navigator.clipboard) {
-                navigator.clipboard.writeText(urlToCopy).then(() => {
+                try {
+                    await navigator.clipboard.writeText(urlToCopy);
                     showToast(message);
-                });
+                } catch {
+                    showToast('URL updated. Copy from address bar.');
+                }
             } else {
                 showToast('URL updated. Copy from address bar.');
             }

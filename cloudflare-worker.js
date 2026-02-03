@@ -19,6 +19,13 @@
 const DOMAIN = 'https://pt-onia.app';
 const SHORT_CODE_LENGTH = 6;
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'; // Removed confusing chars
+const SHORT_CODE_REGEX = new RegExp(`^[${CHARS}]{${SHORT_CODE_LENGTH}}$`);
+const CORS_HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+};
+const REDIRECT_CACHE_SECONDS = 300;
 
 function generateShortCode() {
     let code = '';
@@ -37,140 +44,160 @@ async function hashUrl(url) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-async function handleRequest(request, env) {
+function jsonResponse(payload, status = 200, headers = {}) {
+    return new Response(JSON.stringify(payload), {
+        status,
+        headers: {
+            'Content-Type': 'application/json',
+            ...CORS_HEADERS,
+            ...headers,
+        },
+    });
+}
+
+function isValidAppUrl(value) {
+    try {
+        const parsed = new URL(value);
+        return parsed.origin === DOMAIN;
+    } catch {
+        return false;
+    }
+}
+
+function isValidShortCode(code) {
+    return SHORT_CODE_REGEX.test(code);
+}
+
+async function withRetry(fn, attempts = 2, delayMs = 50) {
+    let lastError;
+    for (let i = 0; i < attempts; i++) {
+        try {
+            return await fn();
+        } catch (error) {
+            lastError = error;
+            if (i < attempts - 1) {
+                await new Promise(resolve => setTimeout(resolve, delayMs));
+            }
+        }
+    }
+    throw lastError;
+}
+
+async function handleShorten(request, env) {
+    if (!env.SHORT_URLS) {
+        return jsonResponse({
+            error: 'KV namespace not configured',
+            hint: 'Bind SHORT_URLS KV namespace to this worker',
+        }, 500);
+    }
+
+    let payload;
+    try {
+        payload = await request.json();
+    } catch {
+        return jsonResponse({
+            error: 'Invalid JSON payload',
+            hint: 'Send body as { "url": "https://pt-onia.app/#..." }',
+        }, 400);
+    }
+
+    const longUrl = payload?.url;
+    if (!longUrl || !isValidAppUrl(longUrl)) {
+        return jsonResponse({ error: 'Invalid URL' }, 400);
+    }
+
+    const urlHash = await hashUrl(longUrl);
+    const existingCode = await withRetry(() => env.SHORT_URLS.get(`hash:${urlHash}`));
+    if (existingCode) {
+        return jsonResponse({
+            shortUrl: `${DOMAIN}/s/${existingCode}`,
+            code: existingCode,
+            existing: true,
+        });
+    }
+
+    let shortCode;
+    let attempts = 0;
+    do {
+        shortCode = generateShortCode();
+        const existing = await withRetry(() => env.SHORT_URLS.get(`code:${shortCode}`));
+        if (!existing) break;
+        attempts++;
+    } while (attempts < 10);
+
+    if (attempts >= 10) {
+        return jsonResponse({ error: 'Failed to generate unique code' }, 500);
+    }
+
+    await withRetry(() => Promise.all([
+        env.SHORT_URLS.put(`code:${shortCode}`, longUrl),
+        env.SHORT_URLS.put(`hash:${urlHash}`, shortCode),
+    ]));
+
+    return jsonResponse({
+        shortUrl: `${DOMAIN}/s/${shortCode}`,
+        code: shortCode,
+        existing: false,
+    });
+}
+
+async function handleRedirect(shortCode, env, ctx) {
+    if (!env.SHORT_URLS || !isValidShortCode(shortCode)) {
+        return Response.redirect(DOMAIN, 302);
+    }
+
+    const cacheKey = new Request(`${DOMAIN}/s/${shortCode}`, { method: 'GET' });
+    const cached = await caches.default.match(cacheKey);
+    if (cached) return cached;
+
+    const longUrl = await withRetry(() => env.SHORT_URLS.get(`code:${shortCode}`));
+    if (longUrl && isValidAppUrl(longUrl)) {
+        const response = Response.redirect(longUrl, 302);
+        response.headers.set('Cache-Control', `public, max-age=${REDIRECT_CACHE_SECONDS}`);
+        response.headers.set('Vary', 'Accept-Encoding');
+        ctx.waitUntil(caches.default.put(cacheKey, response.clone()));
+        return response;
+    }
+
+    return Response.redirect(DOMAIN, 302);
+}
+
+async function handleRequest(request, env, ctx) {
     const url = new URL(request.url);
 
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
         return new Response(null, {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-                'Access-Control-Allow-Headers': 'Content-Type',
-            },
+            headers: CORS_HEADERS,
         });
     }
 
     // Handle GET request to /api/shorten (for debugging)
     if (url.pathname === '/api/shorten' && request.method === 'GET') {
-        return new Response(JSON.stringify({
+        return jsonResponse({
             status: 'ok',
             message: 'Short URL API is working. Use POST to create short URLs.',
-            usage: 'POST /api/shorten with { "url": "https://pt-onia.app/#..." }'
-        }), {
-            headers: {
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-            },
+            usage: 'POST /api/shorten with { "url": "https://pt-onia.app/#..." }',
         });
     }
 
     // Create short URL
     if (url.pathname === '/api/shorten' && request.method === 'POST') {
         try {
-            // Check if KV namespace is bound
-            if (!env.SHORT_URLS) {
-                return new Response(JSON.stringify({
-                    error: 'KV namespace not configured',
-                    hint: 'Bind SHORT_URLS KV namespace to this worker'
-                }), {
-                    status: 500,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                });
-            }
-
-            const { url: longUrl } = await request.json();
-
-            // Validate URL
-            if (!longUrl || !longUrl.startsWith(DOMAIN)) {
-                return new Response(JSON.stringify({ error: 'Invalid URL' }), {
-                    status: 400,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                });
-            }
-
-            // Check if this URL already has a short code (use hash to avoid key length limit)
-            const urlHash = await hashUrl(longUrl);
-            const existingCode = await env.SHORT_URLS.get(`hash:${urlHash}`);
-            if (existingCode) {
-                return new Response(JSON.stringify({
-                    shortUrl: `${DOMAIN}/s/${existingCode}`,
-                    code: existingCode,
-                    existing: true
-                }), {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                });
-            }
-
-            // Generate unique short code
-            let shortCode;
-            let attempts = 0;
-            do {
-                shortCode = generateShortCode();
-                const existing = await env.SHORT_URLS.get(`code:${shortCode}`);
-                if (!existing) break;
-                attempts++;
-            } while (attempts < 10);
-
-            if (attempts >= 10) {
-                return new Response(JSON.stringify({ error: 'Failed to generate unique code' }), {
-                    status: 500,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Access-Control-Allow-Origin': '*',
-                    },
-                });
-            }
-
-            // Store both mappings (code -> url and hash -> code for deduplication)
-            await env.SHORT_URLS.put(`code:${shortCode}`, longUrl);
-            await env.SHORT_URLS.put(`hash:${urlHash}`, shortCode);
-
-            return new Response(JSON.stringify({
-                shortUrl: `${DOMAIN}/s/${shortCode}`,
-                code: shortCode,
-                existing: false
-            }), {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-            });
+            return await handleShorten(request, env);
         } catch (error) {
-            return new Response(JSON.stringify({
+            return jsonResponse({
                 error: 'Server error',
                 message: error.message,
-                hint: 'Check that request body is valid JSON with { "url": "..." }'
-            }), {
-                status: 500,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                },
-            });
+                hint: 'Check that request body is valid JSON with { "url": "..." }',
+            }, 500);
         }
     }
 
     // Redirect short URL
-    if (url.pathname.startsWith('/s/')) {
-        const shortCode = url.pathname.slice(3); // Remove '/s/'
-        const longUrl = await env.SHORT_URLS.get(`code:${shortCode}`);
-
-        if (longUrl) {
-            return Response.redirect(longUrl, 302);
-        }
-
-        // Short code not found - redirect to home
-        return Response.redirect(DOMAIN, 302);
+    if (request.method === 'GET' && url.pathname.startsWith('/s/')) {
+        const shortCode = url.pathname.slice('/s/'.length);
+        return handleRedirect(shortCode, env, ctx);
     }
 
     // Pass through to origin for all other requests
@@ -179,6 +206,6 @@ async function handleRequest(request, env) {
 
 export default {
     async fetch(request, env, ctx) {
-        return handleRequest(request, env);
+        return handleRequest(request, env, ctx);
     },
 };
