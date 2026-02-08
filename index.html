@@ -1702,12 +1702,11 @@
                 <div id="optimizeContent" class="collapsible-content open">
                     <div class="optimize-kpi-grid" style="margin-top:10px">
                         <div class="balance-card accent"><div class="label">Next Long Weekend</div><div class="value" id="dNextLongWeekend">—</div><div class="detail" id="dNextLongWeekendDetail">—</div></div>
-                        <div class="balance-card accent"><div class="label">Longest Streak</div><div class="value" id="dLongestStreak">0</div><div class="detail" id="dLongestStreakDetail">days</div></div>
+                        <div class="balance-card accent"><div class="label">Longest Out of Office</div><div class="value" id="dLongestStreak">0</div><div class="detail" id="dLongestStreakDetail">days</div></div>
                         <div class="balance-card accent"><div class="label">Efficiency</div><div class="value" id="dEfficiency">—</div><div class="detail" id="dEfficiencyDetail">ratio</div></div>
                         <div class="balance-card accent"><div class="label">Fridays Off</div><div class="value" id="dFridaysOff">0</div><div class="detail" id="dFridaysOffDetail">planned</div></div>
                         <div class="balance-card accent"><div class="label">Breaks Planned</div><div class="value" id="dBreaksPlanned">0</div><div class="detail" id="dBreaksPlannedDetail">—</div></div>
                         <div class="balance-card accent"><div class="label">Avg Break</div><div class="value" id="dAvgBreakLen">—</div><div class="detail" id="dAvgBreakLenDetail">days</div></div>
-                        <div class="balance-card accent" style="grid-column:1/-1"><div class="label">Streaks by Tier</div><div class="value" id="dStreakTiers">—</div><div class="detail" id="dStreakTiersDetail">—</div></div>
                     </div>
                 </div>
             </div>
@@ -1938,7 +1937,7 @@
             <div class="optimize-group">
                 <div class="optimize-group-title">Optimization</div>
                 <div class="mobile-stats-grid">
-                    <div class="mobile-stat-card accent"><div class="label">Longest Streak Off</div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
+                    <div class="mobile-stat-card accent"><div class="label">Longest Out of Office</div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
                     <div class="mobile-stat-card accent"><div class="label">Days Off Efficiency</div><div class="value" id="mEfficiency">—</div><div class="detail" id="mEfficiencyDetail">ratio</div></div>
                 </div>
             </div>
@@ -1947,7 +1946,6 @@
             <div class="optimize-group">
                 <div class="optimize-group-title">Patterns</div>
                 <div class="mobile-stats-grid">
-                    <div class="mobile-stat-card accent"><div class="label">Streaks by Tier</div><div class="value" id="mStreakTiers">—</div><div class="detail" id="mStreakTiersDetail">—</div></div>
                     <div class="mobile-stat-card accent"><div class="label">Fridays Off</div><div class="value" id="mFridaysOff">0</div><div class="detail" id="mFridaysOffDetail">planned</div></div>
                     <div class="mobile-stat-card accent"><div class="label">Breaks Planned</div><div class="value" id="mBreaksPlanned">0</div><div class="detail" id="mBreaksPlannedDetail">—</div></div>
                     <div class="mobile-stat-card accent"><div class="label">Avg Break Length</div><div class="value" id="mAvgBreakLen">—</div><div class="detail" id="mAvgBreakLenDetail">days</div></div>
@@ -3218,93 +3216,112 @@
                 days.push({ key, date: new Date(d), dow, isWeekend, isHoliday, is980, isSelected, isOff, isFriday });
             }
 
-            // Find all "user-influenced streaks":
+            // Build ALL off-day runs (for Next Long Weekend — includes ALL off-runs, not just user-influenced)
+            const allRuns = [];
+            let currentRun = [];
+            for (let i = 0; i < days.length; i++) {
+                if (days[i].isOff) {
+                    currentRun.push(days[i]);
+                } else {
+                    if (currentRun.length > 0) allRuns.push([...currentRun]);
+                    currentRun = [];
+                }
+            }
+            if (currentRun.length > 0) allRuns.push([...currentRun]);
+
+            // Find user-influenced streaks (for other KPIs):
             // Continuous runs of off-days that include at least one counted selection
             const streaks = [];
-            let currentStreak = [];
+            let curStreak = [];
             let hasSelection = false;
             for (let i = 0; i < days.length; i++) {
                 if (days[i].isOff) {
-                    currentStreak.push(days[i]);
+                    curStreak.push(days[i]);
                     if (days[i].isSelected) hasSelection = true;
                 } else {
-                    if (currentStreak.length > 0 && hasSelection) {
-                        streaks.push([...currentStreak]);
-                    }
-                    currentStreak = [];
+                    if (curStreak.length > 0 && hasSelection) streaks.push([...curStreak]);
+                    curStreak = [];
                     hasSelection = false;
                 }
             }
-            if (currentStreak.length > 0 && hasSelection) streaks.push([...currentStreak]);
+            if (curStreak.length > 0 && hasSelection) streaks.push([...curStreak]);
 
-            // KPI: Longest streak off
-            let longestStreak = 0;
-            let longestStreakLabel = '';
-            streaks.forEach(s => {
-                if (s.length > longestStreak) {
-                    longestStreak = s.length;
-                    const start = s[0].date;
-                    const end = s[s.length - 1].date;
-                    longestStreakLabel = `${SHORT_MONTHS[start.getMonth()]} ${start.getDate()} – ${SHORT_MONTHS[end.getMonth()]} ${end.getDate()}`;
+            // ── KPI: Next Long Weekend ──
+            // First off-run of length >= 3 that overlaps or starts from today onward
+            let nextLW = '—';
+            let nextLWDetail = '—';
+            for (const run of allRuns) {
+                if (run.length < 3) continue;
+                const runStart = run[0].date;
+                const runEnd = run[run.length - 1].date;
+                // Skip runs entirely in the past
+                if (runEnd < today) continue;
+                // This run is current or future
+                const rangeStr = `${SHORT_MONTHS[runStart.getMonth()]} ${runStart.getDate()} – ${SHORT_MONTHS[runEnd.getMonth()]} ${runEnd.getDate()}`;
+                if (runStart <= today && today <= runEnd) {
+                    // We are inside this run right now
+                    nextLW = rangeStr;
+                    nextLWDetail = `${run.length} days · today`;
+                } else {
+                    // Run is in the future — compute "in N days"
+                    const diffMs = runStart.getTime() - today.getTime();
+                    const diffDays = Math.round(diffMs / 86400000);
+                    nextLW = rangeStr;
+                    nextLWDetail = `${run.length} days · in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
+                }
+                break;
+            }
+
+            // ── KPI: Longest out of office (all off-runs, not just user-influenced) ──
+            let longestOOO = 0;
+            let longestOOOLabel = '';
+            allRuns.forEach(run => {
+                if (run.length > longestOOO) {
+                    longestOOO = run.length;
+                    const start = run[0].date;
+                    const end = run[run.length - 1].date;
+                    longestOOOLabel = `${SHORT_MONTHS[start.getMonth()]} ${start.getDate()} – ${SHORT_MONTHS[end.getMonth()]} ${end.getDate()}`;
                 }
             });
 
-            // KPI: Efficiency — total off days in user-influenced streaks / PTO days used
+            // ── KPI: Efficiency — total off days in user-influenced streaks / PTO days used ──
             const totalStreakDays = streaks.reduce((sum, s) => sum + s.length, 0);
             const totalPtoDays = streaks.reduce((sum, s) => sum + s.filter(d => d.isSelected).length, 0);
             const efficiency = totalPtoDays > 0 ? (totalStreakDays / totalPtoDays).toFixed(1) + 'x' : '—';
-            const efficiencyDetail = totalPtoDays > 0 ? `${totalStreakDays} off ÷ ${totalPtoDays} used` : 'select days to see';
+            const efficiencyDetail = totalPtoDays > 0 ? `${totalStreakDays} days off · ${totalPtoDays} PTO used` : 'select days to see';
 
-            // KPI: Streaks by tier
-            const tiers = { mega: 0, long: 0, standard: 0 }; // 7+, 4-6, 2-3
-            streaks.forEach(s => {
-                if (s.length >= 7) tiers.mega++;
-                else if (s.length >= 4) tiers.long++;
-                else if (s.length >= 2) tiers.standard++;
-            });
-            const tierStr = `${tiers.mega}/${tiers.long}/${tiers.standard}`;
-            const tierDetail = `7+d / 4-6d / 2-3d`;
-
-            // KPI: Fridays off (user-selected PTO Fridays, not 9/80 or holidays)
+            // ── KPI: Fridays off (user-selected, EXCLUDING 9/80) + 9/80 count ──
             let fridaysOff = 0;
+            let nine80FridayCount = 0;
             days.forEach(d => {
+                if (d.isFriday && d.is980) nine80FridayCount++;
                 if (d.isFriday && d.isSelected && !d.isHoliday && !d.is980) fridaysOff++;
             });
+            const fridaysDetail = `+ ${nine80FridayCount} 9/80 Fridays`;
 
-            // KPI: Breaks planned — number of user-influenced streaks
-            const breaksPlanned = streaks.length;
-            const breaksDetail = breaksPlanned === 1 ? '1 break' : `${breaksPlanned} breaks`;
+            // ── KPI: Breaks planned — user-influenced streaks of length >= 4 ──
+            const breaks4plus = streaks.filter(s => s.length >= 4);
+            const breaksPlanned = breaks4plus.length;
+            const breaksDetail = '4+ days out of office';
 
-            // KPI: Average break length
-            const avgBreak = streaks.length > 0 ? (totalStreakDays / streaks.length).toFixed(1) : '—';
+            // ── KPI: Average break length ──
+            const totalBreakDays = breaks4plus.reduce((sum, s) => sum + s.length, 0);
+            const avgBreak = breaks4plus.length > 0 ? (totalBreakDays / breaks4plus.length).toFixed(1) : '—';
 
-            // KPI: Next long weekend (3+ day streak that starts in the future)
-            let nextLW = '—';
-            let nextLWDetail = '—';
-            for (const s of streaks) {
-                if (s.length >= 3 && s[0].date >= today) {
-                    nextLW = SHORT_MONTHS[s[0].date.getMonth()] + ' ' + s[0].date.getDate();
-                    nextLWDetail = `${s.length} days off`;
-                    break;
-                }
-            }
-
-            // Update all displays — both desktop (d*) and mobile (m*)
+            // ── Update all displays — both desktop (d*) and mobile (m*) ──
             const updates = [
                 ['dNextLongWeekend', 'mNextLongWeekend', nextLW],
                 ['dNextLongWeekendDetail', 'mNextLongWeekendDetail', nextLWDetail],
-                ['dLongestStreak', 'mLongestStreak', longestStreak || '0'],
-                ['dLongestStreakDetail', 'mLongestStreakDetail', longestStreakLabel || 'days'],
+                ['dLongestStreak', 'mLongestStreak', longestOOO || '0'],
+                ['dLongestStreakDetail', 'mLongestStreakDetail', longestOOOLabel || 'days'],
                 ['dEfficiency', 'mEfficiency', efficiency],
                 ['dEfficiencyDetail', 'mEfficiencyDetail', efficiencyDetail],
-                ['dStreakTiers', 'mStreakTiers', tierStr],
-                ['dStreakTiersDetail', 'mStreakTiersDetail', tierDetail],
                 ['dFridaysOff', 'mFridaysOff', fridaysOff],
-                ['dFridaysOffDetail', 'mFridaysOffDetail', fridaysOff === 1 ? '1 Friday' : `${fridaysOff} Fridays`],
+                ['dFridaysOffDetail', 'mFridaysOffDetail', fridaysDetail],
                 ['dBreaksPlanned', 'mBreaksPlanned', breaksPlanned],
                 ['dBreaksPlannedDetail', 'mBreaksPlannedDetail', breaksDetail],
                 ['dAvgBreakLen', 'mAvgBreakLen', avgBreak],
-                ['dAvgBreakLenDetail', 'mAvgBreakLenDetail', streaks.length > 0 ? 'days per break' : 'days'],
+                ['dAvgBreakLenDetail', 'mAvgBreakLenDetail', breaks4plus.length > 0 ? 'days per break' : 'days'],
             ];
             updates.forEach(([dId, mId, val]) => {
                 const dEl = document.getElementById(dId);
