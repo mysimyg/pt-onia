@@ -175,6 +175,55 @@
 
         .save-btn:active { transform: scale(0.98); }
 
+        /* Desktop: unit toggle stays inline in header-controls, hide row-2 wrapper */
+        .header-row-2 { display: none; }
+        .header-controls .unit-toggle-desktop { display: flex; }
+
+        /* Mobile Header — 2-row layout */
+        @media (max-width: 900px) {
+            .header {
+                flex-wrap: wrap;
+                padding: 10px 12px 8px;
+                gap: 8px;
+            }
+            .header h1 {
+                font-size: 16px;
+                flex: 1;
+                min-width: 0;
+            }
+            .header-controls {
+                gap: 6px;
+                order: 0;
+            }
+            .header-controls .unit-toggle-desktop { display: none; }
+            .header-row-2 {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                width: 100%;
+                order: 3;
+            }
+            .theme-select {
+                min-height: 36px;
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+            .save-btn {
+                min-height: 36px;
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+            .header-row-2 .unit-toggle {
+                flex: 1;
+            }
+            .header-row-2 .unit-btn {
+                flex: 1;
+                min-height: 36px;
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+        }
+
         /* Toast Notification */
         .toast {
             position: fixed;
@@ -1043,6 +1092,458 @@
         }
         .admin-remote-badge.off { background: #2e3136; color: #6b6e73; }
         .admin-remote-badge.on { background: #064e3b; color: #6ee7b7; }
+
+        /* ══════════════════════════════════════════════════════════════
+           MOBILE UX IMPROVEMENTS — Robinhood-inspired polish
+           ══════════════════════════════════════════════════════════════ */
+
+        /* Mobile day tap info toast — replaces hover tooltips on touch */
+        .day-info-toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 150;
+            opacity: 0;
+            transition: all 0.2s ease;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .day-info-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 900px) {
+            /* ── Mobile Layout adjustments ── */
+            .mobile-layout {
+                padding-bottom: 72px;
+            }
+
+            /* ── Mobile type bar — larger pill buttons ── */
+            .mobile-type-bar {
+                gap: 8px;
+                padding: 10px 12px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .mobile-type-bar::-webkit-scrollbar { display: none; }
+            .mobile-type-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+                font-weight: 600;
+                border-radius: 24px;
+                min-height: 40px;
+                border-width: 2.5px;
+            }
+
+            /* ── Mobile bottom nav — larger tap targets ── */
+            .bottom-nav {
+                padding: 6px 0;
+                padding-bottom: max(6px, env(safe-area-inset-bottom));
+                box-shadow: 0 -1px 8px rgba(0,0,0,0.06);
+            }
+            .nav-item {
+                padding: 6px 16px;
+                font-size: 11px;
+                gap: 3px;
+                min-height: 44px;
+            }
+            .nav-item svg { width: 24px; height: 24px; }
+
+            /* ── Mobile tab content — better spacing ── */
+            .mobile-tab { padding: 12px; }
+
+            /* ── Year grid — tighter cards ── */
+            .year-grid { gap: 10px; }
+            .mini-month {
+                padding: 10px;
+                border-radius: 10px;
+            }
+            .mini-month-title {
+                font-size: 12px;
+                font-weight: 700;
+                margin-bottom: 6px;
+            }
+
+            /* ── Month view — better navigation ── */
+            .month-nav {
+                margin-bottom: 14px;
+                padding: 0 2px;
+            }
+            .month-nav-btn {
+                padding: 10px 20px;
+                min-height: 44px;
+                font-size: 13px;
+                font-weight: 600;
+                border-radius: 8px;
+            }
+            .month-nav-title {
+                font-size: 18px;
+                font-weight: 700;
+            }
+
+            /* ── Calendar day cells on mobile — larger, more tappable ── */
+            .month-card {
+                padding: 14px;
+                border-radius: 10px;
+            }
+            .month-title {
+                font-size: 15px;
+                font-weight: 700;
+                margin-bottom: 10px;
+            }
+            .weekday-header span {
+                font-size: 11px;
+                padding: 4px 2px;
+            }
+            .day {
+                font-size: 13px;
+                font-weight: 500;
+                border-radius: 6px;
+                min-height: 38px;
+            }
+            .day:active:not(.empty):not(.weekend):not(.holiday):not(.nine80):not(.holiday-nine80) {
+                transform: scale(0.92);
+                transition: transform 0.1s;
+            }
+            /* Hide hover tooltips on touch devices */
+            .day .tooltip { display: none !important; }
+            .day .hours-badge {
+                font-size: 8px;
+                bottom: 2px;
+                right: 2px;
+                padding: 1px 3px;
+            }
+
+            /* ── Mobile stats — improved cards ── */
+            .mobile-stats-grid { gap: 10px; margin-bottom: 20px; }
+            .mobile-stat-card {
+                padding: 14px;
+                border-radius: 10px;
+            }
+            .mobile-stat-card .label {
+                font-size: 11px;
+                font-weight: 600;
+                letter-spacing: 0.5px;
+            }
+            .mobile-stat-card .value {
+                font-size: 24px;
+                font-weight: 700;
+                margin: 6px 0;
+            }
+            .mobile-stat-card .detail {
+                font-size: 11px;
+            }
+
+            /* ── Quick actions on mobile — larger, grid layout ── */
+            .mobile-tab .quick-section {
+                margin-bottom: 16px;
+            }
+            .mobile-tab .quick-section-title {
+                font-size: 12px;
+                font-weight: 700;
+                margin-bottom: 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                color: var(--text-muted);
+            }
+            .mobile-tab .quick-actions {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .mobile-tab .quick-btn {
+                padding: 10px 12px;
+                font-size: 13px;
+                font-weight: 600;
+                border-radius: 8px;
+                min-height: 44px;
+                text-align: center;
+            }
+
+            /* ── Mobile clear-all button — visible in stats ── */
+            .mobile-clear-all {
+                display: block;
+                width: 100%;
+                margin-top: 12px;
+                padding: 12px;
+                font-size: 13px;
+                font-weight: 600;
+                border-radius: 8px;
+                border: 1.5px solid var(--color-danger);
+                background: transparent;
+                color: var(--color-danger);
+                cursor: pointer;
+                font-family: inherit;
+                min-height: 44px;
+            }
+            .mobile-clear-all:active {
+                background: var(--color-danger);
+                color: #fff;
+            }
+
+            /* ── Opportunities on mobile — better cards ── */
+            .mobile-tab .opportunity-list {
+                max-height: none;
+                overflow-y: visible;
+                gap: 8px;
+            }
+            .mobile-tab .opportunity-item {
+                padding: 12px;
+                border-radius: 8px;
+            }
+            .mobile-tab .opportunity-item .title {
+                font-size: 14px;
+                margin-bottom: 4px;
+            }
+            .mobile-tab .opportunity-item .details {
+                font-size: 12px;
+            }
+            .mobile-tab .badge {
+                font-size: 10px;
+                padding: 3px 8px;
+                border-radius: 4px;
+            }
+            .mobile-tab .opp-group-header {
+                font-size: 11px;
+                margin: 14px 0 6px;
+                font-weight: 700;
+            }
+
+            /* ── Settings sections on mobile — better spacing ── */
+            .settings-section {
+                border-radius: 10px;
+                padding: 14px;
+                margin-bottom: 14px;
+            }
+            .settings-section-title {
+                font-size: 13px;
+                font-weight: 700;
+                margin-bottom: 12px;
+            }
+            .settings-section .input-group label {
+                font-size: 12px;
+                margin-bottom: 4px;
+            }
+            .settings-section .input-group input,
+            .settings-section .input-group select {
+                min-height: 40px;
+                font-size: 14px;
+                padding: 8px 12px;
+                border-radius: 8px;
+            }
+            .settings-section .input-row,
+            .settings-section .input-row-3 { gap: 10px; }
+
+            /* ── Holiday list on mobile — bigger tap areas ── */
+            .settings-section .holiday-list {
+                max-height: 240px;
+                gap: 2px;
+            }
+            .settings-section .holiday-item {
+                padding: 10px 8px;
+                font-size: 14px;
+                min-height: 40px;
+                border-radius: 6px;
+                gap: 10px;
+            }
+            .settings-section .holiday-item input[type="checkbox"] {
+                width: 18px;
+                height: 18px;
+                flex-shrink: 0;
+            }
+
+            /* ── FAB — better mobile placement ── */
+            .fab {
+                bottom: 86px;
+                right: 16px;
+                width: 52px;
+                height: 52px;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+            }
+            .fab-menu {
+                bottom: 148px;
+                right: 16px;
+                border-radius: 12px;
+                min-width: 200px;
+            }
+            .fab-menu-item {
+                padding: 14px 18px;
+                font-size: 14px;
+                min-height: 44px;
+            }
+
+            /* ── Toast on mobile ── */
+            .toast {
+                bottom: 90px;
+                max-width: calc(100vw - 32px);
+                font-size: 13px;
+                padding: 12px 16px;
+                border-radius: 12px;
+            }
+
+            /* ── Custom type modal on mobile — full width ── */
+            .custom-type-modal-content {
+                width: calc(100vw - 32px);
+                max-width: 400px;
+                border-radius: 16px;
+                padding: 24px 20px;
+            }
+            .custom-type-modal-content h3 {
+                font-size: 18px;
+                margin-bottom: 16px;
+            }
+            .custom-type-modal-content .input-group label {
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+            .custom-type-modal-content .input-group input,
+            .custom-type-modal-content .input-group select {
+                min-height: 44px;
+                font-size: 15px;
+                border-radius: 8px;
+                padding: 10px 12px;
+            }
+            .custom-type-modal-content input[type="color"] {
+                min-height: 44px !important;
+                height: 44px !important;
+            }
+            .modal-actions {
+                margin-top: 20px;
+                gap: 10px;
+            }
+            .modal-btn {
+                flex: 1;
+                padding: 12px 16px;
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 8px;
+                min-height: 44px;
+            }
+
+            /* ── Admin panel on mobile ── */
+            .admin-panel {
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                max-width: none;
+            }
+            .admin-header {
+                padding: 16px;
+            }
+            .admin-header h2 { font-size: 16px; }
+            .admin-body { padding: 16px; }
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .kpi-card {
+                padding: 12px;
+            }
+            .kpi-card .kpi-value { font-size: 18px; }
+            .admin-table { font-size: 12px; }
+            .admin-table th, .admin-table td {
+                padding: 8px 10px;
+            }
+            .admin-footer {
+                padding: 12px 16px;
+                padding-bottom: max(12px, env(safe-area-inset-bottom));
+            }
+
+            /* ── Collapsible sections on mobile ── */
+            .sidebar-card {
+                border-radius: 10px;
+                padding: 14px;
+                margin-bottom: 14px;
+            }
+            .collapsible-header {
+                padding: 6px 4px;
+                min-height: 44px;
+            }
+            .collapsible-header .section-title {
+                font-size: 12px;
+                letter-spacing: 0.8px;
+            }
+            .toggle-icon {
+                font-size: 18px;
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 6px;
+                background: var(--bg-tertiary);
+            }
+
+            /* ── Type selector on mobile sidebar ── */
+            .type-selector {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+            .type-btn {
+                min-height: 48px;
+                font-size: 11px;
+                padding: 8px 6px;
+                border-radius: 10px;
+            }
+            .type-btn .avail { font-size: 10px; }
+            .add-custom-btn {
+                min-height: 48px;
+                font-size: 11px;
+                border-radius: 10px;
+            }
+
+            /* ── Clear-all button in type section header ── */
+            .type-section-header {
+                margin-bottom: 12px;
+            }
+            .clear-all-sm {
+                padding: 6px 12px;
+                font-size: 11px;
+                border-radius: 6px;
+                min-height: 32px;
+            }
+
+            /* ── Quick select on desktop sidebar (mobile view) ── */
+            .sidebar-card .quick-btn {
+                padding: 8px 12px;
+                font-size: 11px;
+                min-height: 36px;
+                border-radius: 6px;
+            }
+
+            /* ── Delete X on custom type — visible on mobile (no hover) ── */
+            .custom-type-btn-wrap .delete-x {
+                display: block;
+                width: 20px;
+                height: 20px;
+                font-size: 12px;
+                line-height: 20px;
+                top: -6px;
+                right: -6px;
+            }
+        }
+
+        /* Extra small screens (< 400px, e.g. iPhone SE) */
+        @media (max-width: 400px) {
+            .header h1 { font-size: 15px; }
+            .header-controls { gap: 4px; }
+            .theme-select { font-size: 11px; padding: 6px 4px; }
+            .save-btn { padding: 8px 10px; font-size: 12px; }
+            .save-btn svg { width: 12px; height: 12px; }
+            .mobile-type-btn { padding: 8px 12px; font-size: 12px; }
+            .day { font-size: 12px; min-height: 34px; }
+            .month-nav-btn { padding: 8px 14px; font-size: 12px; }
+            .type-selector { grid-template-columns: repeat(2, 1fr); }
+        }
     </style>
 </head>
 <body data-theme="light-default">
@@ -1063,7 +1564,7 @@
                     <option value="dark-bold">Dark Bold</option>
                 </optgroup>
             </select>
-            <div class="unit-toggle">
+            <div class="unit-toggle unit-toggle-desktop">
                 <button class="unit-btn active" onclick="setDisplayUnits('hours')">Hours</button>
                 <button class="unit-btn" onclick="setDisplayUnits('days')">Days</button>
             </div>
@@ -1072,9 +1573,16 @@
                 <span id="saveBtnText">Save</span>
             </button>
         </div>
+        <div class="header-row-2">
+            <div class="unit-toggle">
+                <button class="unit-btn active" onclick="setDisplayUnits('hours')">Hours</button>
+                <button class="unit-btn" onclick="setDisplayUnits('days')">Days</button>
+            </div>
+        </div>
     </header>
 
     <div class="toast" id="toast"></div>
+    <div class="day-info-toast" id="dayInfoToast"></div>
 
     <!-- Desktop Layout -->
     <div class="desktop-layout">
@@ -1319,6 +1827,7 @@
                     <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
                 </div>
             </div>
+            <button class="mobile-clear-all" onclick="if(confirm('Clear all selected days?'))clearAllSelections()">Clear All Selections</button>
             <div class="opportunity-list" id="mobileOpportunityList" style="margin-top:16px"></div>
         </div>
 
@@ -2432,16 +2941,27 @@
                 // Same type: toggle off
                 state.selectedDays[existingType].delete(key);
                 state.opportunities.forEach(opp => { if (opp.dates.includes(key)) state.selectedOpportunities.delete(opp.id); });
+                const ct = getCustomType(existingType);
+                const tName = ct ? ct.name : existingType.charAt(0).toUpperCase() + existingType.slice(1);
+                showDayInfoToast(`Removed ${tName}`);
             } else if (existingType) {
                 // Different type: remove from old, add to new
                 state.selectedDays[existingType].delete(key);
                 state.opportunities.forEach(opp => { if (opp.dates.includes(key)) state.selectedOpportunities.delete(opp.id); });
                 state.selectedDays[type].add(key);
                 if (type === 'pto') state.opportunities.forEach(opp => { if (opp.dates.every(d => state.selectedDays.pto.has(d))) state.selectedOpportunities.add(opp.id); });
+                const ct = getCustomType(type);
+                const tName = ct ? ct.name : type.charAt(0).toUpperCase() + type.slice(1);
+                const hours = type === 'personal' ? '1d' : toDisplayInt(getHoursForDay(new Date(key + 'T12:00:00')));
+                showDayInfoToast(`${tName} (${hours})`);
             } else {
                 // No existing: add
                 state.selectedDays[type].add(key);
                 if (type === 'pto') state.opportunities.forEach(opp => { if (opp.dates.every(d => state.selectedDays.pto.has(d))) state.selectedOpportunities.add(opp.id); });
+                const ct = getCustomType(type);
+                const tName = ct ? ct.name : type.charAt(0).toUpperCase() + type.slice(1);
+                const hours = type === 'personal' ? '1d' : toDisplayInt(getHoursForDay(new Date(key + 'T12:00:00')));
+                showDayInfoToast(`+ ${tName} (${hours})`);
             }
             refreshPlannerViews(true);
             if (isCustomType(type) || (existingType && isCustomType(existingType))) saveCustomTypesToStorage();
@@ -2881,6 +3401,19 @@
                     renderMobileTypeBar();
                 }
             } catch (e) { console.error('Failed to load custom types:', e); }
+        }
+
+        // Mobile day-info toast — shows info on tap (replaces hover tooltip)
+        let dayInfoTimer = null;
+        const isTouchDevice = () => window.matchMedia('(max-width: 900px)').matches;
+        function showDayInfoToast(message) {
+            if (!isTouchDevice()) return;
+            const toast = document.getElementById('dayInfoToast');
+            if (!toast) return;
+            if (dayInfoTimer) clearTimeout(dayInfoTimer);
+            toast.textContent = message;
+            toast.classList.add('show');
+            dayInfoTimer = setTimeout(() => { toast.classList.remove('show'); dayInfoTimer = null; }, 2000);
         }
 
         document.addEventListener('DOMContentLoaded', init);
