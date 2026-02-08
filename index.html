@@ -260,6 +260,20 @@
             transition: all 0.2s;
             text-align: center;
             color: #000;
+            min-height: 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: inherit;
+        }
+        .type-btn .type-label {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 100%;
+            display: block;
         }
 
         .type-btn.pto { background: var(--color-pto); }
@@ -306,20 +320,7 @@
         .custom-pto-fields { display: none; margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 6px; }
         .custom-pto-fields.visible { display: block; }
 
-        /* Collapsible */
-        .collapsible-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            padding: 6px 0;
-        }
-
-        .collapsible-header:hover .section-title { color: var(--accent-primary); }
-        .toggle-icon { font-size: 10px; color: var(--text-muted); transition: transform 0.2s; }
-        .toggle-icon.open { transform: rotate(180deg); }
-        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
-        .collapsible-content.open { max-height: 600px; }
+        /* Collapsible - styles defined in feature section below */
 
         /* Holiday List */
         .holiday-list { display: flex; flex-direction: column; gap: 2px; max-height: 180px; overflow-y: auto; }
@@ -734,6 +735,314 @@
         .mobile-type-btn.personal { background: var(--color-personal); }
         .mobile-type-btn.wellness { background: var(--color-wellness); }
         .mobile-type-btn.active { border-color: var(--text-primary); }
+
+        /* Unit Toggle */
+        .unit-toggle {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .unit-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .unit-btn.active {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
+        /* Sidebar Cards */
+        .sidebar-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* Improved Collapsible */
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px 4px;
+            border-radius: 4px;
+            transition: background 0.15s;
+        }
+        .collapsible-header:hover { background: var(--bg-tertiary); }
+        .collapsible-header:hover .section-title { color: var(--accent-primary); }
+        .toggle-icon {
+            font-size: 16px;
+            color: var(--text-secondary);
+            transition: transform 0.3s ease;
+            line-height: 1;
+        }
+        .toggle-icon.open { transform: rotate(180deg); }
+        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.3s; }
+        .collapsible-content.open { max-height: 2000px; }
+
+        /* Custom Type Modal */
+        .custom-type-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-type-modal.open { display: flex; }
+        .custom-type-modal-content {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            width: 300px;
+            max-width: 90vw;
+        }
+        .custom-type-modal-content h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .modal-btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        .modal-btn.primary {
+            background: var(--accent-primary);
+            color: #fff;
+            border-color: var(--accent-primary);
+        }
+
+        /* Add Custom Type Button — matches type-btn dimensions */
+        .add-custom-btn {
+            min-height: 44px;
+            padding: 10px 4px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .add-custom-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Custom type button with delete */
+        .custom-type-btn-wrap {
+            position: relative;
+        }
+        .custom-type-btn-wrap .type-btn { width: 100%; }
+        .custom-type-btn-wrap .delete-x {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--color-danger);
+            color: #fff;
+            font-size: 10px;
+            line-height: 16px;
+            text-align: center;
+            cursor: pointer;
+            display: none;
+            border: none;
+            padding: 0;
+            z-index: 5;
+        }
+        .custom-type-btn-wrap:hover .delete-x { display: block; }
+
+        /* Type section header row */
+        .type-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .type-section-header .section-title { margin-bottom: 0; }
+        .clear-all-sm {
+            padding: 3px 8px;
+            font-size: 9px;
+            font-weight: 600;
+            border-radius: 4px;
+            border: 1px solid var(--color-danger);
+            background: transparent;
+            color: var(--color-danger);
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .clear-all-sm:hover { background: var(--color-danger); color: #fff; }
+
+        /* Admin Dashboard Overlay */
+        .admin-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 300;
+            align-items: center;
+            justify-content: center;
+        }
+        .admin-overlay.open { display: flex; }
+        .admin-panel {
+            background: #1c1e21;
+            color: #e4e5e7;
+            border-radius: 12px;
+            width: 95vw;
+            max-width: 1100px;
+            height: 88vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            font-size: 13px;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #2e3136;
+            flex-shrink: 0;
+        }
+        .admin-header h2 { font-size: 17px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+        .admin-header .admin-subtitle { font-size: 11px; color: #8a8d91; font-weight: 400; }
+        .admin-close {
+            width: 32px; height: 32px; border-radius: 6px; border: none;
+            background: #2e3136; color: #8a8d91; font-size: 18px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .admin-close:hover { background: #3a3d42; color: #fff; }
+        .admin-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+        .admin-section { margin-bottom: 24px; }
+        .admin-section-title {
+            font-size: 11px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.8px; color: #8a8d91; margin-bottom: 12px;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+        }
+        .kpi-card {
+            background: #25272b;
+            border: 1px solid #2e3136;
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+        .kpi-card .kpi-label { font-size: 10px; font-weight: 500; color: #8a8d91; text-transform: uppercase; letter-spacing: 0.3px; }
+        .kpi-card .kpi-value { font-size: 22px; font-weight: 600; color: #fff; margin: 4px 0 0; }
+        .kpi-card .kpi-sub { font-size: 10px; color: #6b6e73; margin-top: 2px; }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #25272b;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #2e3136;
+        }
+        .admin-table th {
+            text-align: left; padding: 8px 12px; font-size: 10px;
+            font-weight: 600; color: #8a8d91; text-transform: uppercase;
+            letter-spacing: 0.3px; background: #2a2c30; border-bottom: 1px solid #2e3136;
+        }
+        .admin-table td {
+            padding: 8px 12px; border-bottom: 1px solid #2e3136; color: #c8cacd;
+        }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .admin-table td.num { text-align: right; font-variant-numeric: tabular-nums; color: #fff; font-weight: 500; }
+        .admin-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #2e3136;
+            flex-shrink: 0;
+        }
+        .admin-tab {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: inherit;
+            background: transparent;
+            color: #6b6e73;
+            border: none;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .admin-tab:hover { color: #c8cacd; }
+        .admin-tab.active { color: #fff; border-bottom-color: #60a5fa; }
+        .admin-status-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 11px;
+            color: #6b6e73;
+        }
+        .admin-status-dot {
+            width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+        }
+        .admin-status-dot.green { background: #22c55e; }
+        .admin-status-dot.red { background: #ef4444; }
+        .admin-status-dot.gray { background: #6b6e73; }
+        .admin-footer {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 16px 24px;
+            border-top: 1px solid #2e3136;
+            flex-shrink: 0;
+        }
+        .admin-btn {
+            padding: 7px 14px; border-radius: 6px; font-size: 11px; font-weight: 600;
+            cursor: pointer; font-family: inherit; border: 1px solid #3a3d42;
+            background: #2e3136; color: #c8cacd;
+        }
+        .admin-btn:hover { background: #3a3d42; color: #fff; }
+        .admin-btn.danger { border-color: #7f1d1d; color: #fca5a5; }
+        .admin-btn.danger:hover { background: #7f1d1d; color: #fff; }
+        .admin-privacy-note {
+            font-size: 10px; color: #6b6e73; line-height: 1.5;
+            background: #25272b; border: 1px solid #2e3136;
+            border-radius: 6px; padding: 10px 12px; margin-top: 8px;
+        }
+        .admin-remote-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 3px;
+            font-size: 10px; font-weight: 600;
+        }
+        .admin-remote-badge.off { background: #2e3136; color: #6b6e73; }
+        .admin-remote-badge.on { background: #064e3b; color: #6ee7b7; }
     </style>
 </head>
 <body data-theme="light-default">
@@ -754,6 +1063,10 @@
                     <option value="dark-bold">Dark Bold</option>
                 </optgroup>
             </select>
+            <div class="unit-toggle">
+                <button class="unit-btn active" onclick="setDisplayUnits('hours')">Hours</button>
+                <button class="unit-btn" onclick="setDisplayUnits('days')">Days</button>
+            </div>
             <button class="save-btn" id="saveBtn" onclick="saveAndShare()">
                 <svg id="saveBtnIcon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
                 <span id="saveBtnText">Save</span>
@@ -766,17 +1079,44 @@
     <!-- Desktop Layout -->
     <div class="desktop-layout">
         <aside class="sidebar" id="sidebar">
-            <div class="section">
-                <div class="section-title">Select Time Off Type</div>
-                <div class="type-selector">
+            <div class="sidebar-card">
+                <div class="collapsible-header" onclick="toggleSection('projectedContent', this)">
+                    <span class="section-title" style="margin-bottom:0">Projected Year-End</span>
+                    <span class="toggle-icon open">▼</span>
+                </div>
+                <div id="projectedContent" class="collapsible-content open">
+                    <div style="margin-top:10px">
+                        <div class="stat-card" id="statBoxPto">
+                            <div class="stat-label">PTO Balance</div>
+                            <div class="stat-value" id="projectedPto">0h</div>
+                            <div class="stat-detail" id="ptoDetail">-</div>
+                        </div>
+                        <div class="balance-grid">
+                            <div class="balance-card activism"><div class="label">Activism</div><div class="value" id="projectedActivism">0h</div><div class="detail" id="activismDetail">-</div></div>
+                            <div class="balance-card personal"><div class="label">Personal</div><div class="value" id="projectedPersonal">0</div><div class="detail" id="personalDetail">-</div></div>
+                            <div class="balance-card wellness"><div class="label">Wellness</div><div class="value" id="projectedWellness">0h</div><div class="detail" id="wellnessDetail">-</div></div>
+                            <div class="balance-card pto"><div class="label">Work Days Off</div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="type-section-header">
+                    <div class="section-title">Select Time Off Type</div>
+                    <button class="clear-all-sm" onclick="clearAllSelections()">Clear All</button>
+                </div>
+                <div class="type-selector" id="typeSelector">
                     <button class="type-btn pto active" onclick="setTimeOffType('pto')">PTO<span class="avail" id="ptoAvailDisplay">0h</span></button>
                     <button class="type-btn activism" onclick="setTimeOffType('activism')">Activism<span class="avail" id="activismAvailDisplay">0h</span></button>
                     <button class="type-btn personal" onclick="setTimeOffType('personal')">Personal<span class="avail" id="personalAvailDisplay">0d</span></button>
                     <button class="type-btn wellness" onclick="setTimeOffType('wellness')">Wellness<span class="avail" id="wellnessAvailDisplay">0h</span></button>
+                    <!-- Custom type buttons injected before addCustomBtn by renderCustomTypeButtons() -->
+                    <button class="add-custom-btn" id="addCustomBtn" onclick="openCustomTypeModal()">+ Add</button>
                 </div>
             </div>
 
-            <div class="section">
+            <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('settingsContent', this)">
                     <span class="section-title" style="margin-bottom:0">Settings</span>
                     <span class="toggle-icon open">▼</span>
@@ -812,7 +1152,7 @@
                 </div>
             </div>
 
-            <div class="section">
+            <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('balancesContent', this)">
                     <span class="section-title" style="margin-bottom:0">Current Balances</span>
                     <span class="toggle-icon open">▼</span>
@@ -860,7 +1200,7 @@
                 </div>
             </div>
 
-            <div class="section">
+            <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('holidaysContent', this)">
                     <span class="section-title" style="margin-bottom:0">Holidays</span>
                     <span class="toggle-icon">▼</span>
@@ -870,49 +1210,41 @@
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-title">Projected Year-End</div>
-                <div class="stat-card" id="statBoxPto">
-                    <div class="stat-label">PTO Balance</div>
-                    <div class="stat-value" id="projectedPto">0h</div>
-                    <div class="stat-detail" id="ptoDetail">-</div>
+            <div class="sidebar-card">
+                <div class="collapsible-header" onclick="toggleSection('quickSelectContent', this)">
+                    <span class="section-title" style="margin-bottom:0">Quick Select</span>
+                    <span class="toggle-icon">▼</span>
                 </div>
-                <div class="balance-grid">
-                    <div class="balance-card activism"><div class="label">Activism</div><div class="value" id="projectedActivism">0h</div><div class="detail" id="activismDetail">-</div></div>
-                    <div class="balance-card personal"><div class="label">Personal</div><div class="value" id="projectedPersonal">0</div><div class="detail" id="personalDetail">-</div></div>
-                    <div class="balance-card wellness"><div class="label">Wellness</div><div class="value" id="projectedWellness">0h</div><div class="detail" id="wellnessDetail">-</div></div>
-                    <div class="balance-card pto"><div class="label">Work Days Off</div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
+                <div id="quickSelectContent" class="collapsible-content">
+                    <div style="margin-top:10px">
+                        <div class="quick-section">
+                            <div class="quick-section-title">Combos</div>
+                            <div class="quick-actions">
+                                <button class="quick-btn accent" onclick="selectAllType('mega')">Mega</button>
+                                <button class="quick-btn accent" onclick="selectAllType('super')">Super</button>
+                                <button class="quick-btn" onclick="selectAllType('4day')">4-Day</button>
+                            </div>
+                        </div>
+                        <div class="quick-section">
+                            <div class="quick-section-title">Fridays</div>
+                            <div class="quick-actions">
+                                <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
+                                <button class="quick-btn" onclick="selectAllType('summer')">Summer</button>
+                            </div>
+                        </div>
+                        <div class="quick-section" id="twoForFiveSection"><div class="quick-section-title">2 for 5 Fridays</div><div class="quick-actions" id="twoForFiveButtons"></div></div>
+                        <div class="quick-section" id="threeForFiveSection"><div class="quick-section-title">3 for 5 Fridays</div><div class="quick-actions" id="threeForFiveButtons"></div></div>
+                        <div class="quick-section"><div class="quick-actions"><button class="quick-btn clear" onclick="clearAllSelections()">Clear All</button></div></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="section">
-                <div class="section-title">Quick Select</div>
-                <div class="quick-section">
-                    <div class="quick-section-title">Combos</div>
-                    <div class="quick-actions">
-                        <button class="quick-btn accent" onclick="selectAllType('mega')">Mega</button>
-                        <button class="quick-btn accent" onclick="selectAllType('super')">Super</button>
-                        <button class="quick-btn" onclick="selectAllType('4day')">4-Day</button>
-                    </div>
-                </div>
-                <div class="quick-section">
-                    <div class="quick-section-title">Fridays</div>
-                    <div class="quick-actions">
-                        <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
-                        <button class="quick-btn" onclick="selectAllType('summer')">Summer</button>
-                    </div>
-                </div>
-                <div class="quick-section" id="twoForFiveSection"><div class="quick-section-title">2 for 5 Fridays</div><div class="quick-actions" id="twoForFiveButtons"></div></div>
-                <div class="quick-section" id="threeForFiveSection"><div class="quick-section-title">3 for 5 Fridays</div><div class="quick-actions" id="threeForFiveButtons"></div></div>
-                <div class="quick-section"><div class="quick-actions"><button class="quick-btn clear" onclick="clearAllSelections()">Clear All</button></div></div>
-            </div>
-
-            <div class="section">
+            <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('opportunitiesContent', this)">
                     <span class="section-title" style="margin-bottom:0">Opportunities</span>
-                    <span class="toggle-icon open">▼</span>
+                    <span class="toggle-icon">▼</span>
                 </div>
-                <div id="opportunitiesContent" class="collapsible-content open">
+                <div id="opportunitiesContent" class="collapsible-content">
                     <div class="opportunity-list" id="opportunityList" style="margin-top:10px"></div>
                 </div>
             </div>
@@ -942,6 +1274,7 @@
                 <div class="legend-item"><div class="legend-color" style="background:var(--color-activism)"></div><span>Activism</span></div>
                 <div class="legend-item"><div class="legend-color" style="background:var(--color-personal)"></div><span>Personal</span></div>
                 <div class="legend-item"><div class="legend-color" style="background:var(--color-wellness)"></div><span>Wellness</span></div>
+                <span id="customLegendItems"></span>
             </div>
             <div class="calendar-container" id="calendarContainer"></div>
         </main>
@@ -975,7 +1308,7 @@
                 <div class="mobile-stat-card activism"><div class="label">Activism</div><div class="value" id="mProjActivism">0h</div><div class="detail" id="mActivismDetail">-</div></div>
                 <div class="mobile-stat-card personal"><div class="label">Personal</div><div class="value" id="mProjPersonal">0d</div><div class="detail" id="mPersonalDetail">-</div></div>
                 <div class="mobile-stat-card wellness"><div class="label">Wellness</div><div class="value" id="mProjWellness">0h</div><div class="detail" id="mWellnessDetail">-</div></div>
-                <div class="mobile-stat-card work"><div class="label">Work Days Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">-</div></div>
+                <div class="mobile-stat-card work"><div class="label">Work Days Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Total days off (incl. weekends): 0</div></div>
             </div>
             <div class="quick-section">
                 <div class="quick-section-title">Quick Actions</div>
@@ -1064,7 +1397,357 @@
         <button class="fab-menu-item danger" onclick="clearAllSelections();closeFabMenu()">Clear All</button>
     </div>
 
+    <!-- Custom Type Modal -->
+    <div class="custom-type-modal" id="customTypeModal">
+        <div class="custom-type-modal-content">
+            <h3>Add Custom Time Off Type</h3>
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="customTypeName" placeholder="e.g., Jury Duty" maxlength="20">
+            </div>
+            <div class="input-group" style="margin-top:8px">
+                <label>Color</label>
+                <input type="color" id="customTypeColor" value="#6366f1" style="width:100%;height:36px;padding:2px;cursor:pointer">
+            </div>
+            <div class="input-group" style="margin-top:8px">
+                <label>Counts toward days off totals?</label>
+                <select id="customTypeCountsAsDayOff">
+                    <option value="no" selected>No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn primary" onclick="saveCustomType()">Save</button>
+                <button class="modal-btn" onclick="closeCustomTypeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin KPI Dashboard -->
+    <div class="admin-overlay" id="adminOverlay">
+        <div class="admin-panel">
+            <div class="admin-header">
+                <div>
+                    <h2>Usage Dashboard</h2>
+                    <div class="admin-subtitle">Privacy-safe, anonymous metrics
+                        <span class="admin-remote-badge off" id="adminRemoteBadge">Remote: Off</span>
+                    </div>
+                </div>
+                <button class="admin-close" onclick="closeAdmin()">&times;</button>
+            </div>
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="switchAdminTab('local')">This Device</button>
+                <button class="admin-tab" onclick="switchAdminTab('sitewide')">Sitewide</button>
+            </div>
+            <div class="admin-body" id="adminBody"></div>
+            <div class="admin-footer">
+                <button class="admin-btn" onclick="exportTelemetry()">Export JSON</button>
+                <button class="admin-btn danger" onclick="resetTelemetry()">Reset Metrics</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Telemetry (privacy-safe, device-local, aggregated counters only)
+        // ── ADMIN NOTES ──────────────────────────────────────────────────
+        // Static GitHub Pages cannot store global counters. To enable
+        // sitewide KPIs you need a server-side endpoint.
+        //
+        // Recommended: Cloudflare Worker + KV.
+        //   1. Deploy cloudflare-worker.js (already handles /api/shorten;
+        //      telemetry routes added to the same worker).
+        //   2. Create a KV namespace "TELEMETRY" and bind it to the worker.
+        //   3. Set TELEMETRY_REMOTE_ENDPOINT below to your worker URL
+        //      (e.g. "https://pt-onia.app/api/telemetry") and set
+        //      TELEMETRY_REMOTE_ENABLED = true.
+        //   4. The worker aggregates counters server-side. No PII is sent.
+        // ──────────────────────────────────────────────────────────────────
+        const TELEMETRY_REMOTE_ENDPOINT = 'https://pt-onia.app/api/telemetry';
+        const TELEMETRY_REMOTE_ENABLED = true;
+        const TELEMETRY_FLUSH_INTERVAL_MS = 30000; // flush batch every 30s
+        const TELEMETRY_KEY = 'ptoOptimizer_telemetry_v1';
+        const TELEMETRY_VISITED_KEY = 'ptoOptimizer_hasVisited';
+        const telemetry = (() => {
+            const defaults = {
+                v: 1, totalSessions: 0, totalActiveMs: 0, sessionsOver5Min: 0,
+                saveClicks: 0, saveUsedSessions: 0,
+                units_hours: 0, units_days: 0,
+                theme: {}, customTypeCreateAttempts: 0, customTypeCreatedCount: 0,
+                quickSelect: { mega: 0, super: 0, '4day': 0, allFridays: 0, summer: 0, '2for5': 0, '3for5': 0 },
+                opportunityClickCount: 0, clearAllSelectionsCount: 0,
+                returningVisitsCount: 0, errorsCaughtCount: 0
+            };
+            let data;
+            try { data = JSON.parse(localStorage.getItem(TELEMETRY_KEY)); } catch {}
+            if (!data || data.v !== 1) data = { ...defaults };
+            else data = { ...defaults, ...data, theme: { ...data.theme }, quickSelect: { ...defaults.quickSelect, ...data.quickSelect } };
+
+            let activeMs = 0;
+            let lastVisibleTime = document.hidden ? null : Date.now();
+            let saveUsedThisSession = false;
+
+            function save() { localStorage.setItem(TELEMETRY_KEY, JSON.stringify(data)); }
+            function increment(key) { data[key] = (data[key] || 0) + 1; save(); remoteBatch.add(key, 1); }
+            function incrementNested(group, key) {
+                if (!data[group]) data[group] = {};
+                data[group][key] = (data[group][key] || 0) + 1;
+                save();
+                remoteBatch.addNested(group, key, 1);
+            }
+
+            // Returning visitor
+            if (localStorage.getItem(TELEMETRY_VISITED_KEY)) { data.returningVisitsCount++; }
+            localStorage.setItem(TELEMETRY_VISITED_KEY, '1');
+
+            function onVisChange() {
+                if (document.hidden) {
+                    if (lastVisibleTime) { activeMs += Date.now() - lastVisibleTime; lastVisibleTime = null; }
+                } else { lastVisibleTime = Date.now(); }
+            }
+            function sessionEnd() {
+                if (lastVisibleTime) { activeMs += Date.now() - lastVisibleTime; lastVisibleTime = null; }
+                data.totalSessions++;
+                data.totalActiveMs += activeMs;
+                if (activeMs >= 300000) data.sessionsOver5Min++;
+                if (saveUsedThisSession) data.saveUsedSessions++;
+                save();
+                // Flush remaining remote batch + session counters
+                remoteBatch.add('totalSessions', 1);
+                remoteBatch.add('totalActiveMs', activeMs);
+                if (activeMs >= 300000) remoteBatch.add('sessionsOver5Min', 1);
+                if (saveUsedThisSession) remoteBatch.add('saveUsedSessions', 1);
+                remoteBatch.flush(true); // true = use sendBeacon
+            }
+            document.addEventListener('visibilitychange', onVisChange);
+            window.addEventListener('pagehide', sessionEnd);
+
+            return {
+                get data() { return data; },
+                increment,
+                incrementNested,
+                markSaveUsed() { saveUsedThisSession = true; },
+                save,
+                reset() {
+                    Object.keys(defaults).forEach(k => data[k] = typeof defaults[k] === 'object' ? JSON.parse(JSON.stringify(defaults[k])) : defaults[k]);
+                    save();
+                }
+            };
+        })();
+
+        // Remote telemetry batching — accumulates increments, flushes periodically
+        const remoteBatch = (() => {
+            let batch = {}; // { key: delta } for flat counters
+            let nested = {}; // { group: { key: delta } } for nested counters
+            let flushTimer = null;
+            let remoteAlive = null; // null = unknown, true/false after first attempt
+            let sitewideCache = null;
+            let sitewideLastFetch = 0;
+
+            function isEmpty() {
+                return Object.keys(batch).length === 0 && Object.keys(nested).length === 0;
+            }
+
+            function add(key, delta) {
+                if (!TELEMETRY_REMOTE_ENABLED) return;
+                batch[key] = (batch[key] || 0) + delta;
+                scheduleFlush();
+            }
+
+            function addNested(group, key, delta) {
+                if (!TELEMETRY_REMOTE_ENABLED) return;
+                if (!nested[group]) nested[group] = {};
+                nested[group][key] = (nested[group][key] || 0) + delta;
+                scheduleFlush();
+            }
+
+            function scheduleFlush() {
+                if (flushTimer) return;
+                flushTimer = setTimeout(() => { flushTimer = null; flush(false); }, TELEMETRY_FLUSH_INTERVAL_MS);
+            }
+
+            function flush(useBeacon) {
+                if (!TELEMETRY_REMOTE_ENABLED || !TELEMETRY_REMOTE_ENDPOINT || isEmpty()) return;
+                const payload = JSON.stringify({ increments: { ...batch }, nested: { ...nested } });
+                batch = {};
+                nested = {};
+                if (useBeacon && navigator.sendBeacon) {
+                    navigator.sendBeacon(TELEMETRY_REMOTE_ENDPOINT, payload);
+                } else {
+                    fetch(TELEMETRY_REMOTE_ENDPOINT, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: payload,
+                        keepalive: true
+                    }).then(r => { remoteAlive = r.ok; }).catch(() => { remoteAlive = false; });
+                }
+            }
+
+            async function fetchSitewide(force) {
+                if (!TELEMETRY_REMOTE_ENABLED || !TELEMETRY_REMOTE_ENDPOINT) return null;
+                if (!force && sitewideCache && Date.now() - sitewideLastFetch < 60000) return sitewideCache;
+                try {
+                    const r = await fetch(TELEMETRY_REMOTE_ENDPOINT, { method: 'GET' });
+                    if (!r.ok) { remoteAlive = false; return null; }
+                    remoteAlive = true;
+                    sitewideCache = await r.json();
+                    sitewideLastFetch = Date.now();
+                    return sitewideCache;
+                } catch { remoteAlive = false; return null; }
+            }
+
+            // Ping on startup to determine remote status
+            if (TELEMETRY_REMOTE_ENABLED && TELEMETRY_REMOTE_ENDPOINT) {
+                fetch(TELEMETRY_REMOTE_ENDPOINT, { method: 'GET' })
+                    .then(r => { remoteAlive = r.ok; })
+                    .catch(() => { remoteAlive = false; });
+            }
+
+            return {
+                add,
+                addNested,
+                flush,
+                fetchSitewide,
+                get alive() { return remoteAlive; },
+                get enabled() { return TELEMETRY_REMOTE_ENABLED && !!TELEMETRY_REMOTE_ENDPOINT; }
+            };
+        })();
+
+        // Admin panel
+        let adminTab = 'local';
+        function openAdmin() {
+            adminTab = 'local';
+            renderAdminDashboard();
+            document.getElementById('adminOverlay').classList.add('open');
+        }
+        function closeAdmin() { document.getElementById('adminOverlay').classList.remove('open'); }
+        function switchAdminTab(tab) {
+            adminTab = tab;
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.textContent.trim() === (tab === 'local' ? 'This Device' : 'Sitewide')));
+            renderAdminDashboard();
+        }
+        function renderKpiHtml(d, label) {
+            const avgMs = d.totalSessions > 0 ? d.totalActiveMs / d.totalSessions : 0;
+            const avgDur = avgMs >= 60000 ? (avgMs / 60000).toFixed(1) + 'm' : (avgMs / 1000).toFixed(0) + 's';
+            const savePct = d.totalSessions > 0 ? ((d.saveUsedSessions / d.totalSessions) * 100).toFixed(0) + '%' : '—';
+            const themeObj = d.theme || {};
+            const qsObj = d.quickSelect || {};
+            const themeRows = Object.entries(themeObj).sort((a,b) => b[1] - a[1]).map(([k,v]) =>
+                `<tr><td>${k}</td><td class="num">${v}</td></tr>`).join('') || '<tr><td colspan="2" style="color:#6b6e73">No data yet</td></tr>';
+            const qsRows = Object.entries(qsObj).map(([k,v]) =>
+                `<tr><td>${k}</td><td class="num">${v}</td></tr>`).join('');
+            return `
+                <div class="admin-section">
+                    <div class="admin-section-title">Sessions — ${label}</div>
+                    <div class="kpi-grid">
+                        <div class="kpi-card"><div class="kpi-label">Total Sessions</div><div class="kpi-value">${d.totalSessions || 0}</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Sessions &ge; 5 min</div><div class="kpi-value">${d.sessionsOver5Min || 0}</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Avg Duration</div><div class="kpi-value">${avgDur}</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Save Clicks</div><div class="kpi-value">${d.saveClicks || 0}</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Save Adoption</div><div class="kpi-value">${savePct}</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Returning Visits</div><div class="kpi-value">${d.returningVisitsCount || 0}</div></div>
+                    </div>
+                </div>
+                <div class="admin-section">
+                    <div class="admin-section-title">Engagement</div>
+                    <div class="kpi-grid" style="margin-bottom:12px">
+                        <div class="kpi-card"><div class="kpi-label">Units: Hours</div><div class="kpi-value">${d.units_hours || 0}</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Units: Days</div><div class="kpi-value">${d.units_days || 0}</div></div>
+                    </div>
+                    <table class="admin-table"><tr><th>Theme / Palette</th><th style="text-align:right">Count</th></tr>${themeRows}</table>
+                </div>
+                <div class="admin-section">
+                    <div class="admin-section-title">Feature Usage</div>
+                    <div class="kpi-grid" style="margin-bottom:12px">
+                        <div class="kpi-card"><div class="kpi-label">Custom Types Created</div><div class="kpi-value">${d.customTypeCreatedCount || 0}</div><div class="kpi-sub">${d.customTypeCreateAttempts || 0} modal opens</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Opportunities Toggled</div><div class="kpi-value">${d.opportunityClickCount || 0}</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Clear All</div><div class="kpi-value">${d.clearAllSelectionsCount || 0}</div></div>
+                        <div class="kpi-card"><div class="kpi-label">Errors Caught</div><div class="kpi-value">${d.errorsCaughtCount || 0}</div></div>
+                    </div>
+                    <table class="admin-table"><tr><th>Quick Select Action</th><th style="text-align:right">Count</th></tr>${qsRows}</table>
+                </div>`;
+        }
+        function renderAdminDashboard() {
+            const remoteOn = remoteBatch.enabled;
+            const badge = document.getElementById('adminRemoteBadge');
+            badge.className = 'admin-remote-badge ' + (remoteOn && remoteBatch.alive !== false ? 'on' : remoteOn ? 'off' : 'off');
+            badge.textContent = 'Remote: ' + (remoteOn ? (remoteBatch.alive === false ? 'Error' : remoteBatch.alive ? 'Live' : 'Pending') : 'Off');
+
+            if (adminTab === 'local') {
+                document.getElementById('adminBody').innerHTML =
+                    renderKpiHtml(telemetry.data, 'This Device') + `
+                    <div class="admin-section">
+                        <div class="admin-section-title">Privacy</div>
+                        <div class="admin-privacy-note">
+                            <strong>What we do NOT collect:</strong> PTO/Activism/Wellness balances, calendar selections or dates,
+                            custom type names, years of service, paycheck schedules, holiday selections,
+                            or any personal identifiers (no emails, IPs, or fingerprints).
+                            All metrics are aggregated counters stored locally on this device only.
+                        </div>
+                    </div>`;
+            } else {
+                // Sitewide tab
+                if (!remoteOn) {
+                    document.getElementById('adminBody').innerHTML = `
+                        <div class="admin-section" style="padding:40px 0;text-align:center">
+                            <div style="font-size:14px;color:#8a8d91;margin-bottom:8px">Sitewide tracking is disabled</div>
+                            <div style="font-size:11px;color:#6b6e73;max-width:400px;margin:0 auto;line-height:1.5">
+                                Set <code style="color:#60a5fa">TELEMETRY_REMOTE_ENABLED = true</code> and configure
+                                <code style="color:#60a5fa">TELEMETRY_REMOTE_ENDPOINT</code> pointing to a Cloudflare Worker
+                                with a KV namespace to enable sitewide anonymous metrics.
+                            </div>
+                        </div>`;
+                    return;
+                }
+                document.getElementById('adminBody').innerHTML = `
+                    <div class="admin-status-row">
+                        <span class="admin-status-dot ${remoteBatch.alive === true ? 'green' : remoteBatch.alive === false ? 'red' : 'gray'}"></span>
+                        Endpoint: ${TELEMETRY_REMOTE_ENDPOINT}
+                    </div>
+                    <div style="text-align:center;padding:30px 0;color:#6b6e73">Loading sitewide data&hellip;</div>`;
+                remoteBatch.fetchSitewide(true).then(sw => {
+                    if (!sw) {
+                        document.getElementById('adminBody').innerHTML = `
+                            <div class="admin-status-row">
+                                <span class="admin-status-dot red"></span>
+                                Endpoint unreachable: ${TELEMETRY_REMOTE_ENDPOINT}
+                            </div>
+                            <div style="text-align:center;padding:30px 0;color:#6b6e73">
+                                Could not reach the telemetry endpoint. Check that the Cloudflare Worker is deployed and the TELEMETRY KV namespace is bound.
+                            </div>`;
+                        return;
+                    }
+                    document.getElementById('adminBody').innerHTML = `
+                        <div class="admin-status-row">
+                            <span class="admin-status-dot green"></span>
+                            Endpoint: ${TELEMETRY_REMOTE_ENDPOINT}
+                        </div>` + renderKpiHtml(sw, 'All Visitors (anonymous)') + `
+                        <div class="admin-section">
+                            <div class="admin-section-title">Privacy</div>
+                            <div class="admin-privacy-note">
+                                Sitewide metrics are anonymous aggregated counters only. No IPs, user identifiers, or personal
+                                scheduling data are stored. Data is kept in Cloudflare KV on your account.
+                            </div>
+                        </div>`;
+                });
+            }
+        }
+        function exportTelemetry() {
+            const json = JSON.stringify(adminTab === 'local' ? telemetry.data : (remoteBatch.alive ? 'Use GET endpoint for sitewide export' : telemetry.data), null, 2);
+            if (navigator.clipboard) { navigator.clipboard.writeText(json).then(() => showToast('Telemetry JSON copied to clipboard')); }
+            else { const b = new Blob([json], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'telemetry.json'; a.click(); }
+        }
+        function resetTelemetry() {
+            if (adminTab === 'local') {
+                if (!confirm('Reset LOCAL device metrics? This cannot be undone.')) return;
+                telemetry.reset();
+            } else {
+                if (!confirm('Reset SITEWIDE metrics on the server? This cannot be undone.')) return;
+                fetch(TELEMETRY_REMOTE_ENDPOINT, { method: 'DELETE' }).then(() => showToast('Sitewide metrics reset')).catch(() => showToast('Failed to reset'));
+            }
+            renderAdminDashboard();
+            showToast('Metrics reset');
+        }
+
         // State
         let state = {
             year: new Date().getFullYear(),
@@ -1078,8 +1761,43 @@
             twoForFiveMonths: [],
             threeForFiveMonths: [],
             allThreeForFiveMonths: [],
-            currentMobileMonth: new Date().getMonth()
+            currentMobileMonth: new Date().getMonth(),
+            displayUnits: 'hours',
+            customTypes: []
         };
+
+        const BUILTIN_TYPES = ['pto', 'activism', 'personal', 'wellness'];
+
+        // Display unit helpers
+        function toDisplayValue(hours) {
+            if (state.displayUnits === 'days') return (hours / 9).toFixed(1) + 'd';
+            return hours.toFixed(1) + 'h';
+        }
+        function toDisplayInt(hours) {
+            if (state.displayUnits === 'days') return (hours / 9).toFixed(1) + 'd';
+            return Math.round(hours) + 'h';
+        }
+        function unitLabel() { return state.displayUnits === 'days' ? 'd' : 'h'; }
+        function setDisplayUnits(units) {
+            state.displayUnits = units;
+            telemetry.increment('units_' + units);
+            document.querySelectorAll('.unit-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent.toLowerCase() === units);
+            });
+            recalculate();
+            renderCalendar();
+            renderMobileMonth();
+        }
+
+        // Custom type helpers
+        function isCustomType(type) { return !BUILTIN_TYPES.includes(type); }
+        function getCustomType(id) { return state.customTypes.find(t => t.id === id); }
+        function allTypeKeys() { return [...BUILTIN_TYPES, ...state.customTypes.map(t => t.id)]; }
+        function textColorForBg(hex) {
+            const c = hex.replace('#', '');
+            const r = parseInt(c.substr(0, 2), 16), g = parseInt(c.substr(2, 2), 16), b = parseInt(c.substr(4, 2), 16);
+            return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? '#000' : '#fff';
+        }
 
         const SERVICE_PRESETS = {
             '0-3': { ptoPerPaycheck: 3.07, maxPto: 120 },
@@ -1123,11 +1841,19 @@
                 act: [...state.selectedDays.activism],
                 per: [...state.selectedDays.personal],
                 wel: [...state.selectedDays.wellness],
-                t: document.body.getAttribute('data-theme')
+                t: document.body.getAttribute('data-theme'),
+                du: state.displayUnits
             };
             if (document.getElementById('yearsOfService').value === 'custom') {
                 data.cpp = document.getElementById('customPtoPerPaycheck').value;
                 data.cmp = document.getElementById('customMaxPto').value;
+            }
+            if (state.customTypes.length > 0) {
+                data.ct = state.customTypes.map(ct => ({ id: ct.id, name: ct.name, color: ct.color, cdo: ct.countsAsDayOff }));
+                data.ctd = {};
+                state.customTypes.forEach(ct => {
+                    if (state.selectedDays[ct.id]?.size > 0) data.ctd[ct.id] = [...state.selectedDays[ct.id]];
+                });
             }
             return btoa(JSON.stringify(data));
         }
@@ -1160,6 +1886,15 @@
                 if (data.act) data.act.forEach(d => state.selectedDays.activism.add(d));
                 if (data.per) data.per.forEach(d => state.selectedDays.personal.add(d));
                 if (data.wel) data.wel.forEach(d => state.selectedDays.wellness.add(d));
+
+                if (data.du) { state.displayUnits = data.du; setDisplayUnits(data.du); }
+                if (data.ct) {
+                    state.customTypes = data.ct.map(ct => ({ ...ct, countsAsDayOff: !!ct.cdo }));
+                    state.customTypes.forEach(ct => { state.selectedDays[ct.id] = new Set(); });
+                    if (data.ctd) Object.keys(data.ctd).forEach(id => { if (state.selectedDays[id]) data.ctd[id].forEach(d => state.selectedDays[id].add(d)); });
+                    renderCustomTypeButtons();
+                    renderMobileTypeBar();
+                }
 
                 renderCalendar();
                 renderMobileYearView();
@@ -1202,6 +1937,8 @@
         }
 
         async function saveAndShare() {
+            telemetry.increment('saveClicks');
+            telemetry.markSaveUsed();
             const btn = document.getElementById('saveBtn');
             const btnText = document.getElementById('saveBtnText');
             const btnIcon = document.getElementById('saveBtnIcon');
@@ -1257,6 +1994,7 @@
         function changeTheme(theme) {
             document.body.setAttribute('data-theme', theme);
             localStorage.setItem('preferredTheme', theme);
+            telemetry.incrementNested('theme', theme);
         }
 
         // Helper functions
@@ -1315,7 +2053,7 @@
             state.currentTimeOffType = type;
             document.querySelectorAll('.type-btn, .mobile-type-btn').forEach(btn => {
                 btn.classList.remove('active');
-                if (btn.classList.contains(type)) btn.classList.add('active');
+                if (btn.classList.contains(type) || btn.dataset.customId === type) btn.classList.add('active');
             });
         }
 
@@ -1394,6 +2132,9 @@
                 });
             });
 
+            // Load custom types from localStorage
+            loadCustomTypesFromStorage();
+
             // Check for URL state
             if (window.location.hash.length > 1) {
                 decodeState(window.location.hash.slice(1));
@@ -1444,8 +2185,8 @@
                 const dow = d.getDay();
                 if (dow !== 0 && dow !== 6 && !state.holidays[key] && !state.nine80Fridays[key]) validDates.add(key);
             }
-            Object.keys(state.selectedDays).forEach(type => {
-                state.selectedDays[type] = new Set([...state.selectedDays[type]].filter(k => validDates.has(k)));
+            allTypeKeys().forEach(type => {
+                if (state.selectedDays[type]) state.selectedDays[type] = new Set([...state.selectedDays[type]].filter(k => validDates.has(k)));
             });
 
             renderCalendar();
@@ -1560,7 +2301,7 @@
                         const isSelected = state.selectedOpportunities.has(opp.id);
                         const item = document.createElement('div'); item.className = `opportunity-item ${isSelected ? 'selected' : ''}`;
                         item.onclick = () => toggleOpportunity(opp.id);
-                        item.innerHTML = `<div class="title">${opp.title}</div><div class="details">${opp.description}</div><div class="badges"><span class="badge badge-hours">${opp.hours}h</span><span class="badge badge-days">${opp.daysOff}d</span></div>`;
+                        item.innerHTML = `<div class="title">${opp.title}</div><div class="details">${opp.description}</div><div class="badges"><span class="badge badge-hours">${toDisplayInt(opp.hours)}</span><span class="badge badge-days">${opp.daysOff}d</span></div>`;
                         container.appendChild(item);
                     });
                 });
@@ -1568,6 +2309,7 @@
         }
 
         function toggleOpportunity(oppId) {
+            telemetry.increment('opportunityClickCount');
             const opp = state.opportunities.find(o => o.id === oppId);
             if (!opp) return;
             if (state.selectedOpportunities.has(oppId)) { state.selectedOpportunities.delete(oppId); opp.dates.forEach(d => state.selectedDays.pto.delete(d)); }
@@ -1576,11 +2318,13 @@
         }
 
         function selectAllType(type) {
+            telemetry.incrementNested('quickSelect', type);
             state.opportunities.filter(o => o.type === type).forEach(opp => { state.selectedOpportunities.add(opp.id); opp.dates.forEach(d => state.selectedDays.pto.add(d)); });
             renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
         }
 
         function selectMonthFridays(monthNum) {
+            telemetry.incrementNested('quickSelect', 'monthFridays');
             const today = new Date(); today.setHours(0,0,0,0);
             for (let d = new Date(state.year, monthNum, 1); d <= new Date(state.year, monthNum + 1, 0); d.setDate(d.getDate() + 1)) {
                 if (d.getDay() === 5 && d >= today) { const key = dateKey(d); if (!state.nine80Fridays[key] && !state.holidays[key]) state.selectedDays.pto.add(key); }
@@ -1589,7 +2333,8 @@
         }
 
         function clearAllSelections() {
-            Object.keys(state.selectedDays).forEach(type => state.selectedDays[type].clear());
+            telemetry.increment('clearAllSelectionsCount');
+            allTypeKeys().forEach(type => { if (state.selectedDays[type]) state.selectedDays[type].clear(); });
             state.selectedOpportunities.clear();
             renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
         }
@@ -1597,15 +2342,24 @@
         function toggleDay(key) {
             const type = state.currentTimeOffType;
             let existingType = null;
-            Object.keys(state.selectedDays).forEach(t => { if (state.selectedDays[t].has(key)) existingType = t; });
-            if (existingType) {
+            allTypeKeys().forEach(t => { if (state.selectedDays[t] && state.selectedDays[t].has(key)) existingType = t; });
+            if (existingType === type) {
+                // Same type: toggle off
                 state.selectedDays[existingType].delete(key);
                 state.opportunities.forEach(opp => { if (opp.dates.includes(key)) state.selectedOpportunities.delete(opp.id); });
+            } else if (existingType) {
+                // Different type: remove from old, add to new
+                state.selectedDays[existingType].delete(key);
+                state.opportunities.forEach(opp => { if (opp.dates.includes(key)) state.selectedOpportunities.delete(opp.id); });
+                state.selectedDays[type].add(key);
+                if (type === 'pto') state.opportunities.forEach(opp => { if (opp.dates.every(d => state.selectedDays.pto.has(d))) state.selectedOpportunities.add(opp.id); });
             } else {
+                // No existing: add
                 state.selectedDays[type].add(key);
                 if (type === 'pto') state.opportunities.forEach(opp => { if (opp.dates.every(d => state.selectedDays.pto.has(d))) state.selectedOpportunities.add(opp.id); });
             }
             renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
+            if (state.customTypes.length > 0) saveCustomTypesToStorage();
         }
 
         function recalculate() {
@@ -1660,20 +2414,21 @@
                 const actEl = document.getElementById(prefix ? 'mProjActivism' : 'projectedActivism');
                 const perEl = document.getElementById(prefix ? 'mProjPersonal' : 'projectedPersonal');
                 const welEl = document.getElementById(prefix ? 'mProjWellness' : 'projectedWellness');
-                if (ptoEl) ptoEl.textContent = ptoBalance.toFixed(1) + 'h';
-                if (actEl) actEl.textContent = activismBalance.toFixed(1) + 'h';
+                if (ptoEl) ptoEl.textContent = toDisplayValue(ptoBalance);
+                if (actEl) actEl.textContent = toDisplayValue(activismBalance);
                 if (perEl) perEl.textContent = personalBalance + (prefix ? 'd' : ' days');
-                if (welEl) welEl.textContent = wellnessBalance.toFixed(1) + 'h';
+                if (welEl) welEl.textContent = toDisplayValue(wellnessBalance);
             });
 
-            document.getElementById('ptoAvailDisplay').textContent = ptoBalance.toFixed(0) + 'h';
-            document.getElementById('activismAvailDisplay').textContent = activismBalance.toFixed(0) + 'h';
+            document.getElementById('ptoAvailDisplay').textContent = toDisplayInt(ptoBalance);
+            document.getElementById('activismAvailDisplay').textContent = toDisplayInt(activismBalance);
             document.getElementById('personalAvailDisplay').textContent = personalBalance + 'd';
-            document.getElementById('wellnessAvailDisplay').textContent = wellnessBalance.toFixed(0) + 'h';
+            document.getElementById('wellnessAvailDisplay').textContent = toDisplayInt(wellnessBalance);
 
+            const welLoseAmt = state.displayUnits === 'days' ? ((wellnessBalance - maxWellness) / 9).toFixed(1) + 'd' : (wellnessBalance - maxWellness).toFixed(0) + 'h';
             const actDetail = activismBalance < 0 ? 'Over limit!' : 'Use or lose';
             const perDetail = personalBalance < 0 ? 'Over limit!' : 'Max 5/yr';
-            const welDetail = wellnessBalance < 0 ? 'Negative!' : wellnessBalance > maxWellness ? `Lose ${(wellnessBalance - maxWellness).toFixed(0)}h` : 'Rolls over';
+            const welDetail = wellnessBalance < 0 ? 'Negative!' : wellnessBalance > maxWellness ? `Lose ${welLoseAmt}` : 'Rolls over';
 
             ['activismDetail', 'mActivismDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = actDetail; });
             ['personalDetail', 'mPersonalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = perDetail; });
@@ -1684,9 +2439,11 @@
             let ptoDetail = '';
             if (yearEndGoal !== null) {
                 const diff = ptoBalance - yearEndGoal;
-                if (Math.abs(diff) < 5) { statBox.classList.add('success'); ptoDetail = `On target! Goal: ${yearEndGoal}h`; }
-                else if (diff > 0) { statBox.classList.add('warning'); ptoDetail = `${diff.toFixed(0)}h over goal`; }
-                else { statBox.classList.add('danger'); ptoDetail = `${Math.abs(diff).toFixed(0)}h under goal`; }
+                const diffDisplay = state.displayUnits === 'days' ? (Math.abs(diff) / 9).toFixed(1) + 'd' : Math.abs(diff).toFixed(0) + 'h';
+                const goalDisplay = state.displayUnits === 'days' ? (yearEndGoal / 9).toFixed(1) + 'd' : yearEndGoal + 'h';
+                if (Math.abs(diff) < 5) { statBox.classList.add('success'); ptoDetail = `On target! Goal: ${goalDisplay}`; }
+                else if (diff > 0) { statBox.classList.add('warning'); ptoDetail = `${diffDisplay} over goal`; }
+                else { statBox.classList.add('danger'); ptoDetail = `${diffDisplay} under goal`; }
             } else {
                 if (ptoBalance >= maxPto) { statBox.classList.add('danger'); ptoDetail = 'At max!'; }
                 else if (ptoBalance >= maxPto * 0.9) { statBox.classList.add('warning'); ptoDetail = 'Near max'; }
@@ -1699,12 +2456,17 @@
             for (let d = new Date(state.year, 0, 1); d <= new Date(state.year, 11, 31); d.setDate(d.getDate() + 1)) {
                 const key = dateKey(d), dow = d.getDay();
                 const isWeekend = dow === 0 || dow === 6, isHoliday = state.holidays[key], is980 = state.nine80Fridays[key];
-                const isSelectedAny = Object.values(state.selectedDays).some(set => set.has(key));
+                const isSelectedAny = allTypeKeys().some(t => {
+                    if (!(state.selectedDays[t] && state.selectedDays[t].has(key))) return false;
+                    if (BUILTIN_TYPES.includes(t)) return true;
+                    const ct = getCustomType(t);
+                    return ct && ct.countsAsDayOff;
+                });
                 if (isWeekend || isHoliday || is980 || isSelectedAny) { totalDaysOff++; if (!isWeekend) workDaysOff++; }
             }
 
             ['countWorkDaysOff', 'mWorkDays'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = workDaysOff; });
-            ['totalDaysDetail', 'mTotalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = `${totalDaysOff} total`; });
+            ['totalDaysDetail', 'mTotalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = `Total days off (incl. weekends): ${totalDaysOff}`; });
 
             renderProjectionChart(currentPto, ptoPerPaycheck, maxPto);
             renderWellnessChart(currentWellness, wellnessPerPaycheck, maxWellness);
@@ -1730,11 +2492,11 @@
                 const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
                 const bar = document.createElement('div'); bar.className = 'chart-bar';
                 if (balance >= maxPto || balance < 0) bar.classList.add('danger'); else if (balance >= maxPto * 0.9) bar.classList.add('warning');
-                bar.style.cssText = `height:${height}px;left:${i * (barWidth + 1)}px;width:${barWidth}px`; bar.title = `${paycheck.toLocaleDateString()}: ${balance.toFixed(1)}h`;
+                bar.style.cssText = `height:${height}px;left:${i * (barWidth + 1)}px;width:${barWidth}px`; bar.title = `${paycheck.toLocaleDateString()}: ${toDisplayValue(balance)}`;
                 container.appendChild(bar);
             });
             let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
-            tableHTML += '</tr><tr class="pto-row"><th>PTO</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.warning ? 'warning' : ''); tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`; });
+            tableHTML += '</tr><tr class="pto-row"><th>PTO</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.warning ? 'warning' : ''); tableHTML += `<td class="${cls}">${toDisplayInt(b.value)}</td>`; });
             tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
         }
 
@@ -1757,7 +2519,7 @@
                 tableData.personalBalances.push({ value: perBalance, danger: perBalance < 0 });
             });
             let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
-            tableHTML += '</tr><tr class="activism-row"><th>Act</th>'; tableData.activismBalances.forEach(b => { const cls = b.danger ? 'danger' : ''; tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`; });
+            tableHTML += '</tr><tr class="activism-row"><th>Act</th>'; tableData.activismBalances.forEach(b => { const cls = b.danger ? 'danger' : ''; tableHTML += `<td class="${cls}">${toDisplayInt(b.value)}</td>`; });
             tableHTML += '</tr><tr class="personal-row"><th>Per</th>'; tableData.personalBalances.forEach(b => { const cls = b.danger ? 'danger' : ''; tableHTML += `<td class="${cls}">${b.value}</td>`; });
             tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
         }
@@ -1782,11 +2544,11 @@
                 const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
                 const bar = document.createElement('div'); bar.className = 'chart-bar';
                 if (balance < 0) bar.classList.add('danger'); else if (balance > maxWellness) bar.classList.add('warning');
-                bar.style.cssText = `height:${height}px;left:${i * (barWidth + 1)}px;width:${barWidth}px`; bar.title = `${paycheck.toLocaleDateString()}: ${balance.toFixed(1)}h`;
+                bar.style.cssText = `height:${height}px;left:${i * (barWidth + 1)}px;width:${barWidth}px`; bar.title = `${paycheck.toLocaleDateString()}: ${toDisplayValue(balance)}`;
                 container.appendChild(bar);
             });
             let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
-            tableHTML += '</tr><tr class="wellness-row"><th>Well</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.over ? 'warning' : ''); tableHTML += `<td class="${cls}">${b.value.toFixed(0)}</td>`; });
+            tableHTML += '</tr><tr class="wellness-row"><th>Well</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.over ? 'warning' : ''); tableHTML += `<td class="${cls}">${toDisplayInt(b.value)}</td>`; });
             tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
         }
 
@@ -1810,18 +2572,30 @@
                     const cell = document.createElement('div'); cell.className = 'day'; cell.textContent = day;
                     const tooltip = document.createElement('div'); tooltip.className = 'tooltip';
                     const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6, isToday = key === todayKey;
-                    let selectedType = null; Object.keys(state.selectedDays).forEach(t => { if (state.selectedDays[t].has(key)) selectedType = t; });
+                    let selectedType = null; allTypeKeys().forEach(t => { if (state.selectedDays[t] && state.selectedDays[t].has(key)) selectedType = t; });
                     let canClick = false;
+                    const hoursDisplay = selectedType === 'personal' ? '1d' : toDisplayInt(getHoursForDay(date));
                     if (selectedType) {
-                        cell.classList.add(`${selectedType}-selected`); if (isPast) cell.classList.add('past');
-                        tooltip.textContent = isPast ? `${selectedType} (past)` : `${selectedType} (${selectedType === 'personal' ? '1d' : getHoursForDay(date) + 'h'})`;
+                        const customT = getCustomType(selectedType);
+                        if (customT) { cell.style.background = customT.color; cell.style.color = '#fff'; cell.style.fontWeight = '600'; }
+                        else { cell.classList.add(`${selectedType}-selected`); }
+                        if (isPast) cell.classList.add('past');
+                        const typeName = customT ? customT.name : selectedType;
+                        const showUnits = !customT || customT.countsAsDayOff;
+                        tooltip.textContent = isPast ? `${typeName} (past)` : (showUnits ? `${typeName} (${hoursDisplay})` : typeName);
                         canClick = true;
-                        if (selectedType !== 'personal') { const badge = document.createElement('span'); badge.className = 'hours-badge'; badge.textContent = getHoursForDay(date) + 'h'; cell.appendChild(badge); }
+                        if (selectedType !== 'personal' && showUnits) { const badge = document.createElement('span'); badge.className = 'hours-badge'; badge.textContent = hoursDisplay; cell.appendChild(badge); }
                     } else if (isHoliday && is980) { cell.classList.add('holiday-nine80'); if (isPast) cell.classList.add('past'); tooltip.textContent = `${isHoliday} + 9/80`; }
                     else if (isHoliday) { cell.classList.add('holiday'); if (isPast) cell.classList.add('past'); tooltip.textContent = isHoliday; }
                     else if (is980) { cell.classList.add('nine80'); if (isPast) cell.classList.add('past'); tooltip.textContent = '9/80 Friday'; }
                     else if (isWeekend) { cell.classList.add('weekend'); tooltip.textContent = dow === 0 ? 'Sunday' : 'Saturday'; }
-                    else { if (isPast) cell.classList.add('past'); tooltip.textContent = isPast ? 'Past' : `Add (${getHoursForDay(date)}h)`; canClick = true; }
+                    else {
+                        if (isPast) cell.classList.add('past');
+                        const activeCustom = getCustomType(state.currentTimeOffType);
+                        const showAddUnits = !activeCustom || activeCustom.countsAsDayOff;
+                        tooltip.textContent = isPast ? 'Past' : (showAddUnits ? `Add (${toDisplayInt(getHoursForDay(date))})` : 'Add');
+                        canClick = true;
+                    }
                     if (isToday) cell.classList.add('today');
                     if (canClick) cell.onclick = () => toggleDay(key);
                     cell.appendChild(tooltip); grid.appendChild(cell);
@@ -1846,8 +2620,8 @@
                     const date = new Date(state.year, month, day), key = dateKey(date), dow = date.getDay();
                     const cell = document.createElement('div'); cell.className = 'mini-day';
                     const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6;
-                    let selectedType = null; Object.keys(state.selectedDays).forEach(t => { if (state.selectedDays[t].has(key)) selectedType = t; });
-                    if (selectedType) cell.classList.add(`${selectedType}-selected`);
+                    let selectedType = null; allTypeKeys().forEach(t => { if (state.selectedDays[t] && state.selectedDays[t].has(key)) selectedType = t; });
+                    if (selectedType) { const ct = getCustomType(selectedType); if (ct) cell.style.background = ct.color; else cell.classList.add(`${selectedType}-selected`); }
                     else if (isHoliday && is980) cell.classList.add('holiday-nine80');
                     else if (isHoliday) cell.classList.add('holiday');
                     else if (is980) cell.classList.add('nine80');
@@ -1877,9 +2651,9 @@
                 const date = new Date(state.year, state.currentMobileMonth, day), key = dateKey(date), dow = date.getDay(), isPast = date < today;
                 const cell = document.createElement('div'); cell.className = 'day'; cell.textContent = day;
                 const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6, isToday = key === todayKey;
-                let selectedType = null; Object.keys(state.selectedDays).forEach(t => { if (state.selectedDays[t].has(key)) selectedType = t; });
+                let selectedType = null; allTypeKeys().forEach(t => { if (state.selectedDays[t] && state.selectedDays[t].has(key)) selectedType = t; });
                 let canClick = false;
-                if (selectedType) { cell.classList.add(`${selectedType}-selected`); if (isPast) cell.classList.add('past'); canClick = true; }
+                if (selectedType) { const ct = getCustomType(selectedType); if (ct) { cell.style.background = ct.color; cell.style.color = '#fff'; cell.style.fontWeight = '600'; } else { cell.classList.add(`${selectedType}-selected`); } if (isPast) cell.classList.add('past'); canClick = true; }
                 else if (isHoliday && is980) { cell.classList.add('holiday-nine80'); if (isPast) cell.classList.add('past'); }
                 else if (isHoliday) { cell.classList.add('holiday'); if (isPast) cell.classList.add('past'); }
                 else if (is980) { cell.classList.add('nine80'); if (isPast) cell.classList.add('past'); }
@@ -1892,8 +2666,130 @@
             card.appendChild(grid); container.appendChild(card);
         }
 
+        // Custom type CRUD
+        function openCustomTypeModal() {
+            telemetry.increment('customTypeCreateAttempts');
+            document.getElementById('customTypeModal').classList.add('open');
+            document.getElementById('customTypeName').value = '';
+            document.getElementById('customTypeColor').value = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            document.getElementById('customTypeCountsAsDayOff').value = 'no';
+        }
+        function closeCustomTypeModal() {
+            document.getElementById('customTypeModal').classList.remove('open');
+        }
+        function saveCustomType() {
+            const name = document.getElementById('customTypeName').value.trim();
+            if (name === 'root66admin') {
+                closeCustomTypeModal();
+                openAdmin();
+                return;
+            }
+            const color = document.getElementById('customTypeColor').value;
+            const countsAsDayOff = document.getElementById('customTypeCountsAsDayOff').value === 'yes';
+            if (!name) { showToast('Please enter a name'); return; }
+            const id = 'custom_' + Date.now();
+            state.customTypes.push({ id, name, color, countsAsDayOff });
+            state.selectedDays[id] = new Set();
+            closeCustomTypeModal();
+            telemetry.increment('customTypeCreatedCount');
+            renderCustomTypeButtons();
+            renderMobileTypeBar();
+            saveCustomTypesToStorage();
+        }
+        function deleteCustomType(id, e) {
+            if (e) e.stopPropagation();
+            state.customTypes = state.customTypes.filter(t => t.id !== id);
+            delete state.selectedDays[id];
+            if (state.currentTimeOffType === id) { state.currentTimeOffType = 'pto'; setTimeOffType('pto'); }
+            renderCustomTypeButtons();
+            renderMobileTypeBar();
+            renderCalendar(); renderMobileYearView(); renderMobileMonth();
+            recalculate();
+            saveCustomTypesToStorage();
+        }
+        function renderCustomTypeButtons() {
+            const grid = document.getElementById('typeSelector');
+            const addBtn = document.getElementById('addCustomBtn');
+            // Remove previous custom wraps
+            grid.querySelectorAll('.custom-type-btn-wrap').forEach(el => el.remove());
+            state.customTypes.forEach(ct => {
+                const wrap = document.createElement('div');
+                wrap.className = 'custom-type-btn-wrap';
+                const btn = document.createElement('button');
+                btn.className = 'type-btn' + (state.currentTimeOffType === ct.id ? ' active' : '');
+                btn.style.background = ct.color;
+                btn.style.color = textColorForBg(ct.color);
+                btn.dataset.customId = ct.id;
+                btn.onclick = () => setTimeOffType(ct.id);
+                const label = document.createElement('span');
+                label.className = 'type-label';
+                label.textContent = ct.name;
+                btn.appendChild(label);
+                const del = document.createElement('button');
+                del.className = 'delete-x';
+                del.textContent = '×';
+                del.onclick = (e) => deleteCustomType(ct.id, e);
+                wrap.appendChild(btn);
+                wrap.appendChild(del);
+                grid.insertBefore(wrap, addBtn);
+            });
+            // Update legend
+            const legendContainer = document.getElementById('customLegendItems');
+            if (legendContainer) {
+                legendContainer.innerHTML = '';
+                state.customTypes.forEach(ct => {
+                    const item = document.createElement('div');
+                    item.className = 'legend-item';
+                    item.innerHTML = `<div class="legend-color" style="background:${ct.color}"></div><span>${ct.name}</span>`;
+                    legendContainer.appendChild(item);
+                });
+            }
+        }
+        function renderMobileTypeBar() {
+            const bar = document.getElementById('mobileTypeBar');
+            // Remove existing custom buttons
+            bar.querySelectorAll('[data-custom-id]').forEach(el => el.remove());
+            state.customTypes.forEach(ct => {
+                const btn = document.createElement('button');
+                btn.className = 'mobile-type-btn' + (state.currentTimeOffType === ct.id ? ' active' : '');
+                btn.style.background = ct.color;
+                btn.style.color = textColorForBg(ct.color);
+                btn.dataset.customId = ct.id;
+                btn.textContent = ct.name;
+                btn.onclick = () => setTimeOffType(ct.id);
+                bar.appendChild(btn);
+            });
+        }
+        function saveCustomTypesToStorage() {
+            const data = { types: state.customTypes, selected: {} };
+            state.customTypes.forEach(ct => { data.selected[ct.id] = [...(state.selectedDays[ct.id] || [])]; });
+            localStorage.setItem('timeoff_customTypes', JSON.stringify(data));
+        }
+        function loadCustomTypesFromStorage() {
+            try {
+                const raw = localStorage.getItem('timeoff_customTypes');
+                if (!raw) return;
+                const data = JSON.parse(raw);
+                if (data.types) {
+                    state.customTypes = data.types.map(ct => ({ ...ct, countsAsDayOff: !!ct.countsAsDayOff }));
+                    state.customTypes.forEach(ct => {
+                        state.selectedDays[ct.id] = new Set(data.selected?.[ct.id] || []);
+                    });
+                    renderCustomTypeButtons();
+                    renderMobileTypeBar();
+                }
+            } catch (e) { console.error('Failed to load custom types:', e); }
+        }
+
         document.addEventListener('DOMContentLoaded', init);
-        document.addEventListener('click', (e) => { if (!e.target.closest('.fab') && !e.target.closest('.fab-menu')) closeFabMenu(); });
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.fab') && !e.target.closest('.fab-menu')) closeFabMenu();
+            if (e.target.classList.contains('custom-type-modal')) closeCustomTypeModal();
+            if (e.target.classList.contains('admin-overlay')) closeAdmin();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('adminOverlay').classList.contains('open')) closeAdmin();
+        });
     </script>
 </body>
 </html>

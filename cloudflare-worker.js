@@ -1,19 +1,36 @@
 /**
- * Cloudflare Worker for pt-onia.app Short URL Service
+ * Cloudflare Worker for pt-onia.app — Short URL Service + Telemetry
  *
  * SETUP INSTRUCTIONS:
  * 1. Go to Cloudflare Dashboard > Workers & Pages
- * 2. Create a new Worker
+ * 2. Create a new Worker (or update the existing one)
  * 3. Paste this code
- * 4. Create a KV namespace called "SHORT_URLS"
- * 5. Bind the KV namespace to this worker with variable name "SHORT_URLS"
- * 6. Add a route: pt-onia.app/s/* -> this worker
- * 7. Add a route: pt-onia.app/api/shorten -> this worker
+ * 4. Create KV namespaces:
+ *    - "SHORT_URLS" — for short URL storage
+ *    - "TELEMETRY" — for sitewide anonymous metrics
+ * 5. Bind both KV namespaces to this worker:
+ *    - SHORT_URLS variable → SHORT_URLS namespace
+ *    - TELEMETRY variable  → TELEMETRY namespace
+ * 6. Add routes:
+ *    - pt-onia.app/s/*           -> this worker
+ *    - pt-onia.app/api/shorten   -> this worker
+ *    - pt-onia.app/api/telemetry -> this worker
  *
- * USAGE:
+ * SHORT URL USAGE:
  * - POST /api/shorten with { "url": "https://pt-onia.app/#..." }
  * - Returns { "shortUrl": "https://pt-onia.app/s/abc123" }
  * - GET /s/abc123 redirects to the full URL
+ *
+ * TELEMETRY USAGE:
+ * - POST /api/telemetry — increment counters (batched from client)
+ *   Body: { "increments": { "saveClicks": 2, ... }, "nested": { "theme": { "dark-default": 1 } } }
+ * - GET  /api/telemetry — retrieve all sitewide totals
+ * - DELETE /api/telemetry — reset all sitewide counters (admin)
+ *
+ * PRIVACY:
+ * - Only anonymous aggregated counters are stored.
+ * - No IPs, fingerprints, or personal data are persisted.
+ * - Rate limiting uses in-memory counters (not stored).
  */
 
 const DOMAIN = 'https://pt-onia.app';
@@ -162,6 +179,133 @@ async function handleRedirect(shortCode, env, ctx) {
     return Response.redirect(DOMAIN, 302);
 }
 
+// ── Telemetry ──────────────────────────────────────────────────────────────
+const TELEMETRY_KV_KEY = 'counters_v1';
+
+// Allowed top-level counter keys (flat increments). Reject anything else.
+const ALLOWED_FLAT_KEYS = new Set([
+    'totalSessions', 'totalActiveMs', 'sessionsOver5Min',
+    'saveClicks', 'saveUsedSessions',
+    'units_hours', 'units_days',
+    'customTypeCreateAttempts', 'customTypeCreatedCount',
+    'opportunityClickCount', 'clearAllSelectionsCount',
+    'returningVisitsCount', 'errorsCaughtCount',
+]);
+// Allowed nested groups
+const ALLOWED_NESTED_GROUPS = new Set(['theme', 'quickSelect']);
+
+// In-memory rate limiter — per-IP, resets each worker instance / isolate
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW_MS = 60000;
+const RATE_LIMIT_MAX = 30; // max 30 requests/minute per IP
+
+function isRateLimited(ip) {
+    const now = Date.now();
+    let entry = rateLimitMap.get(ip);
+    if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW_MS) {
+        entry = { windowStart: now, count: 0 };
+        rateLimitMap.set(ip, entry);
+    }
+    entry.count++;
+    // Periodically prune old entries
+    if (rateLimitMap.size > 10000) {
+        for (const [k, v] of rateLimitMap) {
+            if (now - v.windowStart > RATE_LIMIT_WINDOW_MS) rateLimitMap.delete(k);
+        }
+    }
+    return entry.count > RATE_LIMIT_MAX;
+}
+
+async function handleTelemetryPost(request, env) {
+    if (!env.TELEMETRY) {
+        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500);
+    }
+
+    // Rate limit by IP (IP is read but NEVER stored)
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    if (isRateLimited(ip)) {
+        return jsonResponse({ error: 'Rate limited' }, 429);
+    }
+
+    let payload;
+    try {
+        payload = await request.json();
+    } catch {
+        return jsonResponse({ error: 'Invalid JSON' }, 400);
+    }
+
+    // Validate payload shape
+    const increments = payload?.increments;
+    const nested = payload?.nested;
+    if (!increments && !nested) {
+        return jsonResponse({ error: 'Missing increments or nested fields' }, 400);
+    }
+
+    // Load current counters from KV
+    let counters;
+    try {
+        const raw = await env.TELEMETRY.get(TELEMETRY_KV_KEY);
+        counters = raw ? JSON.parse(raw) : {};
+    } catch {
+        counters = {};
+    }
+
+    // Apply flat increments
+    if (increments && typeof increments === 'object') {
+        for (const [key, delta] of Object.entries(increments)) {
+            if (!ALLOWED_FLAT_KEYS.has(key)) continue;
+            const d = Number(delta);
+            if (!Number.isFinite(d) || d < 0 || d > 1e9) continue;
+            counters[key] = (counters[key] || 0) + d;
+        }
+    }
+
+    // Apply nested increments
+    if (nested && typeof nested === 'object') {
+        for (const [group, entries] of Object.entries(nested)) {
+            if (!ALLOWED_NESTED_GROUPS.has(group)) continue;
+            if (!entries || typeof entries !== 'object') continue;
+            if (!counters[group]) counters[group] = {};
+            for (const [key, delta] of Object.entries(entries)) {
+                // Sanitize nested keys (max 50 chars, alphanumeric + dash)
+                if (typeof key !== 'string' || key.length > 50 || !/^[\w-]+$/.test(key)) continue;
+                const d = Number(delta);
+                if (!Number.isFinite(d) || d < 0 || d > 1e9) continue;
+                counters[group][key] = (counters[group][key] || 0) + d;
+            }
+        }
+    }
+
+    // Save back to KV
+    await env.TELEMETRY.put(TELEMETRY_KV_KEY, JSON.stringify(counters));
+
+    return jsonResponse({ ok: true });
+}
+
+async function handleTelemetryGet(env) {
+    if (!env.TELEMETRY) {
+        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500);
+    }
+    let counters;
+    try {
+        const raw = await env.TELEMETRY.get(TELEMETRY_KV_KEY);
+        counters = raw ? JSON.parse(raw) : {};
+    } catch {
+        counters = {};
+    }
+    return jsonResponse(counters);
+}
+
+async function handleTelemetryDelete(env) {
+    if (!env.TELEMETRY) {
+        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500);
+    }
+    await env.TELEMETRY.put(TELEMETRY_KV_KEY, JSON.stringify({}));
+    return jsonResponse({ ok: true, message: 'All sitewide counters reset' });
+}
+
+// ── Request Router ─────────────────────────────────────────────────────────
+
 async function handleRequest(request, env, ctx) {
     const url = new URL(request.url);
 
@@ -171,6 +315,26 @@ async function handleRequest(request, env, ctx) {
             headers: CORS_HEADERS,
         });
     }
+
+    // ── Telemetry routes ──
+    if (url.pathname === '/api/telemetry') {
+        if (request.method === 'POST') {
+            try {
+                return await handleTelemetryPost(request, env);
+            } catch (error) {
+                return jsonResponse({ error: 'Server error', message: error.message }, 500);
+            }
+        }
+        if (request.method === 'GET') {
+            return handleTelemetryGet(env);
+        }
+        if (request.method === 'DELETE') {
+            return handleTelemetryDelete(env);
+        }
+        return jsonResponse({ error: 'Method not allowed' }, 405);
+    }
+
+    // ── Short URL routes ──
 
     // Handle GET request to /api/shorten (for debugging)
     if (url.pathname === '/api/shorten' && request.method === 'GET') {
