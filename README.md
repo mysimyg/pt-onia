@@ -1,24 +1,79 @@
-# Time Off Optimizer
+# PTO Optimizer (pt-onia.app)
 
-Plan your time off for the year on a 9/80 work schedule. Click days on a calendar, see how your balances change over time, and find the best ways to turn a few PTO days into long weekends.
+Plan time off on a 9/80 schedule, model year-end balances, and quickly find high-leverage day-off combinations.
 
-**[Open the app](https://pt-onia.app)**
+**Live app:** https://pt-onia.app
 
-## What it does
+## What It Does
 
-- Shows a full-year calendar where you click days to mark them as time off
-- Tracks four types of leave: **PTO**, **Activism**, **Personal Days**, and **Wellness/Sick**
-- Shows your projected balance at every pay period so you know if you'll run out or hit your cap
-- Suggests combos where holidays and 9/80 Fridays line up, so you get the most days off for the least PTO spent
-- Works on phones and desktops, with 8 theme options
+- Interactive year + mobile calendars with click-to-toggle day selection.
+- Built-in leave types: PTO, Activism, Personal, Wellness/Sick.
+- Custom leave types with color + `counts toward days off` control.
+- Hours <-> days display toggle across balances, tooltips, and projections.
+- Opportunity engine and quick-select actions (Mega/Super/4-Day, Fridays, monthly Friday packs, Clear All).
+- Year-end projections/tables for PTO, Wellness, Activism, and Personal.
+- Save/share links via URL state, with optional short-link generation through Worker API.
+- Theme/palette selector (light/dark variants).
+- Secret admin trigger (`root66admin` in custom type name) opening telemetry KPI dashboard.
 
-## How to use it
+## Privacy
 
-1. **Set up** — Pick your year, years of service, first paycheck date, and first 9/80 Friday
-2. **Enter your balances** — How many hours/days you have right now for each leave type
-3. **Check your holidays** — Select which company holidays apply to you
-4. **Click days on the calendar** — Or use the suggested combos and packages to fill them in faster
-5. **Save** — Generates a link you can bookmark or share. No account needed. Everything is stored in the URL.
+- No personal scheduling data is sent to telemetry:
+  - no PTO/Activism/Wellness balances
+  - no selected calendar dates
+  - no holiday selections
+  - no custom type names
+  - no years-of-service or paycheck schedule values
+- Telemetry is anonymous aggregated counters only.
+- Local telemetry is stored in browser `localStorage`.
+- Optional sitewide telemetry is sent in aggregate to the configured worker endpoint.
+- The worker reads IP only for in-memory rate limiting and does not persist IPs.
+
+## Deployment
+
+### Static app hosting (GitHub Pages)
+
+- `index.html` is a standalone app and can be hosted directly on GitHub Pages.
+- `CNAME` is included for custom-domain routing.
+
+### Optional Worker services (short links + sitewide telemetry)
+
+`cloudflare-worker.js` handles:
+
+- `POST /api/shorten` and `GET /s/:code` for share-link shortening.
+- `POST/GET/DELETE /api/telemetry` for anonymous sitewide metrics.
+
+Required Worker bindings in current implementation:
+
+- `SHORT_URLS` (Cloudflare KV)
+- `TELEMETRY` (Cloudflare KV)
+
+Client config in `index.html`:
+
+- `TELEMETRY_REMOTE_ENABLED`
+- `TELEMETRY_REMOTE_ENDPOINT` (typically `https://pt-onia.app/api/telemetry`)
+
+If you prefer D1-backed telemetry, adapt `cloudflare-worker.js` accordingly; the checked-in worker uses KV.
+
+## Local Development
+
+No build step is required.
+
+1. Open `index.html` directly in a modern browser, or
+2. Run a tiny static server (recommended for parity):
+
+```bash
+python3 -m http.server 8080
+```
+
+Then open `http://localhost:8080`.
+
+## Folder Structure
+
+- `index.html` - main app (UI, styles, logic, local telemetry, save/share state).
+- `cloudflare-worker.js` - optional Cloudflare Worker for short URLs + sitewide telemetry.
+- `README.md` - project documentation.
+- `CNAME` - GitHub Pages custom domain.
 
 ## License
 

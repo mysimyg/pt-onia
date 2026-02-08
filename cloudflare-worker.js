@@ -39,7 +39,7 @@ const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'; // Remo
 const SHORT_CODE_REGEX = new RegExp(`^[${CHARS}]{${SHORT_CODE_LENGTH}}$`);
 const CORS_HEADERS = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
 };
 const REDIRECT_CACHE_SECONDS = 300;
@@ -193,6 +193,19 @@ const ALLOWED_FLAT_KEYS = new Set([
 ]);
 // Allowed nested groups
 const ALLOWED_NESTED_GROUPS = new Set(['theme', 'quickSelect']);
+const RESERVED_OBJECT_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
+const MAX_TELEMETRY_PAYLOAD_CHARS = 32768;
+
+function isPlainObject(value) {
+    return !!value && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isSafeNestedMetricKey(key) {
+    return typeof key === 'string' &&
+        key.length <= 50 &&
+        /^[\w-]+$/.test(key) &&
+        !RESERVED_OBJECT_KEYS.has(key);
+}
 
 // In-memory rate limiter — per-IP, resets each worker instance / isolate
 const rateLimitMap = new Map();
@@ -229,7 +242,11 @@ async function handleTelemetryPost(request, env) {
 
     let payload;
     try {
-        payload = await request.json();
+        const rawBody = await request.text();
+        if (rawBody.length > MAX_TELEMETRY_PAYLOAD_CHARS) {
+            return jsonResponse({ error: 'Payload too large' }, 413);
+        }
+        payload = JSON.parse(rawBody);
     } catch {
         return jsonResponse({ error: 'Invalid JSON' }, 400);
     }
@@ -251,7 +268,7 @@ async function handleTelemetryPost(request, env) {
     }
 
     // Apply flat increments
-    if (increments && typeof increments === 'object') {
+    if (isPlainObject(increments)) {
         for (const [key, delta] of Object.entries(increments)) {
             if (!ALLOWED_FLAT_KEYS.has(key)) continue;
             const d = Number(delta);
@@ -261,14 +278,14 @@ async function handleTelemetryPost(request, env) {
     }
 
     // Apply nested increments
-    if (nested && typeof nested === 'object') {
+    if (isPlainObject(nested)) {
         for (const [group, entries] of Object.entries(nested)) {
             if (!ALLOWED_NESTED_GROUPS.has(group)) continue;
-            if (!entries || typeof entries !== 'object') continue;
+            if (!isPlainObject(entries)) continue;
             if (!counters[group]) counters[group] = {};
             for (const [key, delta] of Object.entries(entries)) {
-                // Sanitize nested keys (max 50 chars, alphanumeric + dash)
-                if (typeof key !== 'string' || key.length > 50 || !/^[\w-]+$/.test(key)) continue;
+                // Prevent special object keys and keep names compact/safe.
+                if (!isSafeNestedMetricKey(key)) continue;
                 const d = Number(delta);
                 if (!Number.isFinite(d) || d < 0 || d > 1e9) continue;
                 counters[group][key] = (counters[group][key] || 0) + d;
@@ -277,7 +294,7 @@ async function handleTelemetryPost(request, env) {
     }
 
     // Save back to KV
-    await env.TELEMETRY.put(TELEMETRY_KV_KEY, JSON.stringify(counters));
+    await withRetry(() => env.TELEMETRY.put(TELEMETRY_KV_KEY, JSON.stringify(counters)));
 
     return jsonResponse({ ok: true });
 }
@@ -300,7 +317,7 @@ async function handleTelemetryDelete(env) {
     if (!env.TELEMETRY) {
         return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500);
     }
-    await env.TELEMETRY.put(TELEMETRY_KV_KEY, JSON.stringify({}));
+    await withRetry(() => env.TELEMETRY.put(TELEMETRY_KV_KEY, JSON.stringify({})));
     return jsonResponse({ ok: true, message: 'All sitewide counters reset' });
 }
 

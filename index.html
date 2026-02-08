@@ -1467,6 +1467,7 @@
         const TELEMETRY_FLUSH_INTERVAL_MS = 30000; // flush batch every 30s
         const TELEMETRY_KEY = 'ptoOptimizer_telemetry_v1';
         const TELEMETRY_VISITED_KEY = 'ptoOptimizer_hasVisited';
+        const CUSTOM_TYPES_STORAGE_KEY = 'timeoff_customTypes';
         const telemetry = (() => {
             const defaults = {
                 v: 1, totalSessions: 0, totalActiveMs: 0, sessionsOver5Min: 0,
@@ -1485,8 +1486,32 @@
             let activeMs = 0;
             let lastVisibleTime = document.hidden ? null : Date.now();
             let saveUsedThisSession = false;
+            let saveTimer = null;
+            let saveDirty = false;
 
-            function save() { localStorage.setItem(TELEMETRY_KEY, JSON.stringify(data)); }
+            function persistNow() {
+                if (!saveDirty) return;
+                saveDirty = false;
+                try {
+                    localStorage.setItem(TELEMETRY_KEY, JSON.stringify(data));
+                } catch {}
+            }
+            function save(immediate = false) {
+                saveDirty = true;
+                if (immediate) {
+                    if (saveTimer) {
+                        clearTimeout(saveTimer);
+                        saveTimer = null;
+                    }
+                    persistNow();
+                    return;
+                }
+                if (saveTimer) return;
+                saveTimer = setTimeout(() => {
+                    saveTimer = null;
+                    persistNow();
+                }, 250);
+            }
             function increment(key) { data[key] = (data[key] || 0) + 1; save(); remoteBatch.add(key, 1); }
             function incrementNested(group, key) {
                 if (!data[group]) data[group] = {};
@@ -1496,8 +1521,13 @@
             }
 
             // Returning visitor
-            if (localStorage.getItem(TELEMETRY_VISITED_KEY)) { data.returningVisitsCount++; }
-            localStorage.setItem(TELEMETRY_VISITED_KEY, '1');
+            try {
+                if (localStorage.getItem(TELEMETRY_VISITED_KEY)) {
+                    data.returningVisitsCount++;
+                    save();
+                }
+                localStorage.setItem(TELEMETRY_VISITED_KEY, '1');
+            } catch {}
 
             function onVisChange() {
                 if (document.hidden) {
@@ -1510,7 +1540,7 @@
                 data.totalActiveMs += activeMs;
                 if (activeMs >= 300000) data.sessionsOver5Min++;
                 if (saveUsedThisSession) data.saveUsedSessions++;
-                save();
+                save(true);
                 // Flush remaining remote batch + session counters
                 remoteBatch.add('totalSessions', 1);
                 remoteBatch.add('totalActiveMs', activeMs);
@@ -1529,7 +1559,7 @@
                 save,
                 reset() {
                     Object.keys(defaults).forEach(k => data[k] = typeof defaults[k] === 'object' ? JSON.parse(JSON.stringify(defaults[k])) : defaults[k]);
-                    save();
+                    save(true);
                 }
             };
         })();
@@ -1565,20 +1595,58 @@
                 flushTimer = setTimeout(() => { flushTimer = null; flush(false); }, TELEMETRY_FLUSH_INTERVAL_MS);
             }
 
+            function mergeBack(flat, nestedEntries) {
+                Object.entries(flat).forEach(([key, delta]) => {
+                    batch[key] = (batch[key] || 0) + delta;
+                });
+                Object.entries(nestedEntries).forEach(([group, entries]) => {
+                    if (!nested[group]) nested[group] = {};
+                    Object.entries(entries).forEach(([key, delta]) => {
+                        nested[group][key] = (nested[group][key] || 0) + delta;
+                    });
+                });
+            }
+
             function flush(useBeacon) {
                 if (!TELEMETRY_REMOTE_ENABLED || !TELEMETRY_REMOTE_ENDPOINT || isEmpty()) return;
-                const payload = JSON.stringify({ increments: { ...batch }, nested: { ...nested } });
+                if (flushTimer) {
+                    clearTimeout(flushTimer);
+                    flushTimer = null;
+                }
+
+                const outBatch = { ...batch };
+                const outNested = { ...nested };
+                const payload = JSON.stringify({ increments: outBatch, nested: outNested });
                 batch = {};
                 nested = {};
+
                 if (useBeacon && navigator.sendBeacon) {
-                    navigator.sendBeacon(TELEMETRY_REMOTE_ENDPOINT, payload);
+                    const queued = navigator.sendBeacon(
+                        TELEMETRY_REMOTE_ENDPOINT,
+                        new Blob([payload], { type: 'application/json' })
+                    );
+                    if (!queued) {
+                        remoteAlive = false;
+                        mergeBack(outBatch, outNested);
+                        scheduleFlush();
+                    }
                 } else {
                     fetch(TELEMETRY_REMOTE_ENDPOINT, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: payload,
                         keepalive: true
-                    }).then(r => { remoteAlive = r.ok; }).catch(() => { remoteAlive = false; });
+                    }).then(r => {
+                        remoteAlive = r.ok;
+                        if (!r.ok) {
+                            mergeBack(outBatch, outNested);
+                            scheduleFlush();
+                        }
+                    }).catch(() => {
+                        remoteAlive = false;
+                        mergeBack(outBatch, outNested);
+                        scheduleFlush();
+                    });
                 }
             }
 
@@ -1736,16 +1804,23 @@
             if (navigator.clipboard) { navigator.clipboard.writeText(json).then(() => showToast('Telemetry JSON copied to clipboard')); }
             else { const b = new Blob([json], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'telemetry.json'; a.click(); }
         }
-        function resetTelemetry() {
+        async function resetTelemetry() {
             if (adminTab === 'local') {
                 if (!confirm('Reset LOCAL device metrics? This cannot be undone.')) return;
                 telemetry.reset();
+                renderAdminDashboard();
+                showToast('Metrics reset');
             } else {
                 if (!confirm('Reset SITEWIDE metrics on the server? This cannot be undone.')) return;
-                fetch(TELEMETRY_REMOTE_ENDPOINT, { method: 'DELETE' }).then(() => showToast('Sitewide metrics reset')).catch(() => showToast('Failed to reset'));
+                try {
+                    const response = await fetch(TELEMETRY_REMOTE_ENDPOINT, { method: 'DELETE' });
+                    if (!response.ok) throw new Error('Failed to reset');
+                    showToast('Sitewide metrics reset');
+                } catch {
+                    showToast('Failed to reset');
+                }
+                renderAdminDashboard();
             }
-            renderAdminDashboard();
-            showToast('Metrics reset');
         }
 
         // State
@@ -1777,7 +1852,6 @@
             if (state.displayUnits === 'days') return (hours / 9).toFixed(1) + 'd';
             return Math.round(hours) + 'h';
         }
-        function unitLabel() { return state.displayUnits === 'days' ? 'd' : 'h'; }
         function setDisplayUnits(units) {
             state.displayUnits = units;
             telemetry.increment('units_' + units);
@@ -1787,12 +1861,26 @@
             recalculate();
             renderCalendar();
             renderMobileMonth();
+            renderOpportunities();
         }
 
         // Custom type helpers
         function isCustomType(type) { return !BUILTIN_TYPES.includes(type); }
         function getCustomType(id) { return state.customTypes.find(t => t.id === id); }
         function allTypeKeys() { return [...BUILTIN_TYPES, ...state.customTypes.map(t => t.id)]; }
+        function selectedTypeForDay(key, typeKeys = allTypeKeys()) {
+            for (const type of typeKeys) {
+                if (state.selectedDays[type]?.has(key)) return type;
+            }
+            return null;
+        }
+        function refreshPlannerViews(includeOpportunities = true) {
+            renderCalendar();
+            renderMobileYearView();
+            renderMobileMonth();
+            if (includeOpportunities) renderOpportunities();
+            recalculate();
+        }
         function textColorForBg(hex) {
             const c = hex.replace('#', '');
             const r = parseInt(c.substr(0, 2), 16), g = parseInt(c.substr(2, 2), 16), b = parseInt(c.substr(4, 2), 16);
@@ -1961,9 +2049,6 @@
             if (shortUrl) {
                 urlToCopy = shortUrl;
                 message = 'Short link copied! ' + shortUrl;
-            } else {
-                // Short URL service not available, use long URL
-                console.log('Short URL service not available, using long URL');
             }
 
             // Reset button state
@@ -2314,13 +2399,13 @@
             if (!opp) return;
             if (state.selectedOpportunities.has(oppId)) { state.selectedOpportunities.delete(oppId); opp.dates.forEach(d => state.selectedDays.pto.delete(d)); }
             else { state.selectedOpportunities.add(oppId); opp.dates.forEach(d => state.selectedDays.pto.add(d)); }
-            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
+            refreshPlannerViews(true);
         }
 
         function selectAllType(type) {
             telemetry.incrementNested('quickSelect', type);
             state.opportunities.filter(o => o.type === type).forEach(opp => { state.selectedOpportunities.add(opp.id); opp.dates.forEach(d => state.selectedDays.pto.add(d)); });
-            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
+            refreshPlannerViews(true);
         }
 
         function selectMonthFridays(monthNum) {
@@ -2329,20 +2414,20 @@
             for (let d = new Date(state.year, monthNum, 1); d <= new Date(state.year, monthNum + 1, 0); d.setDate(d.getDate() + 1)) {
                 if (d.getDay() === 5 && d >= today) { const key = dateKey(d); if (!state.nine80Fridays[key] && !state.holidays[key]) state.selectedDays.pto.add(key); }
             }
-            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
+            refreshPlannerViews(true);
         }
 
         function clearAllSelections() {
             telemetry.increment('clearAllSelectionsCount');
             allTypeKeys().forEach(type => { if (state.selectedDays[type]) state.selectedDays[type].clear(); });
             state.selectedOpportunities.clear();
-            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
+            refreshPlannerViews(true);
         }
 
         function toggleDay(key) {
             const type = state.currentTimeOffType;
-            let existingType = null;
-            allTypeKeys().forEach(t => { if (state.selectedDays[t] && state.selectedDays[t].has(key)) existingType = t; });
+            const typeKeys = allTypeKeys();
+            const existingType = selectedTypeForDay(key, typeKeys);
             if (existingType === type) {
                 // Same type: toggle off
                 state.selectedDays[existingType].delete(key);
@@ -2358,8 +2443,8 @@
                 state.selectedDays[type].add(key);
                 if (type === 'pto') state.opportunities.forEach(opp => { if (opp.dates.every(d => state.selectedDays.pto.has(d))) state.selectedOpportunities.add(opp.id); });
             }
-            renderCalendar(); renderMobileYearView(); renderMobileMonth(); renderOpportunities(); recalculate();
-            if (state.customTypes.length > 0) saveCustomTypesToStorage();
+            refreshPlannerViews(true);
+            if (isCustomType(type) || (existingType && isCustomType(existingType))) saveCustomTypesToStorage();
         }
 
         function recalculate() {
@@ -2452,16 +2537,20 @@
             }
             ['ptoDetail', 'mPtoDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = ptoDetail; });
 
+            const dayOffTypeIds = new Set(BUILTIN_TYPES);
+            state.customTypes.forEach(ct => { if (ct.countsAsDayOff) dayOffTypeIds.add(ct.id); });
+            const selectedCountedDays = new Set();
+            dayOffTypeIds.forEach(typeId => {
+                const selectedSet = state.selectedDays[typeId];
+                if (!selectedSet) return;
+                selectedSet.forEach(key => selectedCountedDays.add(key));
+            });
+
             let workDaysOff = 0, totalDaysOff = 0;
             for (let d = new Date(state.year, 0, 1); d <= new Date(state.year, 11, 31); d.setDate(d.getDate() + 1)) {
                 const key = dateKey(d), dow = d.getDay();
                 const isWeekend = dow === 0 || dow === 6, isHoliday = state.holidays[key], is980 = state.nine80Fridays[key];
-                const isSelectedAny = allTypeKeys().some(t => {
-                    if (!(state.selectedDays[t] && state.selectedDays[t].has(key))) return false;
-                    if (BUILTIN_TYPES.includes(t)) return true;
-                    const ct = getCustomType(t);
-                    return ct && ct.countsAsDayOff;
-                });
+                const isSelectedAny = selectedCountedDays.has(key);
                 if (isWeekend || isHoliday || is980 || isSelectedAny) { totalDaysOff++; if (!isWeekend) workDaysOff++; }
             }
 
@@ -2558,6 +2647,10 @@
             const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             const today = new Date(); today.setHours(0,0,0,0);
             const todayKey = dateKey(today);
+            const typeKeys = allTypeKeys();
+            const customTypeMap = new Map(state.customTypes.map(ct => [ct.id, ct]));
+            const activeCustom = customTypeMap.get(state.currentTimeOffType);
+            const monthsFragment = document.createDocumentFragment();
             for (let month = 0; month < 12; month++) {
                 const card = document.createElement('div'); card.className = 'month-card';
                 const title = document.createElement('div'); title.className = 'month-title'; title.textContent = MONTH_NAMES[month]; card.appendChild(title);
@@ -2572,11 +2665,11 @@
                     const cell = document.createElement('div'); cell.className = 'day'; cell.textContent = day;
                     const tooltip = document.createElement('div'); tooltip.className = 'tooltip';
                     const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6, isToday = key === todayKey;
-                    let selectedType = null; allTypeKeys().forEach(t => { if (state.selectedDays[t] && state.selectedDays[t].has(key)) selectedType = t; });
+                    const selectedType = selectedTypeForDay(key, typeKeys);
                     let canClick = false;
                     const hoursDisplay = selectedType === 'personal' ? '1d' : toDisplayInt(getHoursForDay(date));
                     if (selectedType) {
-                        const customT = getCustomType(selectedType);
+                        const customT = customTypeMap.get(selectedType);
                         if (customT) { cell.style.background = customT.color; cell.style.color = '#fff'; cell.style.fontWeight = '600'; }
                         else { cell.classList.add(`${selectedType}-selected`); }
                         if (isPast) cell.classList.add('past');
@@ -2591,7 +2684,6 @@
                     else if (isWeekend) { cell.classList.add('weekend'); tooltip.textContent = dow === 0 ? 'Sunday' : 'Saturday'; }
                     else {
                         if (isPast) cell.classList.add('past');
-                        const activeCustom = getCustomType(state.currentTimeOffType);
                         const showAddUnits = !activeCustom || activeCustom.countsAsDayOff;
                         tooltip.textContent = isPast ? 'Past' : (showAddUnits ? `Add (${toDisplayInt(getHoursForDay(date))})` : 'Add');
                         canClick = true;
@@ -2600,8 +2692,10 @@
                     if (canClick) cell.onclick = () => toggleDay(key);
                     cell.appendChild(tooltip); grid.appendChild(cell);
                 }
-                card.appendChild(grid); container.appendChild(card);
+                card.appendChild(grid);
+                monthsFragment.appendChild(card);
             }
+            container.appendChild(monthsFragment);
         }
 
         function renderMobileYearView() {
@@ -2609,6 +2703,9 @@
             grid.innerHTML = '';
             const today = new Date(); today.setHours(0,0,0,0);
             const todayKey = dateKey(today);
+            const typeKeys = allTypeKeys();
+            const customTypeMap = new Map(state.customTypes.map(ct => [ct.id, ct]));
+            const monthsFragment = document.createDocumentFragment();
             for (let month = 0; month < 12; month++) {
                 const card = document.createElement('div'); card.className = 'mini-month';
                 card.onclick = () => { state.currentMobileMonth = month; switchMobileTab('month', document.querySelectorAll('.nav-item')[1]); };
@@ -2620,8 +2717,8 @@
                     const date = new Date(state.year, month, day), key = dateKey(date), dow = date.getDay();
                     const cell = document.createElement('div'); cell.className = 'mini-day';
                     const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6;
-                    let selectedType = null; allTypeKeys().forEach(t => { if (state.selectedDays[t] && state.selectedDays[t].has(key)) selectedType = t; });
-                    if (selectedType) { const ct = getCustomType(selectedType); if (ct) cell.style.background = ct.color; else cell.classList.add(`${selectedType}-selected`); }
+                    const selectedType = selectedTypeForDay(key, typeKeys);
+                    if (selectedType) { const ct = customTypeMap.get(selectedType); if (ct) cell.style.background = ct.color; else cell.classList.add(`${selectedType}-selected`); }
                     else if (isHoliday && is980) cell.classList.add('holiday-nine80');
                     else if (isHoliday) cell.classList.add('holiday');
                     else if (is980) cell.classList.add('nine80');
@@ -2629,8 +2726,10 @@
                     if (key === todayKey) cell.classList.add('today');
                     days.appendChild(cell);
                 }
-                card.appendChild(days); grid.appendChild(card);
+                card.appendChild(days);
+                monthsFragment.appendChild(card);
             }
+            grid.appendChild(monthsFragment);
         }
 
         function renderMobileMonth() {
@@ -2640,6 +2739,8 @@
             const weekdays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
             const today = new Date(); today.setHours(0,0,0,0);
             const todayKey = dateKey(today);
+            const typeKeys = allTypeKeys();
+            const customTypeMap = new Map(state.customTypes.map(ct => [ct.id, ct]));
             const card = document.createElement('div'); card.className = 'month-card';
             const header = document.createElement('div'); header.className = 'weekday-header';
             weekdays.forEach(day => { const span = document.createElement('span'); span.textContent = day; header.appendChild(span); });
@@ -2651,9 +2752,9 @@
                 const date = new Date(state.year, state.currentMobileMonth, day), key = dateKey(date), dow = date.getDay(), isPast = date < today;
                 const cell = document.createElement('div'); cell.className = 'day'; cell.textContent = day;
                 const isHoliday = state.holidays[key], is980 = state.nine80Fridays[key], isWeekend = dow === 0 || dow === 6, isToday = key === todayKey;
-                let selectedType = null; allTypeKeys().forEach(t => { if (state.selectedDays[t] && state.selectedDays[t].has(key)) selectedType = t; });
+                const selectedType = selectedTypeForDay(key, typeKeys);
                 let canClick = false;
-                if (selectedType) { const ct = getCustomType(selectedType); if (ct) { cell.style.background = ct.color; cell.style.color = '#fff'; cell.style.fontWeight = '600'; } else { cell.classList.add(`${selectedType}-selected`); } if (isPast) cell.classList.add('past'); canClick = true; }
+                if (selectedType) { const ct = customTypeMap.get(selectedType); if (ct) { cell.style.background = ct.color; cell.style.color = '#fff'; cell.style.fontWeight = '600'; } else { cell.classList.add(`${selectedType}-selected`); } if (isPast) cell.classList.add('past'); canClick = true; }
                 else if (isHoliday && is980) { cell.classList.add('holiday-nine80'); if (isPast) cell.classList.add('past'); }
                 else if (isHoliday) { cell.classList.add('holiday'); if (isPast) cell.classList.add('past'); }
                 else if (is980) { cell.classList.add('nine80'); if (isPast) cell.classList.add('past'); }
@@ -2703,8 +2804,7 @@
             if (state.currentTimeOffType === id) { state.currentTimeOffType = 'pto'; setTimeOffType('pto'); }
             renderCustomTypeButtons();
             renderMobileTypeBar();
-            renderCalendar(); renderMobileYearView(); renderMobileMonth();
-            recalculate();
+            refreshPlannerViews(false);
             saveCustomTypesToStorage();
         }
         function renderCustomTypeButtons() {
@@ -2763,11 +2863,13 @@
         function saveCustomTypesToStorage() {
             const data = { types: state.customTypes, selected: {} };
             state.customTypes.forEach(ct => { data.selected[ct.id] = [...(state.selectedDays[ct.id] || [])]; });
-            localStorage.setItem('timeoff_customTypes', JSON.stringify(data));
+            try {
+                localStorage.setItem(CUSTOM_TYPES_STORAGE_KEY, JSON.stringify(data));
+            } catch {}
         }
         function loadCustomTypesFromStorage() {
             try {
-                const raw = localStorage.getItem('timeoff_customTypes');
+                const raw = localStorage.getItem(CUSTOM_TYPES_STORAGE_KEY);
                 if (!raw) return;
                 const data = JSON.parse(raw);
                 if (data.types) {
