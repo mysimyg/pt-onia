@@ -753,9 +753,34 @@
             font-size: 13px;
             color: var(--text-primary);
             cursor: pointer;
+            font-family: inherit;
         }
         .fab-menu-item:hover { background: var(--bg-secondary); }
         .fab-menu-item.danger { color: var(--color-danger); }
+        .fab-menu-item.disabled {
+            color: var(--text-muted);
+            opacity: 0.45;
+            cursor: default;
+            pointer-events: none;
+        }
+        .fab-menu-item.primary-action {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+        .fab-menu-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 4px 0;
+        }
+        .fab-menu-section-title {
+            padding: 8px 16px 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            cursor: default;
+        }
 
         /* Mobile type selector */
         .mobile-type-bar {
@@ -1375,10 +1400,19 @@
                 border-radius: 12px;
                 min-width: 200px;
             }
+            .fab-menu {
+                max-height: calc(100vh - 200px);
+                overflow-y: auto;
+                min-width: 240px;
+            }
             .fab-menu-item {
                 padding: 14px 18px;
                 font-size: 14px;
                 min-height: 44px;
+            }
+            .fab-menu-section-title {
+                padding: 10px 18px 4px;
+                font-size: 11px;
             }
 
             /* ── Toast on mobile ── */
@@ -1899,12 +1933,7 @@
     <button class="fab" id="fab" onclick="toggleFabMenu()">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
     </button>
-    <div class="fab-menu" id="fabMenu">
-        <button class="fab-menu-item" onclick="selectAllType('mega');closeFabMenu()">Add Mega Combos</button>
-        <button class="fab-menu-item" onclick="selectAllType('super');closeFabMenu()">Add Super Combos</button>
-        <button class="fab-menu-item" onclick="selectAllType('4day');closeFabMenu()">Add 4-Day Weekends</button>
-        <button class="fab-menu-item danger" onclick="clearAllSelections();closeFabMenu()">Clear All</button>
-    </div>
+    <div class="fab-menu" id="fabMenu"></div>
 
     <!-- Custom Type Modal -->
     <div class="custom-type-modal" id="customTypeModal">
@@ -2692,8 +2721,89 @@
         function prevMonth() { state.currentMobileMonth = Math.max(0, state.currentMobileMonth - 1); renderMobileMonth(); }
         function nextMonth() { state.currentMobileMonth = Math.min(11, state.currentMobileMonth + 1); renderMobileMonth(); }
 
-        function toggleFabMenu() { document.getElementById('fabMenu').classList.toggle('open'); }
+        function toggleFabMenu() {
+            const menu = document.getElementById('fabMenu');
+            if (!menu.classList.contains('open')) renderFabMenu();
+            menu.classList.toggle('open');
+        }
         function closeFabMenu() { document.getElementById('fabMenu').classList.remove('open'); }
+
+        function renderFabMenu() {
+            const menu = document.getElementById('fabMenu');
+            menu.innerHTML = '';
+
+            // — Add Custom Time Off Type (primary action) —
+            const customBtn = document.createElement('button');
+            customBtn.className = 'fab-menu-item primary-action';
+            customBtn.textContent = '+ Add Custom Time Off Type';
+            customBtn.onclick = () => { closeFabMenu(); openCustomTypeModal(); };
+            menu.appendChild(customBtn);
+
+            // — Divider —
+            const div1 = document.createElement('div');
+            div1.className = 'fab-menu-divider';
+            menu.appendChild(div1);
+
+            // — Quick Select section —
+            const qsTitle = document.createElement('div');
+            qsTitle.className = 'fab-menu-section-title';
+            qsTitle.textContent = 'Quick Select';
+            menu.appendChild(qsTitle);
+
+            const items = [
+                { label: 'Add Mega Combos', action: () => { selectAllType('mega'); closeFabMenu(); } },
+                { label: 'Add Super Combos', action: () => { selectAllType('super'); closeFabMenu(); } },
+                { label: 'Add 4-Day Weekends', action: () => { selectAllType('4day'); closeFabMenu(); } },
+                { label: 'Add Every Friday Off', action: () => { selectAllType('allFridays'); closeFabMenu(); } },
+                { label: 'Add Summer Fridays', action: () => { selectAllType('summer'); closeFabMenu(); } },
+            ];
+
+            items.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'fab-menu-item';
+                btn.textContent = item.label;
+                btn.onclick = item.action;
+                menu.appendChild(btn);
+            });
+
+            // — 2 for 5 Fridays —
+            const twoFor5Btn = document.createElement('button');
+            twoFor5Btn.className = 'fab-menu-item';
+            if (state.twoForFiveMonths.length === 0) {
+                twoFor5Btn.classList.add('disabled');
+                twoFor5Btn.textContent = 'Add 2 for 5 Fridays';
+            } else {
+                const monthNames = state.twoForFiveMonths.map(m => m.name.slice(0, 3)).join(', ');
+                twoFor5Btn.textContent = `Add 2 for 5 Fridays (${monthNames})`;
+                twoFor5Btn.onclick = () => { selectAll2for5(); closeFabMenu(); };
+            }
+            menu.appendChild(twoFor5Btn);
+
+            // — 3 for 5 Fridays —
+            const threeFor5Btn = document.createElement('button');
+            threeFor5Btn.className = 'fab-menu-item';
+            if (state.threeForFiveMonths.length === 0) {
+                threeFor5Btn.classList.add('disabled');
+                threeFor5Btn.textContent = 'Add 3 for 5 Fridays';
+            } else {
+                const monthNames = state.threeForFiveMonths.map(m => m.name.slice(0, 3)).join(', ');
+                threeFor5Btn.textContent = `Add 3 for 5 Fridays (${monthNames})`;
+                threeFor5Btn.onclick = () => { selectAll3for5(); closeFabMenu(); };
+            }
+            menu.appendChild(threeFor5Btn);
+
+            // — Divider —
+            const div2 = document.createElement('div');
+            div2.className = 'fab-menu-divider';
+            menu.appendChild(div2);
+
+            // — Clear All —
+            const clearBtn = document.createElement('button');
+            clearBtn.className = 'fab-menu-item danger';
+            clearBtn.textContent = 'Clear All Selections';
+            clearBtn.onclick = () => { if (confirm('Clear all selected days?')) { clearAllSelections(); } closeFabMenu(); };
+            menu.appendChild(clearBtn);
+        }
 
         // Initialize
         function init() {
@@ -2923,6 +3033,22 @@
             for (let d = new Date(state.year, monthNum, 1); d <= new Date(state.year, monthNum + 1, 0); d.setDate(d.getDate() + 1)) {
                 if (d.getDay() === 5 && d >= today) { const key = dateKey(d); if (!state.nine80Fridays[key] && !state.holidays[key]) state.selectedDays.pto.add(key); }
             }
+            refreshPlannerViews(true);
+        }
+
+        function selectAll2for5() {
+            telemetry.incrementNested('quickSelect', '2for5');
+            state.twoForFiveMonths.forEach(m => {
+                m.fridays.forEach(key => state.selectedDays.pto.add(key));
+            });
+            refreshPlannerViews(true);
+        }
+
+        function selectAll3for5() {
+            telemetry.incrementNested('quickSelect', '3for5');
+            state.threeForFiveMonths.forEach(m => {
+                m.fridays.forEach(key => state.selectedDays.pto.add(key));
+            });
             refreshPlannerViews(true);
         }
 
