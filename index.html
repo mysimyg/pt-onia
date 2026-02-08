@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Time Off Optimizer</title>
+    <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <meta name="apple-mobile-web-app-title" content="PTO">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1119,6 +1125,32 @@
         .admin-remote-badge.on { background: #064e3b; color: #6ee7b7; }
 
         /* ══════════════════════════════════════════════════════════════
+           OPTIMIZE PAGE — KPI groups
+           ══════════════════════════════════════════════════════════════ */
+        .optimize-group {
+            margin-bottom: 16px;
+        }
+        .optimize-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .optimize-kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .balance-card.accent {
+            border-left: 3px solid var(--accent-primary);
+        }
+        .mobile-stat-card.accent {
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* ══════════════════════════════════════════════════════════════
            MOBILE UX IMPROVEMENTS — Robinhood-inspired polish
            ══════════════════════════════════════════════════════════════ */
 
@@ -1147,6 +1179,9 @@
         }
 
         @media (max-width: 900px) {
+            /* ── Hide header-row-2 unit toggle on mobile (moved to Settings tab) ── */
+            .header-row-2 { display: none !important; }
+
             /* ── Mobile Layout adjustments ── */
             .mobile-layout {
                 padding-bottom: 72px;
@@ -1398,12 +1433,9 @@
                 bottom: 148px;
                 right: 16px;
                 border-radius: 12px;
-                min-width: 200px;
-            }
-            .fab-menu {
+                min-width: 240px;
                 max-height: calc(100vh - 200px);
                 overflow-y: auto;
-                min-width: 240px;
             }
             .fab-menu-item {
                 padding: 14px 18px;
@@ -1554,6 +1586,25 @@
                 border-radius: 6px;
             }
 
+            /* ── Settings unit toggle — larger touch targets ── */
+            .unit-toggle-settings {
+                display: flex;
+                width: 100%;
+                gap: 0;
+                border-radius: 8px;
+                overflow: hidden;
+                border: 1.5px solid var(--border-color);
+                margin-top: 4px;
+            }
+            .unit-toggle-settings .unit-btn {
+                flex: 1;
+                min-height: 44px;
+                font-size: 14px;
+                font-weight: 600;
+                border-radius: 0;
+                border: none;
+            }
+
             /* ── Delete X on custom type — visible on mobile (no hover) ── */
             .custom-type-btn-wrap .delete-x {
                 display: block;
@@ -1639,6 +1690,24 @@
                             <div class="balance-card wellness"><div class="label">Wellness</div><div class="value" id="projectedWellness">0h</div><div class="detail" id="wellnessDetail">-</div></div>
                             <div class="balance-card pto"><div class="label">Work Days Off</div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-card">
+                <div class="collapsible-header" onclick="toggleSection('optimizeContent', this)">
+                    <span class="section-title" style="margin-bottom:0">Optimize</span>
+                    <span class="toggle-icon open">▼</span>
+                </div>
+                <div id="optimizeContent" class="collapsible-content open">
+                    <div class="optimize-kpi-grid" style="margin-top:10px">
+                        <div class="balance-card accent"><div class="label">Next Long Weekend</div><div class="value" id="dNextLongWeekend">—</div><div class="detail" id="dNextLongWeekendDetail">—</div></div>
+                        <div class="balance-card accent"><div class="label">Longest Streak</div><div class="value" id="dLongestStreak">0</div><div class="detail" id="dLongestStreakDetail">days</div></div>
+                        <div class="balance-card accent"><div class="label">Efficiency</div><div class="value" id="dEfficiency">—</div><div class="detail" id="dEfficiencyDetail">ratio</div></div>
+                        <div class="balance-card accent"><div class="label">Fridays Off</div><div class="value" id="dFridaysOff">0</div><div class="detail" id="dFridaysOffDetail">planned</div></div>
+                        <div class="balance-card accent"><div class="label">Breaks Planned</div><div class="value" id="dBreaksPlanned">0</div><div class="detail" id="dBreaksPlannedDetail">—</div></div>
+                        <div class="balance-card accent"><div class="label">Avg Break</div><div class="value" id="dAvgBreakLen">—</div><div class="detail" id="dAvgBreakLenDetail">days</div></div>
+                        <div class="balance-card accent" style="grid-column:1/-1"><div class="label">Streaks by Tier</div><div class="value" id="dStreakTiers">—</div><div class="detail" id="dStreakTiersDetail">—</div></div>
                     </div>
                 </div>
             </div>
@@ -1845,13 +1914,46 @@
         </div>
 
         <div id="mobileStatsTab" class="mobile-tab">
-            <div class="mobile-stats-grid">
-                <div class="mobile-stat-card pto"><div class="label">PTO</div><div class="value" id="mProjPto">0h</div><div class="detail" id="mPtoDetail">-</div></div>
-                <div class="mobile-stat-card activism"><div class="label">Activism</div><div class="value" id="mProjActivism">0h</div><div class="detail" id="mActivismDetail">-</div></div>
-                <div class="mobile-stat-card personal"><div class="label">Personal</div><div class="value" id="mProjPersonal">0d</div><div class="detail" id="mPersonalDetail">-</div></div>
-                <div class="mobile-stat-card wellness"><div class="label">Wellness</div><div class="value" id="mProjWellness">0h</div><div class="detail" id="mWellnessDetail">-</div></div>
-                <div class="mobile-stat-card work"><div class="label">Work Days Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Total days off (incl. weekends): 0</div></div>
+            <!-- Balances Group -->
+            <div class="optimize-group">
+                <div class="optimize-group-title">Balances</div>
+                <div class="mobile-stats-grid">
+                    <div class="mobile-stat-card pto"><div class="label">PTO</div><div class="value" id="mProjPto">0h</div><div class="detail" id="mPtoDetail">-</div></div>
+                    <div class="mobile-stat-card activism"><div class="label">Activism</div><div class="value" id="mProjActivism">0h</div><div class="detail" id="mActivismDetail">-</div></div>
+                    <div class="mobile-stat-card personal"><div class="label">Personal</div><div class="value" id="mProjPersonal">0d</div><div class="detail" id="mPersonalDetail">-</div></div>
+                    <div class="mobile-stat-card wellness"><div class="label">Wellness</div><div class="value" id="mProjWellness">0h</div><div class="detail" id="mWellnessDetail">-</div></div>
+                </div>
             </div>
+
+            <!-- Planning Group -->
+            <div class="optimize-group">
+                <div class="optimize-group-title">Planning</div>
+                <div class="mobile-stats-grid">
+                    <div class="mobile-stat-card work"><div class="label">Work Days Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Total days off (incl. weekends): 0</div></div>
+                    <div class="mobile-stat-card accent"><div class="label">Next Long Weekend</div><div class="value" id="mNextLongWeekend">—</div><div class="detail" id="mNextLongWeekendDetail">—</div></div>
+                </div>
+            </div>
+
+            <!-- Optimization Group -->
+            <div class="optimize-group">
+                <div class="optimize-group-title">Optimization</div>
+                <div class="mobile-stats-grid">
+                    <div class="mobile-stat-card accent"><div class="label">Longest Streak Off</div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
+                    <div class="mobile-stat-card accent"><div class="label">Days Off Efficiency</div><div class="value" id="mEfficiency">—</div><div class="detail" id="mEfficiencyDetail">ratio</div></div>
+                </div>
+            </div>
+
+            <!-- Patterns Group -->
+            <div class="optimize-group">
+                <div class="optimize-group-title">Patterns</div>
+                <div class="mobile-stats-grid">
+                    <div class="mobile-stat-card accent"><div class="label">Streaks by Tier</div><div class="value" id="mStreakTiers">—</div><div class="detail" id="mStreakTiersDetail">—</div></div>
+                    <div class="mobile-stat-card accent"><div class="label">Fridays Off</div><div class="value" id="mFridaysOff">0</div><div class="detail" id="mFridaysOffDetail">planned</div></div>
+                    <div class="mobile-stat-card accent"><div class="label">Breaks Planned</div><div class="value" id="mBreaksPlanned">0</div><div class="detail" id="mBreaksPlannedDetail">—</div></div>
+                    <div class="mobile-stat-card accent"><div class="label">Avg Break Length</div><div class="value" id="mAvgBreakLen">—</div><div class="detail" id="mAvgBreakLenDetail">days</div></div>
+                </div>
+            </div>
+
             <div class="quick-section">
                 <div class="quick-section-title">Quick Actions</div>
                 <div class="quick-actions">
@@ -1866,6 +1968,16 @@
         </div>
 
         <div id="mobileSettingsTab" class="mobile-tab">
+            <div class="settings-section">
+                <div class="settings-section-title">Display</div>
+                <div class="input-group">
+                    <label>Show values in</label>
+                    <div class="unit-toggle unit-toggle-settings" id="settingsUnitToggle">
+                        <button class="unit-btn active" onclick="setDisplayUnits('hours')">Hours</button>
+                        <button class="unit-btn" onclick="setDisplayUnits('days')">Days</button>
+                    </div>
+                </div>
+            </div>
             <div class="settings-section">
                 <div class="settings-section-title">General</div>
                 <div class="input-row">
@@ -1920,7 +2032,7 @@
             </button>
             <button class="nav-item" onclick="switchMobileTab('stats', this)">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-                Stats
+                Optimize
             </button>
             <button class="nav-item" onclick="switchMobileTab('settings', this)">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
@@ -1973,10 +2085,7 @@
                 </div>
                 <button class="admin-close" onclick="closeAdmin()">&times;</button>
             </div>
-            <div class="admin-tabs">
-                <button class="admin-tab active" onclick="switchAdminTab('local')">This Device</button>
-                <button class="admin-tab" onclick="switchAdminTab('sitewide')">Sitewide</button>
-            </div>
+            <!-- Admin tabs removed — sitewide only -->
             <div class="admin-body" id="adminBody"></div>
             <div class="admin-footer">
                 <button class="admin-btn" onclick="exportTelemetry()">Export JSON</button>
@@ -2218,19 +2327,14 @@
             };
         })();
 
-        // Admin panel
-        let adminTab = 'local';
+        // Admin panel (sitewide only)
+        let adminTab = 'sitewide';
         function openAdmin() {
-            adminTab = 'local';
+            adminTab = 'sitewide';
             renderAdminDashboard();
             document.getElementById('adminOverlay').classList.add('open');
         }
         function closeAdmin() { document.getElementById('adminOverlay').classList.remove('open'); }
-        function switchAdminTab(tab) {
-            adminTab = tab;
-            document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.textContent.trim() === (tab === 'local' ? 'This Device' : 'Sitewide')));
-            renderAdminDashboard();
-        }
         function renderKpiHtml(d, label) {
             const avgMs = d.totalSessions > 0 ? d.totalActiveMs / d.totalSessions : 0;
             const avgDur = avgMs >= 60000 ? (avgMs / 60000).toFixed(1) + 'm' : (avgMs / 1000).toFixed(0) + 's';
@@ -2278,87 +2382,66 @@
             badge.className = 'admin-remote-badge ' + (remoteOn && remoteBatch.alive !== false ? 'on' : remoteOn ? 'off' : 'off');
             badge.textContent = 'Remote: ' + (remoteOn ? (remoteBatch.alive === false ? 'Error' : remoteBatch.alive ? 'Live' : 'Pending') : 'Off');
 
-            if (adminTab === 'local') {
-                document.getElementById('adminBody').innerHTML =
-                    renderKpiHtml(telemetry.data, 'This Device') + `
-                    <div class="admin-section">
-                        <div class="admin-section-title">Privacy</div>
-                        <div class="admin-privacy-note">
-                            <strong>What we do NOT collect:</strong> PTO/Activism/Wellness balances, calendar selections or dates,
-                            custom type names, years of service, paycheck schedules, holiday selections,
-                            or any personal identifiers (no emails, IPs, or fingerprints).
-                            All metrics are aggregated counters stored locally on this device only.
+            // Sitewide only
+            if (!remoteOn) {
+                document.getElementById('adminBody').innerHTML = `
+                    <div class="admin-section" style="padding:40px 0;text-align:center">
+                        <div style="font-size:14px;color:#8a8d91;margin-bottom:8px">Sitewide tracking is disabled</div>
+                        <div style="font-size:11px;color:#6b6e73;max-width:400px;margin:0 auto;line-height:1.5">
+                            Set <code style="color:#60a5fa">TELEMETRY_REMOTE_ENABLED = true</code> and configure
+                            <code style="color:#60a5fa">TELEMETRY_REMOTE_ENDPOINT</code> pointing to a Cloudflare Worker
+                            with a KV namespace to enable sitewide anonymous metrics.
                         </div>
                     </div>`;
-            } else {
-                // Sitewide tab
-                if (!remoteOn) {
+                return;
+            }
+            document.getElementById('adminBody').innerHTML = `
+                <div class="admin-status-row">
+                    <span class="admin-status-dot ${remoteBatch.alive === true ? 'green' : remoteBatch.alive === false ? 'red' : 'gray'}"></span>
+                    Endpoint: ${TELEMETRY_REMOTE_ENDPOINT}
+                </div>
+                <div style="text-align:center;padding:30px 0;color:#6b6e73">Loading sitewide data&hellip;</div>`;
+            remoteBatch.fetchSitewide(true).then(sw => {
+                if (!sw) {
                     document.getElementById('adminBody').innerHTML = `
-                        <div class="admin-section" style="padding:40px 0;text-align:center">
-                            <div style="font-size:14px;color:#8a8d91;margin-bottom:8px">Sitewide tracking is disabled</div>
-                            <div style="font-size:11px;color:#6b6e73;max-width:400px;margin:0 auto;line-height:1.5">
-                                Set <code style="color:#60a5fa">TELEMETRY_REMOTE_ENABLED = true</code> and configure
-                                <code style="color:#60a5fa">TELEMETRY_REMOTE_ENDPOINT</code> pointing to a Cloudflare Worker
-                                with a KV namespace to enable sitewide anonymous metrics.
-                            </div>
+                        <div class="admin-status-row">
+                            <span class="admin-status-dot red"></span>
+                            Endpoint unreachable: ${TELEMETRY_REMOTE_ENDPOINT}
+                        </div>
+                        <div style="text-align:center;padding:30px 0;color:#6b6e73">
+                            Could not reach the telemetry endpoint. Check that the Cloudflare Worker is deployed and the TELEMETRY KV namespace is bound.
                         </div>`;
                     return;
                 }
                 document.getElementById('adminBody').innerHTML = `
                     <div class="admin-status-row">
-                        <span class="admin-status-dot ${remoteBatch.alive === true ? 'green' : remoteBatch.alive === false ? 'red' : 'gray'}"></span>
+                        <span class="admin-status-dot green"></span>
                         Endpoint: ${TELEMETRY_REMOTE_ENDPOINT}
-                    </div>
-                    <div style="text-align:center;padding:30px 0;color:#6b6e73">Loading sitewide data&hellip;</div>`;
-                remoteBatch.fetchSitewide(true).then(sw => {
-                    if (!sw) {
-                        document.getElementById('adminBody').innerHTML = `
-                            <div class="admin-status-row">
-                                <span class="admin-status-dot red"></span>
-                                Endpoint unreachable: ${TELEMETRY_REMOTE_ENDPOINT}
-                            </div>
-                            <div style="text-align:center;padding:30px 0;color:#6b6e73">
-                                Could not reach the telemetry endpoint. Check that the Cloudflare Worker is deployed and the TELEMETRY KV namespace is bound.
-                            </div>`;
-                        return;
-                    }
-                    document.getElementById('adminBody').innerHTML = `
-                        <div class="admin-status-row">
-                            <span class="admin-status-dot green"></span>
-                            Endpoint: ${TELEMETRY_REMOTE_ENDPOINT}
-                        </div>` + renderKpiHtml(sw, 'All Visitors (anonymous)') + `
-                        <div class="admin-section">
-                            <div class="admin-section-title">Privacy</div>
-                            <div class="admin-privacy-note">
-                                Sitewide metrics are anonymous aggregated counters only. No IPs, user identifiers, or personal
-                                scheduling data are stored. Data is kept in Cloudflare KV on your account.
-                            </div>
-                        </div>`;
-                });
-            }
+                    </div>` + renderKpiHtml(sw, 'All Visitors (anonymous)') + `
+                    <div class="admin-section">
+                        <div class="admin-section-title">Privacy</div>
+                        <div class="admin-privacy-note">
+                            Sitewide metrics are anonymous aggregated counters only. No IPs, user identifiers, or personal
+                            scheduling data are stored. Data is kept in Cloudflare KV on your account.
+                        </div>
+                    </div>`;
+            });
         }
         function exportTelemetry() {
-            const json = JSON.stringify(adminTab === 'local' ? telemetry.data : (remoteBatch.alive ? 'Use GET endpoint for sitewide export' : telemetry.data), null, 2);
+            const json = JSON.stringify(remoteBatch.alive ? 'Use GET endpoint for sitewide export' : { note: 'Remote not connected' }, null, 2);
             if (navigator.clipboard) { navigator.clipboard.writeText(json).then(() => showToast('Telemetry JSON copied to clipboard')); }
             else { const b = new Blob([json], {type:'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'telemetry.json'; a.click(); }
         }
         async function resetTelemetry() {
-            if (adminTab === 'local') {
-                if (!confirm('Reset LOCAL device metrics? This cannot be undone.')) return;
-                telemetry.reset();
-                renderAdminDashboard();
-                showToast('Metrics reset');
-            } else {
-                if (!confirm('Reset SITEWIDE metrics on the server? This cannot be undone.')) return;
-                try {
-                    const response = await fetch(TELEMETRY_REMOTE_ENDPOINT, { method: 'DELETE' });
-                    if (!response.ok) throw new Error('Failed to reset');
-                    showToast('Sitewide metrics reset');
-                } catch {
-                    showToast('Failed to reset');
-                }
-                renderAdminDashboard();
+            if (!confirm('Reset SITEWIDE metrics on the server? This cannot be undone.')) return;
+            try {
+                const response = await fetch(TELEMETRY_REMOTE_ENDPOINT, { method: 'DELETE' });
+                if (!response.ok) throw new Error('Failed to reset');
+                showToast('Sitewide metrics reset');
+            } catch {
+                showToast('Failed to reset');
             }
+            renderAdminDashboard();
         }
 
         // State
@@ -2716,6 +2799,9 @@
             document.getElementById(`mobile${tab.charAt(0).toUpperCase() + tab.slice(1)}Tab`).classList.add('active');
             btnEl.classList.add('active');
             if (tab === 'month') renderMobileMonth();
+            // Show type bar only on year/month tabs
+            const typeBar = document.getElementById('mobileTypeBar');
+            if (typeBar) typeBar.style.display = (tab === 'year' || tab === 'month') ? '' : 'none';
         }
 
         function prevMonth() { state.currentMobileMonth = Math.max(0, state.currentMobileMonth - 1); renderMobileMonth(); }
@@ -3078,19 +3164,154 @@
                 if (type === 'pto') state.opportunities.forEach(opp => { if (opp.dates.every(d => state.selectedDays.pto.has(d))) state.selectedOpportunities.add(opp.id); });
                 const ct = getCustomType(type);
                 const tName = ct ? ct.name : type.charAt(0).toUpperCase() + type.slice(1);
-                const hours = type === 'personal' ? '1d' : toDisplayInt(getHoursForDay(new Date(key + 'T12:00:00')));
-                showDayInfoToast(`${tName} (${hours})`);
+                const showUnits = !ct || ct.countsAsDayOff;
+                if (showUnits) {
+                    const hours = type === 'personal' ? '1d' : toDisplayInt(getHoursForDay(new Date(key + 'T12:00:00')));
+                    showDayInfoToast(`${tName} (${hours})`);
+                } else {
+                    showDayInfoToast(tName);
+                }
             } else {
                 // No existing: add
                 state.selectedDays[type].add(key);
                 if (type === 'pto') state.opportunities.forEach(opp => { if (opp.dates.every(d => state.selectedDays.pto.has(d))) state.selectedOpportunities.add(opp.id); });
                 const ct = getCustomType(type);
                 const tName = ct ? ct.name : type.charAt(0).toUpperCase() + type.slice(1);
-                const hours = type === 'personal' ? '1d' : toDisplayInt(getHoursForDay(new Date(key + 'T12:00:00')));
-                showDayInfoToast(`+ ${tName} (${hours})`);
+                const showUnits = !ct || ct.countsAsDayOff;
+                if (showUnits) {
+                    const hours = type === 'personal' ? '1d' : toDisplayInt(getHoursForDay(new Date(key + 'T12:00:00')));
+                    showDayInfoToast(`+ ${tName} (${hours})`);
+                } else {
+                    showDayInfoToast(`+ ${tName}`);
+                }
             }
             refreshPlannerViews(true);
             if (isCustomType(type) || (existingType && isCustomType(existingType))) saveCustomTypesToStorage();
+        }
+
+        function computeOptimizeKPIs() {
+            // Determine which types count as day off
+            const dayOffTypeIds = new Set(BUILTIN_TYPES);
+            state.customTypes.forEach(ct => { if (ct.countsAsDayOff) dayOffTypeIds.add(ct.id); });
+
+            // Build a set of all selected counted day-off dates
+            const countedSelections = new Set();
+            dayOffTypeIds.forEach(typeId => {
+                const s = state.selectedDays[typeId];
+                if (s) s.forEach(key => countedSelections.add(key));
+            });
+
+            // Build array of all dates in the year with metadata
+            const yearStart = new Date(state.year, 0, 1);
+            const yearEnd = new Date(state.year, 11, 31);
+            const today = new Date(); today.setHours(0,0,0,0);
+            const days = [];
+            for (let d = new Date(yearStart); d <= yearEnd; d.setDate(d.getDate() + 1)) {
+                const key = dateKey(d);
+                const dow = d.getDay();
+                const isWeekend = dow === 0 || dow === 6;
+                const isHoliday = !!state.holidays[key];
+                const is980 = !!state.nine80Fridays[key];
+                const isSelected = countedSelections.has(key);
+                const isOff = isWeekend || isHoliday || is980 || isSelected;
+                const isFriday = dow === 5;
+                days.push({ key, date: new Date(d), dow, isWeekend, isHoliday, is980, isSelected, isOff, isFriday });
+            }
+
+            // Find all "user-influenced streaks":
+            // Continuous runs of off-days that include at least one counted selection
+            const streaks = [];
+            let currentStreak = [];
+            let hasSelection = false;
+            for (let i = 0; i < days.length; i++) {
+                if (days[i].isOff) {
+                    currentStreak.push(days[i]);
+                    if (days[i].isSelected) hasSelection = true;
+                } else {
+                    if (currentStreak.length > 0 && hasSelection) {
+                        streaks.push([...currentStreak]);
+                    }
+                    currentStreak = [];
+                    hasSelection = false;
+                }
+            }
+            if (currentStreak.length > 0 && hasSelection) streaks.push([...currentStreak]);
+
+            // KPI: Longest streak off
+            let longestStreak = 0;
+            let longestStreakLabel = '';
+            streaks.forEach(s => {
+                if (s.length > longestStreak) {
+                    longestStreak = s.length;
+                    const start = s[0].date;
+                    const end = s[s.length - 1].date;
+                    longestStreakLabel = `${SHORT_MONTHS[start.getMonth()]} ${start.getDate()} – ${SHORT_MONTHS[end.getMonth()]} ${end.getDate()}`;
+                }
+            });
+
+            // KPI: Efficiency — total off days in user-influenced streaks / PTO days used
+            const totalStreakDays = streaks.reduce((sum, s) => sum + s.length, 0);
+            const totalPtoDays = streaks.reduce((sum, s) => sum + s.filter(d => d.isSelected).length, 0);
+            const efficiency = totalPtoDays > 0 ? (totalStreakDays / totalPtoDays).toFixed(1) + 'x' : '—';
+            const efficiencyDetail = totalPtoDays > 0 ? `${totalStreakDays} off ÷ ${totalPtoDays} used` : 'select days to see';
+
+            // KPI: Streaks by tier
+            const tiers = { mega: 0, long: 0, standard: 0 }; // 7+, 4-6, 2-3
+            streaks.forEach(s => {
+                if (s.length >= 7) tiers.mega++;
+                else if (s.length >= 4) tiers.long++;
+                else if (s.length >= 2) tiers.standard++;
+            });
+            const tierStr = `${tiers.mega}/${tiers.long}/${tiers.standard}`;
+            const tierDetail = `7+d / 4-6d / 2-3d`;
+
+            // KPI: Fridays off (user-selected PTO Fridays, not 9/80 or holidays)
+            let fridaysOff = 0;
+            days.forEach(d => {
+                if (d.isFriday && d.isSelected && !d.isHoliday && !d.is980) fridaysOff++;
+            });
+
+            // KPI: Breaks planned — number of user-influenced streaks
+            const breaksPlanned = streaks.length;
+            const breaksDetail = breaksPlanned === 1 ? '1 break' : `${breaksPlanned} breaks`;
+
+            // KPI: Average break length
+            const avgBreak = streaks.length > 0 ? (totalStreakDays / streaks.length).toFixed(1) : '—';
+
+            // KPI: Next long weekend (3+ day streak that starts in the future)
+            let nextLW = '—';
+            let nextLWDetail = '—';
+            for (const s of streaks) {
+                if (s.length >= 3 && s[0].date >= today) {
+                    nextLW = SHORT_MONTHS[s[0].date.getMonth()] + ' ' + s[0].date.getDate();
+                    nextLWDetail = `${s.length} days off`;
+                    break;
+                }
+            }
+
+            // Update all displays — both desktop (d*) and mobile (m*)
+            const updates = [
+                ['dNextLongWeekend', 'mNextLongWeekend', nextLW],
+                ['dNextLongWeekendDetail', 'mNextLongWeekendDetail', nextLWDetail],
+                ['dLongestStreak', 'mLongestStreak', longestStreak || '0'],
+                ['dLongestStreakDetail', 'mLongestStreakDetail', longestStreakLabel || 'days'],
+                ['dEfficiency', 'mEfficiency', efficiency],
+                ['dEfficiencyDetail', 'mEfficiencyDetail', efficiencyDetail],
+                ['dStreakTiers', 'mStreakTiers', tierStr],
+                ['dStreakTiersDetail', 'mStreakTiersDetail', tierDetail],
+                ['dFridaysOff', 'mFridaysOff', fridaysOff],
+                ['dFridaysOffDetail', 'mFridaysOffDetail', fridaysOff === 1 ? '1 Friday' : `${fridaysOff} Fridays`],
+                ['dBreaksPlanned', 'mBreaksPlanned', breaksPlanned],
+                ['dBreaksPlannedDetail', 'mBreaksPlannedDetail', breaksDetail],
+                ['dAvgBreakLen', 'mAvgBreakLen', avgBreak],
+                ['dAvgBreakLenDetail', 'mAvgBreakLenDetail', streaks.length > 0 ? 'days per break' : 'days'],
+            ];
+            updates.forEach(([dId, mId, val]) => {
+                const dEl = document.getElementById(dId);
+                const mEl = document.getElementById(mId);
+                if (dEl) dEl.textContent = val;
+                if (mEl) mEl.textContent = val;
+            });
         }
 
         function recalculate() {
@@ -3206,6 +3427,7 @@
             renderProjectionChart(currentPto, ptoPerPaycheck, maxPto);
             renderWellnessChart(currentWellness, wellnessPerPaycheck, maxWellness);
             renderActivismPersonalTable();
+            computeOptimizeKPIs();
         }
 
         function renderProjectionChart(startBalance, ptoPerPaycheck, maxPto) {
