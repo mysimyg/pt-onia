@@ -20,13 +20,6 @@ Plan your time off for the year on a 9/80 work schedule. Click days on a calenda
 4. **Click days on the calendar** — Or use the suggested combos and packages to fill them in faster
 5. **Save** — Generates a link you can bookmark or share. No account needed. Everything is stored in the URL.
 
-## What's a 9/80 schedule?
-
-You work 9-hour days Monday through Thursday. Fridays alternate: one week you work 8 hours, the next week you're off. That off-Friday is your "9/80 Friday."
-
-Taking a Monday-Thursday off costs 9 hours of PTO. A working Friday costs 8 hours. Personal days always count as 1 day.
-
-
 ## License
 
 MIT
