@@ -34,15 +34,69 @@
  */
 
 const DOMAIN = 'https://pt-onia.app';
+const APP_ORIGIN = DOMAIN;
 const SHORT_CODE_LENGTH = 6;
 const CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'; // Removed confusing chars
 const SHORT_CODE_REGEX = new RegExp(`^[${CHARS}]{${SHORT_CODE_LENGTH}}$`);
-const CORS_HEADERS = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
+const DEV_ALLOWED_ORIGINS = new Set([
+    'http://localhost:8787',
+    'http://127.0.0.1:8787',
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+]);
+const BASE_SECURITY_HEADERS = {
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+};
+const API_SECURITY_HEADERS = {
+    ...BASE_SECURITY_HEADERS,
+    'Content-Security-Policy': "default-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'",
 };
 const REDIRECT_CACHE_SECONDS = 300;
+
+function getAllowedOrigin(request) {
+    const origin = request.headers.get('Origin');
+    if (!origin) return APP_ORIGIN;
+    if (origin === APP_ORIGIN || DEV_ALLOWED_ORIGINS.has(origin)) return origin;
+    return null;
+}
+
+function requestLooksSameOrigin(request) {
+    const origin = request.headers.get('Origin');
+    if (origin && (origin === APP_ORIGIN || DEV_ALLOWED_ORIGINS.has(origin))) return true;
+    const secFetchSite = request.headers.get('Sec-Fetch-Site');
+    return secFetchSite === 'same-origin' || secFetchSite === 'same-site';
+}
+
+function getCorsHeaders(request, allowDelete = false) {
+    const origin = getAllowedOrigin(request);
+    if (!origin) return null;
+    return {
+        'Access-Control-Allow-Origin': origin,
+        'Access-Control-Allow-Methods': allowDelete ? 'GET, POST, DELETE, OPTIONS' : 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, X-Telemetry-Admin-Token',
+        'Access-Control-Max-Age': '86400',
+        'Vary': 'Origin',
+    };
+}
+
+function withResponseHeaders(response, { request = null, isApi = false, allowDeleteCors = false, headers = {} } = {}) {
+    const wrapped = new Response(response.body, response);
+    const securityHeaders = isApi ? API_SECURITY_HEADERS : BASE_SECURITY_HEADERS;
+    Object.entries(securityHeaders).forEach(([key, value]) => wrapped.headers.set(key, value));
+
+    if (request) {
+        const corsHeaders = getCorsHeaders(request, allowDeleteCors);
+        if (corsHeaders) {
+            Object.entries(corsHeaders).forEach(([key, value]) => wrapped.headers.set(key, value));
+        }
+    }
+
+    Object.entries(headers).forEach(([key, value]) => wrapped.headers.set(key, value));
+    return wrapped;
+}
 
 function generateShortCode() {
     let code = '';
@@ -61,15 +115,21 @@ async function hashUrl(url) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function jsonResponse(payload, status = 200, headers = {}) {
-    return new Response(JSON.stringify(payload), {
+function jsonResponse(payload, status = 200, headers = {}, request = null, allowDeleteCors = false) {
+    const response = new Response(JSON.stringify(payload), {
         status,
         headers: {
             'Content-Type': 'application/json',
-            ...CORS_HEADERS,
-            ...headers,
         },
     });
+    return withResponseHeaders(response, { request, isApi: true, allowDeleteCors, headers });
+}
+
+function hasValidAdminToken(request, env) {
+    const expected = env.TELEMETRY_ADMIN_TOKEN;
+    if (typeof expected !== 'string' || expected.length < 16) return false;
+    const provided = request.headers.get('X-Telemetry-Admin-Token');
+    return typeof provided === 'string' && provided === expected;
 }
 
 function isValidAppUrl(value) {
@@ -101,11 +161,14 @@ async function withRetry(fn, attempts = 2, delayMs = 50) {
 }
 
 async function handleShorten(request, env) {
+    if (!requestLooksSameOrigin(request)) {
+        return jsonResponse({ error: 'Forbidden origin' }, 403, {}, request);
+    }
     if (!env.SHORT_URLS) {
         return jsonResponse({
             error: 'KV namespace not configured',
             hint: 'Bind SHORT_URLS KV namespace to this worker',
-        }, 500);
+        }, 500, {}, request);
     }
 
     let payload;
@@ -115,12 +178,12 @@ async function handleShorten(request, env) {
         return jsonResponse({
             error: 'Invalid JSON payload',
             hint: 'Send body as { "url": "https://pt-onia.app/#..." }',
-        }, 400);
+        }, 400, {}, request);
     }
 
     const longUrl = payload?.url;
     if (!longUrl || !isValidAppUrl(longUrl)) {
-        return jsonResponse({ error: 'Invalid URL' }, 400);
+        return jsonResponse({ error: 'Invalid URL' }, 400, {}, request);
     }
 
     const urlHash = await hashUrl(longUrl);
@@ -130,7 +193,7 @@ async function handleShorten(request, env) {
             shortUrl: `${DOMAIN}/s/${existingCode}`,
             code: existingCode,
             existing: true,
-        });
+        }, 200, {}, request);
     }
 
     let shortCode;
@@ -143,7 +206,7 @@ async function handleShorten(request, env) {
     } while (attempts < 10);
 
     if (attempts >= 10) {
-        return jsonResponse({ error: 'Failed to generate unique code' }, 500);
+        return jsonResponse({ error: 'Failed to generate unique code' }, 500, {}, request);
     }
 
     await withRetry(() => Promise.all([
@@ -155,12 +218,12 @@ async function handleShorten(request, env) {
         shortUrl: `${DOMAIN}/s/${shortCode}`,
         code: shortCode,
         existing: false,
-    });
+    }, 200, {}, request);
 }
 
-async function handleRedirect(shortCode, env, ctx) {
+async function handleRedirect(shortCode, env, ctx, request) {
     if (!env.SHORT_URLS || !isValidShortCode(shortCode)) {
-        return Response.redirect(DOMAIN, 302);
+        return withResponseHeaders(Response.redirect(DOMAIN, 302), { request });
     }
 
     const cacheKey = new Request(`${DOMAIN}/s/${shortCode}`, { method: 'GET' });
@@ -169,14 +232,14 @@ async function handleRedirect(shortCode, env, ctx) {
 
     const longUrl = await withRetry(() => env.SHORT_URLS.get(`code:${shortCode}`));
     if (longUrl && isValidAppUrl(longUrl)) {
-        const response = Response.redirect(longUrl, 302);
+        const response = withResponseHeaders(Response.redirect(longUrl, 302), { request });
         response.headers.set('Cache-Control', `public, max-age=${REDIRECT_CACHE_SECONDS}`);
         response.headers.set('Vary', 'Accept-Encoding');
         ctx.waitUntil(caches.default.put(cacheKey, response.clone()));
         return response;
     }
 
-    return Response.redirect(DOMAIN, 302);
+    return withResponseHeaders(Response.redirect(DOMAIN, 302), { request });
 }
 
 // ── Telemetry ──────────────────────────────────────────────────────────────
@@ -195,6 +258,7 @@ const ALLOWED_FLAT_KEYS = new Set([
 const ALLOWED_NESTED_GROUPS = new Set(['theme', 'quickSelect']);
 const RESERVED_OBJECT_KEYS = new Set(['__proto__', 'prototype', 'constructor']);
 const MAX_TELEMETRY_PAYLOAD_CHARS = 32768;
+const MAX_NESTED_KEYS_PER_GROUP = 100;
 
 function isPlainObject(value) {
     return !!value && typeof value === 'object' && !Array.isArray(value);
@@ -230,32 +294,35 @@ function isRateLimited(ip) {
 }
 
 async function handleTelemetryPost(request, env) {
+    if (!requestLooksSameOrigin(request)) {
+        return jsonResponse({ error: 'Forbidden origin' }, 403, {}, request, true);
+    }
     if (!env.TELEMETRY) {
-        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500);
+        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500, {}, request, true);
     }
 
     // Rate limit by IP (IP is read but NEVER stored)
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
     if (isRateLimited(ip)) {
-        return jsonResponse({ error: 'Rate limited' }, 429);
+        return jsonResponse({ error: 'Rate limited' }, 429, {}, request, true);
     }
 
     let payload;
     try {
         const rawBody = await request.text();
         if (rawBody.length > MAX_TELEMETRY_PAYLOAD_CHARS) {
-            return jsonResponse({ error: 'Payload too large' }, 413);
+            return jsonResponse({ error: 'Payload too large' }, 413, {}, request, true);
         }
         payload = JSON.parse(rawBody);
     } catch {
-        return jsonResponse({ error: 'Invalid JSON' }, 400);
+        return jsonResponse({ error: 'Invalid JSON' }, 400, {}, request, true);
     }
 
     // Validate payload shape
     const increments = payload?.increments;
     const nested = payload?.nested;
     if (!increments && !nested) {
-        return jsonResponse({ error: 'Missing increments or nested fields' }, 400);
+        return jsonResponse({ error: 'Missing increments or nested fields' }, 400, {}, request, true);
     }
 
     // Load current counters from KV
@@ -266,6 +333,7 @@ async function handleTelemetryPost(request, env) {
     } catch {
         counters = {};
     }
+    if (!isPlainObject(counters)) counters = {};
 
     // Apply flat increments
     if (isPlainObject(increments)) {
@@ -282,12 +350,13 @@ async function handleTelemetryPost(request, env) {
         for (const [group, entries] of Object.entries(nested)) {
             if (!ALLOWED_NESTED_GROUPS.has(group)) continue;
             if (!isPlainObject(entries)) continue;
-            if (!counters[group]) counters[group] = {};
+            if (!isPlainObject(counters[group])) counters[group] = {};
             for (const [key, delta] of Object.entries(entries)) {
                 // Prevent special object keys and keep names compact/safe.
                 if (!isSafeNestedMetricKey(key)) continue;
                 const d = Number(delta);
                 if (!Number.isFinite(d) || d < 0 || d > 1e9) continue;
+                if (!Object.prototype.hasOwnProperty.call(counters[group], key) && Object.keys(counters[group]).length >= MAX_NESTED_KEYS_PER_GROUP) continue;
                 counters[group][key] = (counters[group][key] || 0) + d;
             }
         }
@@ -296,12 +365,15 @@ async function handleTelemetryPost(request, env) {
     // Save back to KV
     await withRetry(() => env.TELEMETRY.put(TELEMETRY_KV_KEY, JSON.stringify(counters)));
 
-    return jsonResponse({ ok: true });
+    return jsonResponse({ ok: true }, 200, {}, request, true);
 }
 
-async function handleTelemetryGet(env) {
+async function handleTelemetryGet(request, env) {
+    if (!requestLooksSameOrigin(request)) {
+        return jsonResponse({ error: 'Forbidden origin' }, 403, {}, request, true);
+    }
     if (!env.TELEMETRY) {
-        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500);
+        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500, {}, request, true);
     }
     let counters;
     try {
@@ -310,15 +382,27 @@ async function handleTelemetryGet(env) {
     } catch {
         counters = {};
     }
-    return jsonResponse(counters);
+    return jsonResponse(counters, 200, { 'Cache-Control': 'no-store' }, request, true);
 }
 
-async function handleTelemetryDelete(env) {
-    if (!env.TELEMETRY) {
-        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500);
+async function handleTelemetryDelete(request, env) {
+    if (!requestLooksSameOrigin(request)) {
+        return jsonResponse({ error: 'Forbidden origin' }, 403, {}, request, true);
     }
+    if (!env.TELEMETRY) {
+        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500, {}, request, true);
+    }
+
+    const allowInsecureReset = env.ALLOW_UNAUTHENTICATED_TELEMETRY_RESET === 'true';
+    if (!allowInsecureReset && !hasValidAdminToken(request, env)) {
+        return jsonResponse({
+            error: 'Unauthorized',
+            hint: 'Set TELEMETRY_ADMIN_TOKEN and send it as X-Telemetry-Admin-Token to enable protected reset.',
+        }, 403, {}, request, true);
+    }
+
     await withRetry(() => env.TELEMETRY.put(TELEMETRY_KV_KEY, JSON.stringify({})));
-    return jsonResponse({ ok: true, message: 'All sitewide counters reset' });
+    return jsonResponse({ ok: true, message: 'All sitewide counters reset' }, 200, {}, request, true);
 }
 
 // ── Request Router ─────────────────────────────────────────────────────────
@@ -328,9 +412,15 @@ async function handleRequest(request, env, ctx) {
 
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
-        return new Response(null, {
-            headers: CORS_HEADERS,
-        });
+        if (url.pathname !== '/api/telemetry' && url.pathname !== '/api/shorten') {
+            return withResponseHeaders(new Response(null, { status: 404 }), { request, isApi: true });
+        }
+        const allowDelete = url.pathname === '/api/telemetry';
+        const corsHeaders = getCorsHeaders(request, allowDelete);
+        if (!corsHeaders) {
+            return withResponseHeaders(new Response(null, { status: 403 }), { request, isApi: true, allowDeleteCors: allowDelete });
+        }
+        return withResponseHeaders(new Response(null, { headers: corsHeaders }), { request, isApi: true, allowDeleteCors: allowDelete });
     }
 
     // ── Telemetry routes ──
@@ -338,17 +428,17 @@ async function handleRequest(request, env, ctx) {
         if (request.method === 'POST') {
             try {
                 return await handleTelemetryPost(request, env);
-            } catch (error) {
-                return jsonResponse({ error: 'Server error', message: error.message }, 500);
+            } catch {
+                return jsonResponse({ error: 'Server error' }, 500, {}, request, true);
             }
         }
         if (request.method === 'GET') {
-            return handleTelemetryGet(env);
+            return handleTelemetryGet(request, env);
         }
         if (request.method === 'DELETE') {
-            return handleTelemetryDelete(env);
+            return handleTelemetryDelete(request, env);
         }
-        return jsonResponse({ error: 'Method not allowed' }, 405);
+        return jsonResponse({ error: 'Method not allowed' }, 405, { Allow: 'GET, POST, DELETE, OPTIONS' }, request, true);
     }
 
     // ── Short URL routes ──
@@ -359,30 +449,30 @@ async function handleRequest(request, env, ctx) {
             status: 'ok',
             message: 'Short URL API is working. Use POST to create short URLs.',
             usage: 'POST /api/shorten with { "url": "https://pt-onia.app/#..." }',
-        });
+        }, 200, { 'Cache-Control': 'no-store' }, request);
     }
 
     // Create short URL
     if (url.pathname === '/api/shorten' && request.method === 'POST') {
         try {
             return await handleShorten(request, env);
-        } catch (error) {
+        } catch {
             return jsonResponse({
                 error: 'Server error',
-                message: error.message,
                 hint: 'Check that request body is valid JSON with { "url": "..." }',
-            }, 500);
+            }, 500, {}, request);
         }
     }
 
     // Redirect short URL
     if (request.method === 'GET' && url.pathname.startsWith('/s/')) {
         const shortCode = url.pathname.slice('/s/'.length);
-        return handleRedirect(shortCode, env, ctx);
+        return handleRedirect(shortCode, env, ctx, request);
     }
 
     // Pass through to origin for all other requests
-    return fetch(request);
+    const originResponse = await fetch(request);
+    return withResponseHeaders(originResponse, { request });
 }
 
 export default {

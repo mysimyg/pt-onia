@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Off Optimizer</title>
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96">
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -1190,7 +1190,7 @@
         }
 
         /* ══════════════════════════════════════════════════════════════
-           MOBILE UX IMPROVEMENTS — Robinhood-inspired polish
+           MOBILE UX IMPROVEMENTS
            ══════════════════════════════════════════════════════════════ */
 
         /* Mobile day tap info toast — replaces hover tooltips on touch */
@@ -2132,6 +2132,105 @@
         const TELEMETRY_KEY = 'ptoOptimizer_telemetry_v1';
         const TELEMETRY_VISITED_KEY = 'ptoOptimizer_hasVisited';
         const CUSTOM_TYPES_STORAGE_KEY = 'timeoff_customTypes';
+        const ADMIN_UNLOCK_CODE = 'root66admin';
+        const MAX_URL_STATE_CHARS = 12000;
+        const MAX_SELECTED_DAYS_PER_TYPE = 366;
+        const MAX_CUSTOM_TYPES = 24;
+        const DATE_KEY_REGEX = /^\d{4}-\d{2}-\d{2}$/;
+        const THEME_OPTIONS = new Set([
+            'light-default', 'light-minimal', 'light-coastal', 'light-bold',
+            'dark-default', 'dark-minimal', 'dark-coastal', 'dark-bold'
+        ]);
+
+        const safeStorage = (() => {
+            const fallback = new Map();
+            let localStorageUsable = true;
+            try {
+                const probeKey = '__pto_probe__';
+                localStorage.setItem(probeKey, '1');
+                localStorage.removeItem(probeKey);
+            } catch {
+                localStorageUsable = false;
+            }
+            return {
+                getItem(key) {
+                    if (localStorageUsable) {
+                        try { return localStorage.getItem(key); } catch { localStorageUsable = false; }
+                    }
+                    return fallback.has(key) ? fallback.get(key) : null;
+                },
+                setItem(key, value) {
+                    const stringValue = String(value);
+                    if (localStorageUsable) {
+                        try {
+                            localStorage.setItem(key, stringValue);
+                            return true;
+                        } catch {
+                            localStorageUsable = false;
+                        }
+                    }
+                    fallback.set(key, stringValue);
+                    return false;
+                },
+                removeItem(key) {
+                    if (localStorageUsable) {
+                        try { localStorage.removeItem(key); } catch { localStorageUsable = false; }
+                    }
+                    fallback.delete(key);
+                }
+            };
+        })();
+
+        function parseJsonSafe(raw, fallback = null) {
+            if (!raw || typeof raw !== 'string') return fallback;
+            try { return JSON.parse(raw); } catch { return fallback; }
+        }
+
+        function isPlainObject(value) {
+            return !!value && typeof value === 'object' && !Array.isArray(value);
+        }
+
+        function isValidDateKey(value) {
+            if (typeof value !== 'string' || !DATE_KEY_REGEX.test(value)) return false;
+            const parsed = new Date(value + 'T12:00:00');
+            return !Number.isNaN(parsed.getTime()) && dateKey(parsed) === value;
+        }
+
+        function sanitizeDateKeys(values, maxItems = MAX_SELECTED_DAYS_PER_TYPE) {
+            if (!Array.isArray(values)) return [];
+            const unique = [];
+            const seen = new Set();
+            for (let i = 0; i < values.length; i++) {
+                const key = values[i];
+                if (!isValidDateKey(key) || seen.has(key)) continue;
+                seen.add(key);
+                unique.push(key);
+                if (unique.length >= maxItems) break;
+            }
+            return unique;
+        }
+
+        function sanitizeTheme(theme) {
+            return THEME_OPTIONS.has(theme) ? theme : null;
+        }
+
+        function sanitizeDisplayUnits(units) {
+            return units === 'days' ? 'days' : 'hours';
+        }
+
+        function encodeBase64Utf8(value) {
+            const bytes = new TextEncoder().encode(value);
+            let binary = '';
+            bytes.forEach(byte => { binary += String.fromCharCode(byte); });
+            return btoa(binary);
+        }
+
+        function decodeBase64Utf8(value) {
+            const binary = atob(value);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            return new TextDecoder().decode(bytes);
+        }
         const telemetry = (() => {
             const defaults = {
                 v: 1, totalSessions: 0, totalActiveMs: 0, sessionsOver5Min: 0,
@@ -2142,8 +2241,7 @@
                 opportunityClickCount: 0, clearAllSelectionsCount: 0,
                 returningVisitsCount: 0, errorsCaughtCount: 0
             };
-            let data;
-            try { data = JSON.parse(localStorage.getItem(TELEMETRY_KEY)); } catch {}
+            let data = parseJsonSafe(safeStorage.getItem(TELEMETRY_KEY));
             if (!data || data.v !== 1) data = { ...defaults };
             else data = { ...defaults, ...data, theme: { ...data.theme }, quickSelect: { ...defaults.quickSelect, ...data.quickSelect } };
 
@@ -2156,9 +2254,7 @@
             function persistNow() {
                 if (!saveDirty) return;
                 saveDirty = false;
-                try {
-                    localStorage.setItem(TELEMETRY_KEY, JSON.stringify(data));
-                } catch {}
+                safeStorage.setItem(TELEMETRY_KEY, JSON.stringify(data));
             }
             function save(immediate = false) {
                 saveDirty = true;
@@ -2185,13 +2281,11 @@
             }
 
             // Returning visitor
-            try {
-                if (localStorage.getItem(TELEMETRY_VISITED_KEY)) {
-                    data.returningVisitsCount++;
-                    save();
-                }
-                localStorage.setItem(TELEMETRY_VISITED_KEY, '1');
-            } catch {}
+            if (safeStorage.getItem(TELEMETRY_VISITED_KEY)) {
+                data.returningVisitsCount++;
+                save();
+            }
+            safeStorage.setItem(TELEMETRY_VISITED_KEY, '1');
 
             function onVisChange() {
                 if (document.hidden) {
@@ -2453,6 +2547,11 @@
             if (!confirm('Reset SITEWIDE metrics on the server? This cannot be undone.')) return;
             try {
                 const response = await fetch(TELEMETRY_REMOTE_ENDPOINT, { method: 'DELETE' });
+                if (response.status === 403) {
+                    showToast('Reset blocked: worker admin token required');
+                    renderAdminDashboard();
+                    return;
+                }
                 if (!response.ok) throw new Error('Failed to reset');
                 showToast('Sitewide metrics reset');
             } catch {
@@ -2481,6 +2580,48 @@
 
         const BUILTIN_TYPES = ['pto', 'activism', 'personal', 'wellness'];
 
+        function clearCustomTypeState() {
+            Object.keys(state.selectedDays).forEach(typeId => {
+                if (!BUILTIN_TYPES.includes(typeId)) delete state.selectedDays[typeId];
+            });
+            state.customTypes = [];
+            if (!BUILTIN_TYPES.includes(state.currentTimeOffType)) state.currentTimeOffType = 'pto';
+        }
+
+        function normalizeCustomType(raw) {
+            if (!isPlainObject(raw)) return null;
+            const id = typeof raw.id === 'string' ? raw.id.trim() : '';
+            if (!/^custom_[A-Za-z0-9_-]{1,40}$/.test(id)) return null;
+            if (BUILTIN_TYPES.includes(id)) return null;
+            let name = typeof raw.name === 'string' ? raw.name : '';
+            name = name.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 20);
+            if (!name) return null;
+            const color = typeof raw.color === 'string' && /^#[0-9a-fA-F]{6}$/.test(raw.color) ? raw.color : '#6366f1';
+            const countsAsDayOff = raw.cdo === true || raw.countsAsDayOff === true;
+            return { id, name, color, countsAsDayOff };
+        }
+
+        function normalizeCustomTypeState(rawTypes, rawSelectedByType) {
+            if (!Array.isArray(rawTypes)) return { types: [], selectedByType: {} };
+            const selectedByType = isPlainObject(rawSelectedByType) ? rawSelectedByType : {};
+            const seenIds = new Set();
+            const normalizedTypes = [];
+            const normalizedSelections = {};
+            for (let i = 0; i < rawTypes.length && normalizedTypes.length < MAX_CUSTOM_TYPES; i++) {
+                const normalized = normalizeCustomType(rawTypes[i]);
+                if (!normalized || seenIds.has(normalized.id)) continue;
+                seenIds.add(normalized.id);
+                normalizedTypes.push({
+                    id: normalized.id,
+                    name: normalized.name,
+                    color: normalized.color,
+                    countsAsDayOff: normalized.countsAsDayOff
+                });
+                normalizedSelections[normalized.id] = sanitizeDateKeys(selectedByType[normalized.id], MAX_SELECTED_DAYS_PER_TYPE);
+            }
+            return { types: normalizedTypes, selectedByType: normalizedSelections };
+        }
+
         // Display unit helpers
         function toDisplayValue(hours) {
             if (state.displayUnits === 'days') return (hours / 9).toFixed(1) + 'd';
@@ -2491,6 +2632,7 @@
             return Math.round(hours) + 'h';
         }
         function setDisplayUnits(units) {
+            units = sanitizeDisplayUnits(units);
             state.displayUnits = units;
             telemetry.increment('units_' + units);
             document.querySelectorAll('.unit-btn').forEach(btn => {
@@ -2581,54 +2723,87 @@
                     if (state.selectedDays[ct.id]?.size > 0) data.ctd[ct.id] = [...state.selectedDays[ct.id]];
                 });
             }
-            return btoa(JSON.stringify(data));
+            return encodeBase64Utf8(JSON.stringify(data));
         }
 
         function decodeState(encoded) {
             try {
-                const data = JSON.parse(atob(encoded));
-                if (data.y) document.getElementById('year').value = data.y;
-                if (data.pp) document.getElementById('nextPaycheck').value = data.pp;
-                if (data.ff) document.getElementById('next980Friday').value = data.ff;
-                if (data.yos) document.getElementById('yearsOfService').value = data.yos;
-                if (data.cp) document.getElementById('currentPto').value = data.cp;
-                if (data.ca) document.getElementById('currentActivism').value = data.ca;
-                if (data.cpr) document.getElementById('currentPersonal').value = data.cpr;
-                if (data.cw) document.getElementById('currentWellness').value = data.cw;
-                if (data.g) document.getElementById('yearEndGoal').value = data.g;
-                if (data.t) { document.body.setAttribute('data-theme', data.t); document.getElementById('themeSelect').value = data.t; }
-                if (data.cpp) document.getElementById('customPtoPerPaycheck').value = data.cpp;
-                if (data.cmp) document.getElementById('customMaxPto').value = data.cmp;
+                if (typeof encoded !== 'string' || !encoded || encoded.length > MAX_URL_STATE_CHARS) return false;
+                let data = parseJsonSafe(decodeBase64Utf8(encoded));
+                if (!isPlainObject(data)) data = parseJsonSafe(atob(encoded));
+                if (!isPlainObject(data)) return false;
 
+                const y = Number(data.y);
+                if (Number.isInteger(y) && y >= 2000 && y <= 2100) document.getElementById('year').value = y;
+                if (isValidDateKey(data.pp)) document.getElementById('nextPaycheck').value = data.pp;
+                if (isValidDateKey(data.ff)) document.getElementById('next980Friday').value = data.ff;
+                if (typeof data.yos === 'string') document.getElementById('yearsOfService').value = data.yos;
+                if (Number.isFinite(Number(data.cp))) document.getElementById('currentPto').value = data.cp;
+                if (Number.isFinite(Number(data.ca))) document.getElementById('currentActivism').value = data.ca;
+                if (Number.isFinite(Number(data.cpr))) document.getElementById('currentPersonal').value = data.cpr;
+                if (Number.isFinite(Number(data.cw))) document.getElementById('currentWellness').value = data.cw;
+                if (Number.isFinite(Number(data.g))) document.getElementById('yearEndGoal').value = data.g;
+                if (Number.isFinite(Number(data.cpp))) document.getElementById('customPtoPerPaycheck').value = data.cpp;
+                if (Number.isFinite(Number(data.cmp))) document.getElementById('customMaxPto').value = data.cmp;
+
+                const safeTheme = sanitizeTheme(data.t);
+                if (safeTheme) {
+                    document.body.setAttribute('data-theme', safeTheme);
+                    document.getElementById('themeSelect').value = safeTheme;
+                }
+
+                [
+                    ['year', 'mYear'],
+                    ['yearsOfService', 'mYearsOfService'],
+                    ['nextPaycheck', 'mNextPaycheck'],
+                    ['next980Friday', 'mNext980Friday'],
+                    ['currentPto', 'mCurrentPto'],
+                    ['currentActivism', 'mCurrentActivism'],
+                    ['currentPersonal', 'mCurrentPersonal'],
+                    ['currentWellness', 'mCurrentWellness'],
+                ].forEach(([desktopId, mobileId]) => {
+                    const desktopEl = document.getElementById(desktopId);
+                    const mobileEl = document.getElementById(mobileId);
+                    if (desktopEl && mobileEl) mobileEl.value = desktopEl.value;
+                });
+
+                const selectedHolidayIds = Array.isArray(data.h) ? new Set(data.h.filter(id => ALL_HOLIDAYS.some(h => h.id === id))) : null;
                 ALL_HOLIDAYS.forEach(h => {
-                    const cb = document.getElementById(`holiday_${h.id}`);
-                    if (cb) cb.checked = data.h ? data.h.includes(h.id) : h.default;
+                    const checked = selectedHolidayIds ? selectedHolidayIds.has(h.id) : h.default;
+                    const desktopCb = document.getElementById(`holiday_${h.id}`);
+                    const mobileCb = document.getElementById(`m_holiday_${h.id}`);
+                    if (desktopCb) desktopCb.checked = checked;
+                    if (mobileCb) mobileCb.checked = checked;
                 });
 
                 applyServicePreset();
                 regenerate();
 
-                if (data.pto) data.pto.forEach(d => state.selectedDays.pto.add(d));
-                if (data.act) data.act.forEach(d => state.selectedDays.activism.add(d));
-                if (data.per) data.per.forEach(d => state.selectedDays.personal.add(d));
-                if (data.wel) data.wel.forEach(d => state.selectedDays.wellness.add(d));
+                BUILTIN_TYPES.forEach(type => state.selectedDays[type].clear());
+                state.selectedOpportunities.clear();
+                sanitizeDateKeys(data.pto).forEach(d => state.selectedDays.pto.add(d));
+                sanitizeDateKeys(data.act).forEach(d => state.selectedDays.activism.add(d));
+                sanitizeDateKeys(data.per).forEach(d => state.selectedDays.personal.add(d));
+                sanitizeDateKeys(data.wel).forEach(d => state.selectedDays.wellness.add(d));
 
-                if (data.du) { state.displayUnits = data.du; setDisplayUnits(data.du); }
-                if (data.ct) {
-                    state.customTypes = data.ct.map(ct => ({ ...ct, countsAsDayOff: !!ct.cdo }));
-                    state.customTypes.forEach(ct => { state.selectedDays[ct.id] = new Set(); });
-                    if (data.ctd) Object.keys(data.ctd).forEach(id => { if (state.selectedDays[id]) data.ctd[id].forEach(d => state.selectedDays[id].add(d)); });
-                    renderCustomTypeButtons();
-                    renderMobileTypeBar();
+                clearCustomTypeState();
+                const normalizedCustomState = normalizeCustomTypeState(data.ct, data.ctd);
+                state.customTypes = normalizedCustomState.types;
+                state.customTypes.forEach(ct => {
+                    state.selectedDays[ct.id] = new Set(normalizedCustomState.selectedByType[ct.id] || []);
+                });
+                renderCustomTypeButtons();
+                renderMobileTypeBar();
+
+                if (data.du !== undefined) setDisplayUnits(sanitizeDisplayUnits(data.du));
+                else {
+                    renderCalendar();
+                    renderMobileYearView();
+                    renderMobileMonth();
+                    recalculate();
                 }
-
-                renderCalendar();
-                renderMobileYearView();
-                renderMobileMonth();
-                recalculate();
                 return true;
-            } catch (e) {
-                console.error('Failed to decode state:', e);
+            } catch {
                 return false;
             }
         }
@@ -2715,9 +2890,11 @@
 
         // Theme
         function changeTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            localStorage.setItem('preferredTheme', theme);
-            telemetry.incrementNested('theme', theme);
+            const safeTheme = sanitizeTheme(theme);
+            if (!safeTheme) return;
+            document.body.setAttribute('data-theme', safeTheme);
+            safeStorage.setItem('preferredTheme', safeTheme);
+            telemetry.incrementNested('theme', safeTheme);
         }
 
         // Helper functions
@@ -2910,7 +3087,7 @@
 
         // Initialize
         function init() {
-            const savedTheme = localStorage.getItem('preferredTheme');
+            const savedTheme = sanitizeTheme(safeStorage.getItem('preferredTheme'));
             if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); document.getElementById('themeSelect').value = savedTheme; }
 
             const currentYear = new Date().getFullYear();
@@ -2939,7 +3116,7 @@
                 });
             });
 
-            // Load custom types from localStorage
+            // Load custom types from storage
             loadCustomTypesFromStorage();
 
             // Check for URL state
@@ -3676,13 +3853,19 @@
             document.getElementById('customTypeModal').classList.remove('open');
         }
         function saveCustomType() {
-            const name = document.getElementById('customTypeName').value.trim();
-            if (name === 'root66admin') {
+            const rawName = document.getElementById('customTypeName').value;
+            const name = rawName.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 20);
+            if (name === ADMIN_UNLOCK_CODE) {
                 closeCustomTypeModal();
-                openAdmin();
+                if (confirm('Open Usage Dashboard?')) openAdmin();
                 return;
             }
-            const color = document.getElementById('customTypeColor').value;
+            if (state.customTypes.length >= MAX_CUSTOM_TYPES) {
+                showToast(`Max ${MAX_CUSTOM_TYPES} custom types`);
+                return;
+            }
+            const colorInput = document.getElementById('customTypeColor').value;
+            const color = /^#[0-9a-fA-F]{6}$/.test(colorInput) ? colorInput : '#6366f1';
             const countsAsDayOff = document.getElementById('customTypeCountsAsDayOff').value === 'yes';
             if (!name) { showToast('Please enter a name'); return; }
             const id = 'custom_' + Date.now();
@@ -3725,6 +3908,7 @@
                 const del = document.createElement('button');
                 del.className = 'delete-x';
                 del.textContent = '×';
+                del.setAttribute('aria-label', `Delete ${ct.name}`);
                 del.onclick = (e) => deleteCustomType(ct.id, e);
                 wrap.appendChild(btn);
                 wrap.appendChild(del);
@@ -3737,7 +3921,13 @@
                 state.customTypes.forEach(ct => {
                     const item = document.createElement('div');
                     item.className = 'legend-item';
-                    item.innerHTML = `<div class="legend-color" style="background:${ct.color}"></div><span>${ct.name}</span>`;
+                    const swatch = document.createElement('div');
+                    swatch.className = 'legend-color';
+                    swatch.style.background = ct.color;
+                    const label = document.createElement('span');
+                    label.textContent = ct.name;
+                    item.appendChild(swatch);
+                    item.appendChild(label);
                     legendContainer.appendChild(item);
                 });
             }
@@ -3760,24 +3950,21 @@
         function saveCustomTypesToStorage() {
             const data = { types: state.customTypes, selected: {} };
             state.customTypes.forEach(ct => { data.selected[ct.id] = [...(state.selectedDays[ct.id] || [])]; });
-            try {
-                localStorage.setItem(CUSTOM_TYPES_STORAGE_KEY, JSON.stringify(data));
-            } catch {}
+            safeStorage.setItem(CUSTOM_TYPES_STORAGE_KEY, JSON.stringify(data));
         }
         function loadCustomTypesFromStorage() {
-            try {
-                const raw = localStorage.getItem(CUSTOM_TYPES_STORAGE_KEY);
-                if (!raw) return;
-                const data = JSON.parse(raw);
-                if (data.types) {
-                    state.customTypes = data.types.map(ct => ({ ...ct, countsAsDayOff: !!ct.countsAsDayOff }));
-                    state.customTypes.forEach(ct => {
-                        state.selectedDays[ct.id] = new Set(data.selected?.[ct.id] || []);
-                    });
-                    renderCustomTypeButtons();
-                    renderMobileTypeBar();
-                }
-            } catch (e) { console.error('Failed to load custom types:', e); }
+            const raw = safeStorage.getItem(CUSTOM_TYPES_STORAGE_KEY);
+            if (!raw) return;
+            const data = parseJsonSafe(raw);
+            if (!isPlainObject(data)) return;
+            const normalized = normalizeCustomTypeState(data.types, data.selected);
+            clearCustomTypeState();
+            state.customTypes = normalized.types;
+            state.customTypes.forEach(ct => {
+                state.selectedDays[ct.id] = new Set(normalized.selectedByType[ct.id] || []);
+            });
+            renderCustomTypeButtons();
+            renderMobileTypeBar();
         }
 
         // Mobile day-info toast — shows info on tap (replaces hover tooltip)
@@ -3800,7 +3987,12 @@
             if (e.target.classList.contains('admin-overlay')) closeAdmin();
         });
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && document.getElementById('adminOverlay').classList.contains('open')) closeAdmin();
+            if (e.key !== 'Escape') return;
+            const adminOverlay = document.getElementById('adminOverlay');
+            if (adminOverlay?.classList.contains('open')) closeAdmin();
+            const customTypeModal = document.getElementById('customTypeModal');
+            if (customTypeModal?.classList.contains('open')) closeCustomTypeModal();
+            closeFabMenu();
         });
     </script>
 </body>
