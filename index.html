@@ -421,6 +421,9 @@
         .balance-card .label { font-size: 9px; font-weight: 500; text-transform: uppercase; color: var(--text-muted); }
         .balance-card .value { font-size: 16px; font-weight: 600; margin: 2px 0; }
         .balance-card .detail { font-size: 9px; color: var(--text-secondary); }
+        .balance-card.success { border-left-color: var(--color-success); }
+        .balance-card.warning { border-left-color: var(--color-warning); }
+        .balance-card.danger { border-left-color: var(--color-danger); }
 
         /* Quick Select */
         .quick-section { margin-bottom: 12px; }
@@ -1132,8 +1135,7 @@
             flex-direction: column;
             gap: 6px;
         }
-        .balance-stack .balance-card,
-        .balance-stack .stat-card {
+        .balance-stack .balance-card {
             width: 100%;
         }
 
@@ -1716,11 +1718,7 @@
                 </div>
                 <div id="projectedContent" class="collapsible-content open">
                     <div class="balance-stack" style="margin-top:10px">
-                        <div class="stat-card" id="statBoxPto">
-                            <div class="stat-label">PTO Balance</div>
-                            <div class="stat-value" id="projectedPto">0h</div>
-                            <div class="stat-detail" id="ptoDetail">-</div>
-                        </div>
+                        <div class="balance-card pto" id="statBoxPto"><div class="label">PTO Balance</div><div class="value" id="projectedPto">0h</div><div class="detail" id="ptoDetail">-</div></div>
                         <div class="balance-card activism"><div class="label">Activism</div><div class="value" id="projectedActivism">0h</div><div class="detail" id="activismDetail">-</div></div>
                         <div class="balance-card personal"><div class="label">Personal</div><div class="value" id="projectedPersonal">0</div><div class="detail" id="personalDetail">-</div></div>
                         <div class="balance-card wellness"><div class="label">Wellness</div><div class="value" id="projectedWellness">0h</div><div class="detail" id="wellnessDetail">-</div></div>
@@ -1731,9 +1729,9 @@
             <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('optimizeContent', this)">
                     <span class="section-title" style="margin-bottom:0">Optimize</span>
-                    <span class="toggle-icon open">▼</span>
+                    <span class="toggle-icon">▼</span>
                 </div>
-                <div id="optimizeContent" class="collapsible-content open">
+                <div id="optimizeContent" class="collapsible-content">
                     <div class="optimize-kpi-stack" style="margin-top:10px">
                         <div class="optimize-tile"><div class="label">Projected Workdays Off</div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
                         <div class="optimize-tile"><div class="label">Next Long Weekend</div><div class="value" id="dNextLongWeekend">—</div><div class="detail" id="dNextLongWeekendDetail">—</div></div>
@@ -3418,7 +3416,7 @@
             ['wellnessDetail', 'mWellnessDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = welDetail; });
 
             const statBox = document.getElementById('statBoxPto');
-            statBox.className = 'stat-card';
+            statBox.className = 'balance-card pto';
             let ptoDetail = '';
             if (yearEndGoal !== null) {
                 const diff = ptoBalance - yearEndGoal;
