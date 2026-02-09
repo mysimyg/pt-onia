@@ -1125,7 +1125,20 @@
         .admin-remote-badge.on { background: #064e3b; color: #6ee7b7; }
 
         /* ══════════════════════════════════════════════════════════════
-           OPTIMIZE PAGE — KPI groups
+           STACKED LAYOUTS — uniform full-width tiles
+           ══════════════════════════════════════════════════════════════ */
+        .balance-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .balance-stack .balance-card,
+        .balance-stack .stat-card {
+            width: 100%;
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           OPTIMIZE PAGE — KPI groups + gradient tiles
            ══════════════════════════════════════════════════════════════ */
         .optimize-group {
             margin-bottom: 16px;
@@ -1138,16 +1151,40 @@
             color: var(--text-muted);
             margin-bottom: 8px;
         }
-        .optimize-kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
+        .optimize-kpi-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
         }
-        .balance-card.accent {
-            border-left: 3px solid var(--accent-primary);
+        /* Subtle purple→teal gradient for optimize tiles */
+        .optimize-tile {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(20, 184, 166, 0.06) 100%);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid;
+            border-left-color: var(--accent-secondary);
+            border-radius: 6px;
+            padding: 10px;
         }
-        .mobile-stat-card.accent {
-            border-left: 3px solid var(--accent-primary);
+        .optimize-tile .label { font-size: 9px; font-weight: 500; text-transform: uppercase; color: var(--text-muted); }
+        .optimize-tile .value { font-size: 16px; font-weight: 600; margin: 2px 0; }
+        .optimize-tile .detail { font-size: 9px; color: var(--text-secondary); }
+        /* Dark mode gradient — slightly stronger for visibility */
+        [data-theme^="dark-"] .optimize-tile {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(20, 184, 166, 0.10) 100%);
+        }
+        /* Mobile optimize tile — matching mobile stat card sizing */
+        .mobile-optimize-tile {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(20, 184, 166, 0.06) 100%);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-secondary);
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .mobile-optimize-tile .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); }
+        .mobile-optimize-tile .value { font-size: 22px; font-weight: 700; margin: 4px 0; }
+        .mobile-optimize-tile .detail { font-size: 11px; color: var(--text-secondary); }
+        [data-theme^="dark-"] .mobile-optimize-tile {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.12) 0%, rgba(20, 184, 166, 0.10) 100%);
         }
 
         /* ══════════════════════════════════════════════════════════════
@@ -1678,18 +1715,15 @@
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="projectedContent" class="collapsible-content open">
-                    <div style="margin-top:10px">
+                    <div class="balance-stack" style="margin-top:10px">
                         <div class="stat-card" id="statBoxPto">
                             <div class="stat-label">PTO Balance</div>
                             <div class="stat-value" id="projectedPto">0h</div>
                             <div class="stat-detail" id="ptoDetail">-</div>
                         </div>
-                        <div class="balance-grid">
-                            <div class="balance-card activism"><div class="label">Activism</div><div class="value" id="projectedActivism">0h</div><div class="detail" id="activismDetail">-</div></div>
-                            <div class="balance-card personal"><div class="label">Personal</div><div class="value" id="projectedPersonal">0</div><div class="detail" id="personalDetail">-</div></div>
-                            <div class="balance-card wellness"><div class="label">Wellness</div><div class="value" id="projectedWellness">0h</div><div class="detail" id="wellnessDetail">-</div></div>
-                            <div class="balance-card pto"><div class="label">Work Days Off</div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
-                        </div>
+                        <div class="balance-card activism"><div class="label">Activism</div><div class="value" id="projectedActivism">0h</div><div class="detail" id="activismDetail">-</div></div>
+                        <div class="balance-card personal"><div class="label">Personal</div><div class="value" id="projectedPersonal">0</div><div class="detail" id="personalDetail">-</div></div>
+                        <div class="balance-card wellness"><div class="label">Wellness</div><div class="value" id="projectedWellness">0h</div><div class="detail" id="wellnessDetail">-</div></div>
                     </div>
                 </div>
             </div>
@@ -1700,13 +1734,14 @@
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="optimizeContent" class="collapsible-content open">
-                    <div class="optimize-kpi-grid" style="margin-top:10px">
-                        <div class="balance-card accent"><div class="label">Next Long Weekend</div><div class="value" id="dNextLongWeekend">—</div><div class="detail" id="dNextLongWeekendDetail">—</div></div>
-                        <div class="balance-card accent"><div class="label">Longest Out of Office</div><div class="value" id="dLongestStreak">0</div><div class="detail" id="dLongestStreakDetail">days</div></div>
-                        <div class="balance-card accent"><div class="label">Efficiency</div><div class="value" id="dEfficiency">—</div><div class="detail" id="dEfficiencyDetail">ratio</div></div>
-                        <div class="balance-card accent"><div class="label">Fridays Off</div><div class="value" id="dFridaysOff">0</div><div class="detail" id="dFridaysOffDetail">planned</div></div>
-                        <div class="balance-card accent"><div class="label">Breaks Planned</div><div class="value" id="dBreaksPlanned">0</div><div class="detail" id="dBreaksPlannedDetail">—</div></div>
-                        <div class="balance-card accent"><div class="label">Avg Break</div><div class="value" id="dAvgBreakLen">—</div><div class="detail" id="dAvgBreakLenDetail">days</div></div>
+                    <div class="optimize-kpi-stack" style="margin-top:10px">
+                        <div class="optimize-tile"><div class="label">Projected Workdays Off</div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
+                        <div class="optimize-tile"><div class="label">Next Long Weekend</div><div class="value" id="dNextLongWeekend">—</div><div class="detail" id="dNextLongWeekendDetail">—</div></div>
+                        <div class="optimize-tile"><div class="label">Longest Out of Office</div><div class="value" id="dLongestStreak">0</div><div class="detail" id="dLongestStreakDetail">days</div></div>
+                        <div class="optimize-tile"><div class="label">Days Off Efficiency</div><div class="value" id="dEfficiency">—</div><div class="detail" id="dEfficiencyDetail">ratio</div></div>
+                        <div class="optimize-tile"><div class="label">Fridays Off</div><div class="value" id="dFridaysOff">0</div><div class="detail" id="dFridaysOffDetail">planned</div></div>
+                        <div class="optimize-tile"><div class="label">Total Breaks This Year</div><div class="value" id="dBreaksPlanned">0</div><div class="detail" id="dBreaksPlannedDetail">—</div></div>
+                        <div class="optimize-tile"><div class="label">Avg Break Length</div><div class="value" id="dAvgBreakLen">—</div><div class="detail" id="dAvgBreakLenDetail">days</div></div>
                     </div>
                 </div>
             </div>
@@ -1913,10 +1948,10 @@
         </div>
 
         <div id="mobileStatsTab" class="mobile-tab">
-            <!-- Balances Group -->
+            <!-- Balances Group — stacked full-width -->
             <div class="optimize-group">
-                <div class="optimize-group-title">Balances</div>
-                <div class="mobile-stats-grid">
+                <div class="optimize-group-title">Projected Year-End</div>
+                <div class="optimize-kpi-stack">
                     <div class="mobile-stat-card pto"><div class="label">PTO</div><div class="value" id="mProjPto">0h</div><div class="detail" id="mPtoDetail">-</div></div>
                     <div class="mobile-stat-card activism"><div class="label">Activism</div><div class="value" id="mProjActivism">0h</div><div class="detail" id="mActivismDetail">-</div></div>
                     <div class="mobile-stat-card personal"><div class="label">Personal</div><div class="value" id="mProjPersonal">0d</div><div class="detail" id="mPersonalDetail">-</div></div>
@@ -1924,31 +1959,17 @@
                 </div>
             </div>
 
-            <!-- Planning Group -->
+            <!-- Optimize Group — stacked full-width with gradient tiles -->
             <div class="optimize-group">
-                <div class="optimize-group-title">Planning</div>
-                <div class="mobile-stats-grid">
-                    <div class="mobile-stat-card work"><div class="label">Work Days Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Total days off (incl. weekends): 0</div></div>
-                    <div class="mobile-stat-card accent"><div class="label">Next Long Weekend</div><div class="value" id="mNextLongWeekend">—</div><div class="detail" id="mNextLongWeekendDetail">—</div></div>
-                </div>
-            </div>
-
-            <!-- Optimization Group -->
-            <div class="optimize-group">
-                <div class="optimize-group-title">Optimization</div>
-                <div class="mobile-stats-grid">
-                    <div class="mobile-stat-card accent"><div class="label">Longest Out of Office</div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
-                    <div class="mobile-stat-card accent"><div class="label">Days Off Efficiency</div><div class="value" id="mEfficiency">—</div><div class="detail" id="mEfficiencyDetail">ratio</div></div>
-                </div>
-            </div>
-
-            <!-- Patterns Group -->
-            <div class="optimize-group">
-                <div class="optimize-group-title">Patterns</div>
-                <div class="mobile-stats-grid">
-                    <div class="mobile-stat-card accent"><div class="label">Fridays Off</div><div class="value" id="mFridaysOff">0</div><div class="detail" id="mFridaysOffDetail">planned</div></div>
-                    <div class="mobile-stat-card accent"><div class="label">Breaks Planned</div><div class="value" id="mBreaksPlanned">0</div><div class="detail" id="mBreaksPlannedDetail">—</div></div>
-                    <div class="mobile-stat-card accent"><div class="label">Avg Break Length</div><div class="value" id="mAvgBreakLen">—</div><div class="detail" id="mAvgBreakLenDetail">days</div></div>
+                <div class="optimize-group-title">Optimize</div>
+                <div class="optimize-kpi-stack">
+                    <div class="mobile-optimize-tile"><div class="label">Projected Workdays Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Projected total days off (incl. weekends): 0</div></div>
+                    <div class="mobile-optimize-tile"><div class="label">Next Long Weekend</div><div class="value" id="mNextLongWeekend">—</div><div class="detail" id="mNextLongWeekendDetail">—</div></div>
+                    <div class="mobile-optimize-tile"><div class="label">Longest Out of Office</div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
+                    <div class="mobile-optimize-tile"><div class="label">Days Off Efficiency</div><div class="value" id="mEfficiency">—</div><div class="detail" id="mEfficiencyDetail">ratio</div></div>
+                    <div class="mobile-optimize-tile"><div class="label">Fridays Off</div><div class="value" id="mFridaysOff">0</div><div class="detail" id="mFridaysOffDetail">planned</div></div>
+                    <div class="mobile-optimize-tile"><div class="label">Total Breaks This Year</div><div class="value" id="mBreaksPlanned">0</div><div class="detail" id="mBreaksPlannedDetail">—</div></div>
+                    <div class="mobile-optimize-tile"><div class="label">Avg Break Length</div><div class="value" id="mAvgBreakLen">—</div><div class="detail" id="mAvgBreakLenDetail">days</div></div>
                 </div>
             </div>
 
@@ -3247,28 +3268,21 @@
             if (curStreak.length > 0 && hasSelection) streaks.push([...curStreak]);
 
             // ── KPI: Next Long Weekend ──
-            // First off-run of length >= 3 that overlaps or starts from today onward
+            // First off-run of length >= 3 that starts STRICTLY after today
+            // (skip any run that has already started, even if still ongoing)
             let nextLW = '—';
             let nextLWDetail = '—';
             for (const run of allRuns) {
                 if (run.length < 3) continue;
                 const runStart = run[0].date;
+                // Only consider runs whose start date is strictly in the future
+                if (runStart <= today) continue;
                 const runEnd = run[run.length - 1].date;
-                // Skip runs entirely in the past
-                if (runEnd < today) continue;
-                // This run is current or future
                 const rangeStr = `${SHORT_MONTHS[runStart.getMonth()]} ${runStart.getDate()} – ${SHORT_MONTHS[runEnd.getMonth()]} ${runEnd.getDate()}`;
-                if (runStart <= today && today <= runEnd) {
-                    // We are inside this run right now
-                    nextLW = rangeStr;
-                    nextLWDetail = `${run.length} days · today`;
-                } else {
-                    // Run is in the future — compute "in N days"
-                    const diffMs = runStart.getTime() - today.getTime();
-                    const diffDays = Math.round(diffMs / 86400000);
-                    nextLW = rangeStr;
-                    nextLWDetail = `${run.length} days · in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
-                }
+                const diffMs = runStart.getTime() - today.getTime();
+                const diffDays = Math.round(diffMs / 86400000);
+                nextLW = rangeStr;
+                nextLWDetail = `${run.length} days · in ${diffDays} day${diffDays === 1 ? '' : 's'}`;
                 break;
             }
 
@@ -3288,7 +3302,7 @@
             const totalStreakDays = streaks.reduce((sum, s) => sum + s.length, 0);
             const totalPtoDays = streaks.reduce((sum, s) => sum + s.filter(d => d.isSelected).length, 0);
             const efficiency = totalPtoDays > 0 ? (totalStreakDays / totalPtoDays).toFixed(1) + 'x' : '—';
-            const efficiencyDetail = totalPtoDays > 0 ? `${totalStreakDays} days off · ${totalPtoDays} PTO used` : 'select days to see';
+            const efficiencyDetail = totalPtoDays > 0 ? `${totalStreakDays} days off · ${totalPtoDays} PTO used (to date)` : 'select days to see';
 
             // ── KPI: Fridays off (user-selected, EXCLUDING 9/80) + 9/80 count ──
             let fridaysOff = 0;
@@ -3299,9 +3313,9 @@
             });
             const fridaysDetail = `+ ${nine80FridayCount} 9/80 Fridays`;
 
-            // ── KPI: Breaks planned — user-influenced streaks of length >= 4 ──
-            const breaks4plus = streaks.filter(s => s.length >= 4);
-            const breaksPlanned = breaks4plus.length;
+            // ── KPI: Total breaks this year — all off-runs of length >= 4 (past + planned) ──
+            const breaks4plus = allRuns.filter(r => r.length >= 4);
+            const totalBreaks = breaks4plus.length;
             const breaksDetail = '4+ days out of office';
 
             // ── KPI: Average break length ──
@@ -3318,7 +3332,7 @@
                 ['dEfficiencyDetail', 'mEfficiencyDetail', efficiencyDetail],
                 ['dFridaysOff', 'mFridaysOff', fridaysOff],
                 ['dFridaysOffDetail', 'mFridaysOffDetail', fridaysDetail],
-                ['dBreaksPlanned', 'mBreaksPlanned', breaksPlanned],
+                ['dBreaksPlanned', 'mBreaksPlanned', totalBreaks],
                 ['dBreaksPlannedDetail', 'mBreaksPlannedDetail', breaksDetail],
                 ['dAvgBreakLen', 'mAvgBreakLen', avgBreak],
                 ['dAvgBreakLenDetail', 'mAvgBreakLenDetail', breaks4plus.length > 0 ? 'days per break' : 'days'],
@@ -3439,7 +3453,7 @@
             }
 
             ['countWorkDaysOff', 'mWorkDays'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = workDaysOff; });
-            ['totalDaysDetail', 'mTotalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = `Total days off (incl. weekends): ${totalDaysOff}`; });
+            ['totalDaysDetail', 'mTotalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = `Projected total days off (incl. weekends): ${totalDaysOff}`; });
 
             renderProjectionChart(currentPto, ptoPerPaycheck, maxPto);
             renderWellnessChart(currentWellness, wellnessPerPaycheck, maxWellness);
