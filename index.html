@@ -1667,6 +1667,206 @@
             .day { font-size: 12px; min-height: 34px; }
             .month-nav-btn { padding: 8px 14px; font-size: 12px; }
             .type-selector { grid-template-columns: repeat(2, 1fr); }
+            /* Stack date inputs on tiny screens */
+            .settings-section .input-row { grid-template-columns: 1fr; }
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           SHARE MODAL
+           ══════════════════════════════════════════════════════════════ */
+        .share-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+        .share-modal.open { display: flex; }
+        .share-modal-content {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            width: 340px;
+            max-width: 90vw;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .share-modal-content h3 {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .share-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            background: var(--bg-secondary);
+            transition: border-color 0.15s;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            width: 100%;
+            text-align: left;
+        }
+        .share-option:hover { border-color: var(--accent-primary); }
+        .share-option:active { transform: scale(0.98); }
+        .share-option svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--accent-primary); }
+        .share-option .share-option-text { flex: 1; }
+        .share-option .share-option-sub { font-size: 10px; color: var(--text-muted); font-weight: 400; display: block; margin-top: 2px; }
+        .share-disclosure {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 12px;
+            line-height: 1.4;
+            padding: 0 8px;
+        }
+        .share-close-btn {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .share-link-display {
+            font-size: 11px;
+            color: var(--accent-primary);
+            word-break: break-all;
+            background: var(--bg-tertiary);
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            text-align: center;
+            user-select: all;
+        }
+
+        @media (max-width: 900px) {
+            .share-modal-content {
+                width: calc(100vw - 32px);
+                max-width: 400px;
+                border-radius: 16px;
+                padding: 24px 20px;
+            }
+            .share-modal-content h3 { font-size: 18px; }
+            .share-option {
+                padding: 14px;
+                font-size: 14px;
+                min-height: 44px;
+                border-radius: 10px;
+            }
+            .share-close-btn {
+                min-height: 44px;
+                font-size: 14px;
+                border-radius: 10px;
+            }
+        }
+
+        /* Share button in header */
+        .share-header-btn {
+            padding: 8px;
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .share-header-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .share-header-btn svg { width: 16px; height: 16px; }
+
+        /* ══════════════════════════════════════════════════════════════
+           MOBILE OPTIMIZE — collapsible boxed sections
+           ══════════════════════════════════════════════════════════════ */
+        .mobile-collapsible-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+        .mobile-collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding: 2px 0;
+            min-height: 44px;
+        }
+        .mobile-collapsible-header .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            margin-bottom: 0;
+        }
+        .mobile-collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        .mobile-collapsible-content.open {
+            max-height: 4000px;
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           SETTINGS COLLAPSIBLE ON MOBILE
+           ══════════════════════════════════════════════════════════════ */
+        .settings-collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            min-height: 44px;
+        }
+        .settings-collapsible-header .settings-section-title {
+            margin-bottom: 0;
+        }
+        .settings-collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s;
+        }
+        .settings-collapsible-content.open {
+            max-height: 2000px;
+        }
+
+        /* ══════════════════════════════════════════════════════════════
+           MOBILE SETTINGS INPUT FIX — date inputs + personal select
+           ══════════════════════════════════════════════════════════════ */
+        @media (max-width: 900px) {
+            /* Ensure date inputs don't overflow */
+            .settings-section input[type="date"] {
+                min-width: 0;
+                max-width: 100%;
+            }
+            /* Personal days select — match other input sizes */
+            .settings-section select,
+            .settings-section input[type="number"] {
+                min-height: 40px;
+                font-size: 14px;
+                padding: 8px 12px;
+                border-radius: 8px;
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -1692,8 +1892,11 @@
                 <button class="unit-btn active" onclick="setDisplayUnits('hours')">Hours</button>
                 <button class="unit-btn" onclick="setDisplayUnits('days')">Days</button>
             </div>
-            <button class="save-btn" id="saveBtn" onclick="saveAndShare()">
-                <svg id="saveBtnIcon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            <button class="share-header-btn" onclick="openShareModal()" title="Share">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+            </button>
+            <button class="save-btn" id="saveBtn" onclick="saveState()">
+                <svg id="saveBtnIcon" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                 <span id="saveBtnText">Save</span>
             </button>
         </div>
@@ -1891,6 +2094,14 @@
                     <div class="opportunity-list" id="opportunityList" style="margin-top:10px"></div>
                 </div>
             </div>
+
+            <div class="sidebar-card">
+                <div class="section-title" style="margin-bottom:8px">Share / Export</div>
+                <button class="share-option" onclick="openShareModal()" style="margin-bottom:0">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+                    <span class="share-option-text">Share / Export<span class="share-option-sub">Link, image, or calendar</span></span>
+                </button>
+            </div>
         </aside>
 
         <main class="content-area">
@@ -1946,42 +2157,70 @@
         </div>
 
         <div id="mobileStatsTab" class="mobile-tab">
-            <!-- Balances Group — stacked full-width -->
-            <div class="optimize-group">
-                <div class="optimize-group-title">Projected Year-End</div>
-                <div class="optimize-kpi-stack">
-                    <div class="mobile-stat-card pto"><div class="label">PTO</div><div class="value" id="mProjPto">0h</div><div class="detail" id="mPtoDetail">-</div></div>
-                    <div class="mobile-stat-card activism"><div class="label">Activism</div><div class="value" id="mProjActivism">0h</div><div class="detail" id="mActivismDetail">-</div></div>
-                    <div class="mobile-stat-card personal"><div class="label">Personal</div><div class="value" id="mProjPersonal">0d</div><div class="detail" id="mPersonalDetail">-</div></div>
-                    <div class="mobile-stat-card wellness"><div class="label">Wellness</div><div class="value" id="mProjWellness">0h</div><div class="detail" id="mWellnessDetail">-</div></div>
+            <!-- Balances Group — collapsible boxed section -->
+            <div class="mobile-collapsible-section">
+                <div class="mobile-collapsible-header" onclick="toggleMobileSection('mProjectedContent', this)">
+                    <span class="section-title">Projected Year-End</span>
+                    <span class="toggle-icon open">▼</span>
+                </div>
+                <div id="mProjectedContent" class="mobile-collapsible-content open">
+                    <div class="optimize-kpi-stack" style="margin-top:10px">
+                        <div class="mobile-stat-card pto"><div class="label">PTO</div><div class="value" id="mProjPto">0h</div><div class="detail" id="mPtoDetail">-</div></div>
+                        <div class="mobile-stat-card activism"><div class="label">Activism</div><div class="value" id="mProjActivism">0h</div><div class="detail" id="mActivismDetail">-</div></div>
+                        <div class="mobile-stat-card personal"><div class="label">Personal</div><div class="value" id="mProjPersonal">0d</div><div class="detail" id="mPersonalDetail">-</div></div>
+                        <div class="mobile-stat-card wellness"><div class="label">Wellness</div><div class="value" id="mProjWellness">0h</div><div class="detail" id="mWellnessDetail">-</div></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Optimize Group — stacked full-width with gradient tiles -->
-            <div class="optimize-group">
-                <div class="optimize-group-title">Optimize</div>
-                <div class="optimize-kpi-stack">
-                    <div class="mobile-optimize-tile"><div class="label">Projected Workdays Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Projected total days off (incl. weekends): 0</div></div>
-                    <div class="mobile-optimize-tile"><div class="label">Next Long Weekend</div><div class="value" id="mNextLongWeekend">—</div><div class="detail" id="mNextLongWeekendDetail">—</div></div>
-                    <div class="mobile-optimize-tile"><div class="label">Longest Out of Office</div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
-                    <div class="mobile-optimize-tile"><div class="label">Days Off Efficiency</div><div class="value" id="mEfficiency">—</div><div class="detail" id="mEfficiencyDetail">ratio</div></div>
-                    <div class="mobile-optimize-tile"><div class="label">Fridays Off</div><div class="value" id="mFridaysOff">0</div><div class="detail" id="mFridaysOffDetail">planned</div></div>
-                    <div class="mobile-optimize-tile"><div class="label">Total Breaks This Year</div><div class="value" id="mBreaksPlanned">0</div><div class="detail" id="mBreaksPlannedDetail">—</div></div>
-                    <div class="mobile-optimize-tile"><div class="label">Avg Break Length</div><div class="value" id="mAvgBreakLen">—</div><div class="detail" id="mAvgBreakLenDetail">days</div></div>
+            <!-- Optimize Group — collapsible boxed section with gradient tiles -->
+            <div class="mobile-collapsible-section">
+                <div class="mobile-collapsible-header" onclick="toggleMobileSection('mOptimizeContent', this)">
+                    <span class="section-title">Optimize</span>
+                    <span class="toggle-icon open">▼</span>
+                </div>
+                <div id="mOptimizeContent" class="mobile-collapsible-content open">
+                    <div class="optimize-kpi-stack" style="margin-top:10px">
+                        <div class="mobile-optimize-tile"><div class="label">Projected Workdays Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Projected total days off (incl. weekends): 0</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Next Long Weekend</div><div class="value" id="mNextLongWeekend">—</div><div class="detail" id="mNextLongWeekendDetail">—</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Longest Out of Office</div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Days Off Efficiency</div><div class="value" id="mEfficiency">—</div><div class="detail" id="mEfficiencyDetail">ratio</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Fridays Off</div><div class="value" id="mFridaysOff">0</div><div class="detail" id="mFridaysOffDetail">planned</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Total Breaks This Year</div><div class="value" id="mBreaksPlanned">0</div><div class="detail" id="mBreaksPlannedDetail">—</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Avg Break Length</div><div class="value" id="mAvgBreakLen">—</div><div class="detail" id="mAvgBreakLenDetail">days</div></div>
+                    </div>
                 </div>
             </div>
 
-            <div class="quick-section">
-                <div class="quick-section-title">Quick Actions</div>
-                <div class="quick-actions">
-                    <button class="quick-btn accent" onclick="selectAllType('mega')">Mega Combos</button>
-                    <button class="quick-btn accent" onclick="selectAllType('super')">Super Combos</button>
-                    <button class="quick-btn" onclick="selectAllType('4day')">4-Day Weekends</button>
-                    <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
+            <!-- Quick Actions — collapsible boxed section -->
+            <div class="mobile-collapsible-section">
+                <div class="mobile-collapsible-header" onclick="toggleMobileSection('mQuickActionsContent', this)">
+                    <span class="section-title">Quick Actions</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div id="mQuickActionsContent" class="mobile-collapsible-content">
+                    <div style="margin-top:10px">
+                        <div class="quick-actions">
+                            <button class="quick-btn accent" onclick="selectAllType('mega')">Mega Combos</button>
+                            <button class="quick-btn accent" onclick="selectAllType('super')">Super Combos</button>
+                            <button class="quick-btn" onclick="selectAllType('4day')">4-Day Weekends</button>
+                            <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
+                        </div>
+                        <button class="mobile-clear-all" onclick="if(confirm('Clear all selected days?'))clearAllSelections()">Clear All Selections</button>
+                    </div>
                 </div>
             </div>
-            <button class="mobile-clear-all" onclick="if(confirm('Clear all selected days?'))clearAllSelections()">Clear All Selections</button>
-            <div class="opportunity-list" id="mobileOpportunityList" style="margin-top:16px"></div>
+
+            <!-- Opportunities — collapsible boxed section -->
+            <div class="mobile-collapsible-section">
+                <div class="mobile-collapsible-header" onclick="toggleMobileSection('mOpportunitiesContent', this)">
+                    <span class="section-title">Opportunities</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div id="mOpportunitiesContent" class="mobile-collapsible-content">
+                    <div class="opportunity-list" id="mobileOpportunityList" style="margin-top:10px"></div>
+                </div>
+            </div>
         </div>
 
         <div id="mobileSettingsTab" class="mobile-tab">
@@ -1996,42 +2235,64 @@
                 </div>
             </div>
             <div class="settings-section">
-                <div class="settings-section-title">General</div>
-                <div class="input-row">
-                    <div class="input-group"><label>Year</label><select id="mYear" onchange="document.getElementById('year').value=this.value;regenerate()"></select></div>
-                    <div class="input-group"><label>Service Years</label>
-                        <select id="mYearsOfService" onchange="document.getElementById('yearsOfService').value=this.value;applyServicePreset()">
-                            <option value="0-3" selected>0-3 yrs</option>
-                            <option value="4-6">4-6 yrs</option>
-                            <option value="7-9">7-9 yrs</option>
-                            <option value="10+">10+ yrs</option>
-                            <option value="custom">Custom</option>
-                        </select>
-                    </div>
+                <div class="settings-collapsible-header" onclick="toggleMobileSection('mSettingsGeneral', this)">
+                    <span class="settings-section-title">General</span>
+                    <span class="toggle-icon open">▼</span>
                 </div>
-                <div class="input-row">
-                    <div class="input-group"><label>First Paycheck</label><input type="date" id="mNextPaycheck" onchange="document.getElementById('nextPaycheck').value=this.value;regenerate()"></div>
-                    <div class="input-group"><label>First 9/80 Fri</label><input type="date" id="mNext980Friday" onchange="document.getElementById('next980Friday').value=this.value;regenerate()"></div>
+                <div id="mSettingsGeneral" class="settings-collapsible-content open">
+                    <div class="input-row">
+                        <div class="input-group"><label>Year</label><select id="mYear" onchange="document.getElementById('year').value=this.value;regenerate()"></select></div>
+                        <div class="input-group"><label>Service Years</label>
+                            <select id="mYearsOfService" onchange="document.getElementById('yearsOfService').value=this.value;applyServicePreset()">
+                                <option value="0-3" selected>0-3 yrs</option>
+                                <option value="4-6">4-6 yrs</option>
+                                <option value="7-9">7-9 yrs</option>
+                                <option value="10+">10+ yrs</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-group"><label>First Paycheck</label><input type="date" id="mNextPaycheck" onchange="document.getElementById('nextPaycheck').value=this.value;regenerate()"></div>
+                        <div class="input-group"><label>First 9/80 Fri</label><input type="date" id="mNext980Friday" onchange="document.getElementById('next980Friday').value=this.value;regenerate()"></div>
+                    </div>
                 </div>
             </div>
             <div class="settings-section">
-                <div class="settings-section-title">Current Balances</div>
-                <div class="input-row">
-                    <div class="input-group"><label>PTO Hours</label><input type="number" id="mCurrentPto" step="0.01" value="0" onchange="document.getElementById('currentPto').value=this.value;recalculate()"></div>
-                    <div class="input-group"><label>Activism</label><input type="number" id="mCurrentActivism" step="0.01" value="0" onchange="document.getElementById('currentActivism').value=this.value;recalculate()"></div>
+                <div class="settings-collapsible-header" onclick="toggleMobileSection('mSettingsBalances', this)">
+                    <span class="settings-section-title">Current Balances</span>
+                    <span class="toggle-icon open">▼</span>
                 </div>
-                <div class="input-row">
-                    <div class="input-group"><label>Personal Days</label>
-                        <select id="mCurrentPersonal" onchange="document.getElementById('currentPersonal').value=this.value;recalculate()">
-                            <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
-                        </select>
+                <div id="mSettingsBalances" class="settings-collapsible-content open">
+                    <div class="input-row">
+                        <div class="input-group"><label>PTO Hours</label><input type="number" id="mCurrentPto" step="0.01" value="0" onchange="document.getElementById('currentPto').value=this.value;recalculate()"></div>
+                        <div class="input-group"><label>Activism</label><input type="number" id="mCurrentActivism" step="0.01" value="0" onchange="document.getElementById('currentActivism').value=this.value;recalculate()"></div>
                     </div>
-                    <div class="input-group"><label>Wellness</label><input type="number" id="mCurrentWellness" step="0.01" value="0" onchange="document.getElementById('currentWellness').value=this.value;recalculate()"></div>
+                    <div class="input-row">
+                        <div class="input-group"><label>Personal Days</label>
+                            <select id="mCurrentPersonal" onchange="document.getElementById('currentPersonal').value=this.value;recalculate()">
+                                <option value="0" selected>0</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option>
+                            </select>
+                        </div>
+                        <div class="input-group"><label>Wellness</label><input type="number" id="mCurrentWellness" step="0.01" value="0" onchange="document.getElementById('currentWellness').value=this.value;recalculate()"></div>
+                    </div>
                 </div>
             </div>
             <div class="settings-section">
-                <div class="settings-section-title">Holidays</div>
-                <div class="holiday-list" id="mHolidayCheckboxes"></div>
+                <div class="settings-collapsible-header" onclick="toggleMobileSection('mSettingsHolidays', this)">
+                    <span class="settings-section-title">Holidays</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <div id="mSettingsHolidays" class="settings-collapsible-content">
+                    <div class="holiday-list" id="mHolidayCheckboxes"></div>
+                </div>
+            </div>
+            <div class="settings-section">
+                <div class="settings-section-title">Share</div>
+                <button class="share-option" onclick="openShareModal()" style="margin-bottom:0">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
+                    <span class="share-option-text">Share / Export<span class="share-option-sub">Link, image, or calendar</span></span>
+                </button>
             </div>
         </div>
     </div>
@@ -2090,6 +2351,32 @@
         </div>
     </div>
 
+    <!-- Share Modal -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-modal-content">
+            <h3>Share / Export</h3>
+            <div class="share-link-display" id="shareLinkDisplay"></div>
+            <button class="share-option" onclick="shareLink()">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                <span class="share-option-text">Copy shareable link<span class="share-option-sub">Anyone with the link can view &amp; edit</span></span>
+            </button>
+            <button class="share-option" onclick="shareAnnualImage()">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                <span class="share-option-text">Share year view (PNG)<span class="share-option-sub">Full annual calendar image</span></span>
+            </button>
+            <button class="share-option" onclick="shareMonthImage()">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span class="share-option-text">Share month view (PNG)<span class="share-option-sub">Current month calendar image</span></span>
+            </button>
+            <button class="share-option" onclick="exportICS()">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <span class="share-option-text">Export calendar (.ics)<span class="share-option-sub">Import into Google Calendar, Outlook, etc.</span></span>
+            </button>
+            <div class="share-disclosure">Anyone with this link can edit these settings.</div>
+            <button class="share-close-btn" onclick="closeShareModal()">Close</button>
+        </div>
+    </div>
+
     <!-- Admin KPI Dashboard -->
     <div class="admin-overlay" id="adminOverlay">
         <div class="admin-panel">
@@ -2133,6 +2420,10 @@
         const TELEMETRY_VISITED_KEY = 'ptoOptimizer_hasVisited';
         const CUSTOM_TYPES_STORAGE_KEY = 'timeoff_customTypes';
         const ADMIN_UNLOCK_CODE = 'root66admin';
+        // ── Short URL state ──
+        // Tracks the current short code if we're on /s/<code>
+        let currentShortCode = null;
+
         const MAX_URL_STATE_CHARS = 12000;
         const MAX_SELECTED_DAYS_PER_TYPE = 366;
         const MAX_CUSTOM_TYPES = 24;
@@ -2808,77 +3099,378 @@
             }
         }
 
-        async function requestShortUrl(longUrl, timeoutMs = 1500) {
+        // ── Short URL API helpers ──
+        async function apiRequest(method, path, body, timeoutMs = 3000) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
             try {
-                const response = await fetch('/api/shorten', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url: longUrl }),
-                    signal: controller.signal
-                });
-
+                const opts = { method, signal: controller.signal, headers: {} };
+                if (body) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+                const response = await fetch(path, opts);
                 if (!response.ok) return null;
-
-                let data;
-                try {
-                    data = await response.json();
-                } catch {
-                    return null;
-                }
-
-                return typeof data.shortUrl === 'string' ? data.shortUrl : null;
-            } catch {
-                return null;
-            } finally {
-                clearTimeout(timeoutId);
-            }
+                return await response.json();
+            } catch { return null; }
+            finally { clearTimeout(timeoutId); }
         }
 
-        async function saveAndShare() {
+        async function createShortUrl(longUrl) {
+            const data = await apiRequest('POST', '/api/shorten', { url: longUrl });
+            return data ? { shortUrl: data.shortUrl, code: data.code } : null;
+        }
+
+        async function updateShortUrl(code, longUrl) {
+            const data = await apiRequest('PUT', '/api/shorten', { code, url: longUrl });
+            return data ? { shortUrl: data.shortUrl, code: data.code, updated: data.updated } : null;
+        }
+
+        async function resolveShortCode(code) {
+            const data = await apiRequest('GET', `/api/resolve/${code}`);
+            return data?.url || null;
+        }
+
+        // ── Save state — stable short URL as source of truth ──
+        async function saveState() {
             telemetry.increment('saveClicks');
             telemetry.markSaveUsed();
             const btn = document.getElementById('saveBtn');
             const btnText = document.getElementById('saveBtnText');
             const btnIcon = document.getElementById('saveBtnIcon');
 
-            // Show loading state
             btn.disabled = true;
             btnText.textContent = 'Saving...';
             btnIcon.style.opacity = '0.5';
 
             const encoded = encodeState();
-            const longUrl = `${window.location.origin}${window.location.pathname}#${encoded}`;
+            const longUrl = `${window.location.origin}/#${encoded}`;
 
-            history.replaceState(null, '', `#${encoded}`);
-
-            // Try to get a short URL from the Cloudflare Worker
-            let urlToCopy = longUrl;
-            let message = 'Link copied! Share it to access from any device.';
-
-            const shortUrl = await requestShortUrl(longUrl);
-            if (shortUrl) {
-                urlToCopy = shortUrl;
-                message = 'Short link copied! ' + shortUrl;
+            try {
+                if (currentShortCode) {
+                    // Already on /s/<code> — UPDATE the existing mapping
+                    const result = await updateShortUrl(currentShortCode, longUrl);
+                    if (result) {
+                        showToast('Saved!');
+                    } else {
+                        // Fallback: update hash
+                        history.replaceState(null, '', `#${encoded}`);
+                        showToast('Saved locally (short URL update failed)');
+                    }
+                } else {
+                    // Not on a short URL — CREATE a new one
+                    const result = await createShortUrl(longUrl);
+                    if (result) {
+                        currentShortCode = result.code;
+                        history.replaceState(null, '', `/s/${result.code}`);
+                        showToast('Saved!');
+                    } else {
+                        // Fallback: just update hash
+                        history.replaceState(null, '', `#${encoded}`);
+                        showToast('Saved to URL');
+                    }
+                }
+            } catch {
+                history.replaceState(null, '', `#${encoded}`);
+                showToast('Saved to URL');
             }
 
-            // Reset button state
             btn.disabled = false;
             btnText.textContent = 'Save';
             btnIcon.style.opacity = '1';
+        }
+
+        // ── Share modal ──
+        function getShareUrl() {
+            if (currentShortCode) return `${window.location.origin}/s/${currentShortCode}`;
+            return window.location.href;
+        }
+
+        function openShareModal() {
+            const display = document.getElementById('shareLinkDisplay');
+            display.textContent = getShareUrl();
+            document.getElementById('shareModal').classList.add('open');
+        }
+
+        function closeShareModal() {
+            document.getElementById('shareModal').classList.remove('open');
+        }
+
+        async function shareLink() {
+            let url = getShareUrl();
+
+            // If not on a short URL yet, auto-create one
+            if (!currentShortCode) {
+                const encoded = encodeState();
+                const longUrl = `${window.location.origin}/#${encoded}`;
+                const result = await createShortUrl(longUrl);
+                if (result) {
+                    currentShortCode = result.code;
+                    history.replaceState(null, '', `/s/${result.code}`);
+                    url = result.shortUrl;
+                    document.getElementById('shareLinkDisplay').textContent = url;
+                }
+            }
+
+            // Try Web Share API (mobile), else copy to clipboard
+            if (navigator.share) {
+                try {
+                    await navigator.share({ title: 'Time Off Optimizer', url });
+                    showToast('Shared!');
+                    closeShareModal();
+                    return;
+                } catch { /* user cancelled or not supported, fall through to copy */ }
+            }
 
             if (navigator.clipboard) {
                 try {
-                    await navigator.clipboard.writeText(urlToCopy);
-                    showToast(message);
-                } catch {
-                    showToast('URL updated. Copy from address bar.');
-                }
-            } else {
-                showToast('URL updated. Copy from address bar.');
+                    await navigator.clipboard.writeText(url);
+                    showToast('Link copied!');
+                    closeShareModal();
+                    return;
+                } catch { /* fall through */ }
             }
+            showToast('Copy the link from the address bar');
+        }
+
+        // ── PNG export (calendar image) ──
+        async function captureElementAsPng(element) {
+            // Simple DOM-to-canvas using built-in approach
+            // We use a lightweight inline canvas renderer
+            const rect = element.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            const canvas = document.createElement('canvas');
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            // Use html2canvas-style approach: serialize to SVG foreignObject
+            const clone = element.cloneNode(true);
+            // Get computed styles
+            const styles = document.querySelectorAll('style');
+            let cssText = '';
+            styles.forEach(s => cssText += s.textContent);
+
+            const svgNs = 'http://www.w3.org/2000/svg';
+            const svg = document.createElementNS(svgNs, 'svg');
+            svg.setAttribute('width', rect.width);
+            svg.setAttribute('height', rect.height);
+            const fo = document.createElementNS(svgNs, 'foreignObject');
+            fo.setAttribute('width', '100%');
+            fo.setAttribute('height', '100%');
+            const styleEl = document.createElement('style');
+            styleEl.textContent = cssText;
+            const wrapper = document.createElement('div');
+            wrapper.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
+            wrapper.style.cssText = `width:${rect.width}px;height:${rect.height}px;background:${getComputedStyle(document.body).getPropertyValue('--bg-primary')};color:${getComputedStyle(document.body).getPropertyValue('--text-primary')};font-family:Inter,-apple-system,sans-serif;`;
+            wrapper.appendChild(styleEl);
+            wrapper.appendChild(clone);
+            fo.appendChild(wrapper);
+            svg.appendChild(fo);
+
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
+
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, rect.width, rect.height);
+                    URL.revokeObjectURL(url);
+                    canvas.toBlob(blob => {
+                        if (blob) resolve(blob);
+                        else reject(new Error('Canvas toBlob failed'));
+                    }, 'image/png');
+                };
+                img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load failed')); };
+                img.src = url;
+            });
+        }
+
+        async function shareImageBlob(blob, filename) {
+            const file = new File([blob], filename, { type: 'image/png' });
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({ files: [file], title: 'Time Off Calendar' });
+                    showToast('Shared!');
+                    closeShareModal();
+                    return;
+                } catch { /* fallthrough to download */ }
+            }
+            // Download fallback
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; a.click();
+            URL.revokeObjectURL(url);
+            showToast('Image downloaded');
+            closeShareModal();
+        }
+
+        async function shareAnnualImage() {
+            try {
+                // Desktop: use calendarContainer; Mobile: use yearGrid
+                const isMobile = window.matchMedia('(max-width: 900px)').matches;
+                const element = isMobile ? document.getElementById('yearGrid') : document.getElementById('calendarContainer');
+                if (!element) { showToast('Calendar not visible'); return; }
+                showToast('Generating image...');
+                const blob = await captureElementAsPng(element);
+                await shareImageBlob(blob, `time-off-${state.year}-annual.png`);
+            } catch {
+                showToast('Image export failed. Try a screenshot instead.');
+            }
+        }
+
+        async function shareMonthImage() {
+            try {
+                const isMobile = window.matchMedia('(max-width: 900px)').matches;
+                let element;
+                if (isMobile) {
+                    element = document.getElementById('mobileMonthCalendar');
+                    if (!element || !element.firstChild) {
+                        // Switch to month tab if needed
+                        renderMobileMonth();
+                        element = document.getElementById('mobileMonthCalendar');
+                    }
+                } else {
+                    // Use the current month's card from desktop view
+                    const month = new Date().getMonth();
+                    const cards = document.querySelectorAll('#calendarContainer .month-card');
+                    element = cards[month] || cards[0];
+                }
+                if (!element) { showToast('Month view not visible'); return; }
+                showToast('Generating image...');
+                const blob = await captureElementAsPng(element);
+                const monthName = MONTH_NAMES[state.currentMobileMonth] || MONTH_NAMES[new Date().getMonth()];
+                await shareImageBlob(blob, `time-off-${state.year}-${monthName.toLowerCase()}.png`);
+            } catch {
+                showToast('Image export failed. Try a screenshot instead.');
+            }
+        }
+
+        // ── ICS Calendar Export ──
+        function exportICS() {
+            // Collect all "out of office" days (PTO, Activism, Personal, Wellness + custom with countsAsDayOff)
+            const dayOffTypes = new Map();
+            BUILTIN_TYPES.forEach(t => dayOffTypes.set(t, t.charAt(0).toUpperCase() + t.slice(1)));
+            state.customTypes.forEach(ct => {
+                if (ct.countsAsDayOff) dayOffTypes.set(ct.id, ct.name);
+            });
+
+            // Also export 9/80 Fridays as individual events
+            const nine80Dates = Object.keys(state.nine80Fridays).sort();
+
+            // Collect all off-days with their type breakdown
+            const dayTypeMap = new Map(); // dateKey -> Set of type names
+            dayOffTypes.forEach((typeName, typeId) => {
+                const selected = state.selectedDays[typeId];
+                if (!selected) return;
+                selected.forEach(key => {
+                    if (!dayTypeMap.has(key)) dayTypeMap.set(key, new Set());
+                    dayTypeMap.get(key).add(typeName);
+                });
+            });
+
+            // Sort all dates and merge consecutive into ranges
+            const allDates = [...dayTypeMap.keys()].sort();
+            const ranges = [];
+            let rangeStart = null, rangeEnd = null, rangeTypes = new Map();
+
+            function flushRange() {
+                if (!rangeStart) return;
+                ranges.push({ start: rangeStart, end: rangeEnd, types: new Map(rangeTypes) });
+                rangeStart = rangeEnd = null;
+                rangeTypes = new Map();
+            }
+
+            for (const key of allDates) {
+                const d = new Date(key + 'T12:00:00');
+                const types = dayTypeMap.get(key);
+
+                if (rangeEnd) {
+                    // Check if this date is consecutive (next day, or separated by weekends only)
+                    const prev = new Date(rangeEnd + 'T12:00:00');
+                    const next = new Date(prev);
+                    next.setDate(next.getDate() + 1);
+                    // Skip weekends to merge Mon-Fri blocks
+                    while (next.getDay() === 0 || next.getDay() === 6) next.setDate(next.getDate() + 1);
+                    if (dateKey(next) === key || dateKey(new Date(prev.getTime() + 86400000)) === key) {
+                        rangeEnd = key;
+                        types.forEach(t => rangeTypes.set(t, (rangeTypes.get(t) || 0) + 1));
+                        continue;
+                    }
+                }
+                flushRange();
+                rangeStart = key;
+                rangeEnd = key;
+                rangeTypes = new Map();
+                types.forEach(t => rangeTypes.set(t, (rangeTypes.get(t) || 0) + 1));
+            }
+            flushRange();
+
+            // Build ICS content
+            const icsLines = [
+                'BEGIN:VCALENDAR',
+                'VERSION:2.0',
+                'PRODID:-//Time Off Optimizer//pt-onia.app//EN',
+                'CALSCALE:GREGORIAN',
+                'METHOD:PUBLISH',
+            ];
+
+            function icsDate(key) { return key.replace(/-/g, ''); }
+            function icsDatePlusOne(key) {
+                const d = new Date(key + 'T12:00:00');
+                d.setDate(d.getDate() + 1);
+                return dateKey(d).replace(/-/g, '');
+            }
+            function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+            // Add merged OOO events
+            ranges.forEach(range => {
+                const typeSummary = [...range.types.entries()].map(([t, c]) => `${t}: ${c}d`).join(', ');
+                icsLines.push(
+                    'BEGIN:VEVENT',
+                    `UID:${uid()}@pt-onia.app`,
+                    `DTSTART;VALUE=DATE:${icsDate(range.start)}`,
+                    `DTEND;VALUE=DATE:${icsDatePlusOne(range.end)}`,
+                    'SUMMARY:Out of office',
+                    `DESCRIPTION:${range.start} to ${range.end} — ${typeSummary}`,
+                    'TRANSP:OPAQUE',
+                    'END:VEVENT'
+                );
+            });
+
+            // Add 9/80 Fridays as separate events
+            nine80Dates.forEach(key => {
+                icsLines.push(
+                    'BEGIN:VEVENT',
+                    `UID:980-${uid()}@pt-onia.app`,
+                    `DTSTART;VALUE=DATE:${icsDate(key)}`,
+                    `DTEND;VALUE=DATE:${icsDatePlusOne(key)}`,
+                    'SUMMARY:9/80 Friday off',
+                    'DESCRIPTION:Scheduled 9/80 compressed workweek day off',
+                    'TRANSP:OPAQUE',
+                    'END:VEVENT'
+                );
+            });
+
+            icsLines.push('END:VCALENDAR');
+
+            const icsContent = icsLines.join('\r\n');
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `time-off-optimizer-${state.year}.ics`;
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Calendar exported');
+            closeShareModal();
+        }
+
+        // ── Mobile collapsible section toggle ──
+        function toggleMobileSection(contentId, headerEl) {
+            const content = document.getElementById(contentId);
+            const icon = headerEl.querySelector('.toggle-icon');
+            content.classList.toggle('open');
+            icon.classList.toggle('open');
         }
 
         function showToast(message) {
@@ -3119,8 +3711,26 @@
             // Load custom types from storage
             loadCustomTypesFromStorage();
 
-            // Check for URL state
-            if (window.location.hash.length > 1) {
+            // Check for URL state — short URL routing or hash state
+            const path = window.location.pathname;
+            const shortMatch = path.match(/^\/s\/(.+)$/);
+            if (shortMatch) {
+                // On /s/<code> — resolve the short URL to get state
+                currentShortCode = shortMatch[1];
+                resolveShortCode(currentShortCode).then(longUrl => {
+                    if (longUrl) {
+                        try {
+                            const url = new URL(longUrl);
+                            if (url.hash.length > 1) {
+                                decodeState(url.hash.slice(1));
+                                return;
+                            }
+                        } catch { /* fall through */ }
+                    }
+                    // If resolve fails, just load defaults
+                    regenerate();
+                }).catch(() => regenerate());
+            } else if (window.location.hash.length > 1) {
                 decodeState(window.location.hash.slice(1));
             } else {
                 regenerate();
@@ -3984,10 +4594,13 @@
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.fab') && !e.target.closest('.fab-menu')) closeFabMenu();
             if (e.target.classList.contains('custom-type-modal')) closeCustomTypeModal();
+            if (e.target.classList.contains('share-modal')) closeShareModal();
             if (e.target.classList.contains('admin-overlay')) closeAdmin();
         });
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Escape') return;
+            const shareModal = document.getElementById('shareModal');
+            if (shareModal?.classList.contains('open')) { closeShareModal(); return; }
             const adminOverlay = document.getElementById('adminOverlay');
             if (adminOverlay?.classList.contains('open')) closeAdmin();
             const customTypeModal = document.getElementById('customTypeModal');
