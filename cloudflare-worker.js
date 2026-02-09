@@ -303,13 +303,17 @@ async function handleShortenCreate(request, env) {
 
     const urlHash = await hashUrl(longUrl);
     const existingCode = await withRetry(() => env.SHORT_URLS.get(`hash:${urlHash}`));
-    if (existingCode) {
+    if (existingCode && WORD_CODE_REGEX.test(existingCode)) {
+        // Already has a word-based code — return it
         return jsonResponse({
             shortUrl: `${DOMAIN}/s/${existingCode}`,
             code: existingCode,
             existing: true,
         }, 200, {}, request);
     }
+    // If existingCode is a legacy (non-word) code, fall through to create a
+    // new word-based code. The old code stays valid for backward compat but
+    // the hash reverse-lookup will be updated to point to the new code.
 
     // Generate a word-based code, with collision retry and hex fallback
     let shortCode;

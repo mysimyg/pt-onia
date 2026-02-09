@@ -1,25 +1,24 @@
-# PTO Optimizer (pt-onia.app)
+# Time Off Optimizer
 
-Plan time off on a 9/80 schedule, model year-end balances, and find high-leverage day-off combinations.
+Plan time off on an uneven schedule, model year-end balances, and find high-leverage day combinations.
 
 **Live app:** https://pt-onia.app
 
 ## Features
 
-- Interactive desktop year calendar and mobile year/month views with tap/click day toggles.
-- Built-in leave types: PTO, Activism, Personal, Wellness.
-- Custom time-off types with color selection and `counts toward days off totals` control.
-- Hours/Days display toggle:
-  - Desktop: header toggle next to theme selector.
-  - Mobile: Settings tab (`Display -> Show values in`).
-- Opportunity and quick-select actions (Mega, Super, 4-Day, Fridays, 2-for-5 / 3-for-5 where available).
-- Year-end projection cards and charts/tables for PTO, Wellness, Activism, and Personal.
-- Shareable URL state with optional Worker-backed short links (`/api/shorten`).
-- Mobile behavior:
-  - Bottom navigation (`Year`, `Month`, `Optimize`, `Settings`).
-  - Collapsible boxed sections in Optimize and Settings tabs.
-  - Floating action button for quick actions and custom type creation.
-  - Touch-friendly tap targets and mobile-only day-info toast.
+- Interactive year calendar (desktop) and year/month views (mobile) with tap-to-toggle days
+- 9/80 compressed workweek support with automatic Friday-off scheduling
+- Built-in leave types: PTO, Activism, Personal, Wellness
+- Custom time-off types with color picker and optional day-off tracking
+- Accrual projections with year-end balance forecasting and charts
+- Optimize panel with efficiency KPIs, streak tracking, and opportunity finder
+- Quick-select actions: Mega/Super combos, 4-day weekends, all-Fridays, 2-for-5 / 3-for-5
+- Hours/Days display toggle
+- Multiple themes (light and dark variants)
+- Save and share via stable short URLs (word-based codes, e.g. `amber-coral-nova`)
+- Share year or month calendar as PNG image
+- Export selected time off to .ics calendar file (Google Calendar, Outlook, etc.)
+- Responsive mobile layout with bottom navigation, collapsible sections, and floating action button
 
 ## License
 
