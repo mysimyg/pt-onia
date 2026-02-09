@@ -15,9 +15,6 @@ Plan time off on a 9/80 schedule, model year-end balances, and find high-leverag
 - Opportunity and quick-select actions (Mega, Super, 4-Day, Fridays, 2-for-5 / 3-for-5 where available).
 - Year-end projection cards and charts/tables for PTO, Wellness, Activism, and Personal.
 - Shareable URL state with optional Worker-backed short links (`/api/shorten`).
-- Hidden admin KPI dashboard behavior:
-  - Open `+ Add Custom Time Off Type`, enter `root66admin`, then confirm.
-  - Dashboard shows anonymous aggregated KPI counters (local + optional sitewide remote).
 - Mobile behavior:
   - Bottom navigation (`Year`, `Month`, `Optimize`, `Settings`).
   - Collapsible boxed sections in Optimize and Settings tabs.
