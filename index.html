@@ -357,6 +357,7 @@
             color: var(--text-primary);
             font-size: 13px;
             font-family: inherit;
+            box-sizing: border-box;
         }
 
         .input-group input:focus, .input-group select:focus {
@@ -558,7 +559,7 @@
         .day.activism-selected { background: var(--color-activism); color: #fff; font-weight: 600; }
         .day.personal-selected { background: var(--color-personal); color: #fff; font-weight: 600; }
         .day.wellness-selected { background: var(--color-wellness); color: #fff; font-weight: 600; }
-        .day.today { box-shadow: 0 0 0 2px var(--accent-highlight); }
+        .day.today { border: 2px solid var(--accent-highlight); z-index: 2; }
 
         .day .tooltip {
             display: none;
@@ -665,7 +666,7 @@
         .mini-day.activism-selected { background: var(--color-activism); }
         .mini-day.personal-selected { background: var(--color-personal); }
         .mini-day.wellness-selected { background: var(--color-wellness); }
-        .mini-day.today { box-shadow: inset 0 0 0 1px var(--accent-highlight); }
+        .mini-day.today { border: 1.5px solid var(--accent-highlight); }
 
         /* Mobile Month View */
         .month-swiper { overflow: hidden; position: relative; }
@@ -1773,6 +1774,20 @@
             background: var(--bg-primary);
             color: var(--text-primary);
             min-height: 38px;
+        }
+        .export-wrapper {
+            padding: 20px;
+            background: var(--bg-primary);
+            font-family: Inter, -apple-system, system-ui, sans-serif;
+            width: fit-content;
+            min-width: 320px;
+        }
+        .export-title {
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 12px;
         }
 
         @media (max-width: 900px) {
@@ -3340,24 +3355,46 @@
             setTimeout(() => URL.revokeObjectURL(url), 5000);
         }
 
+        // Build a temporary offscreen wrapper with a title label for export capture.
+        // The wrapper is appended to document.body, captured, then removed.
+        function buildExportWrapper(titleText, sourceElement) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'export-wrapper';
+            // Position offscreen so it's laid out but invisible
+            wrapper.style.cssText = 'position:fixed;left:-9999px;top:0;z-index:-1;';
+            const title = document.createElement('div');
+            title.className = 'export-title';
+            title.textContent = titleText;
+            wrapper.appendChild(title);
+            const clone = sourceElement.cloneNode(true);
+            // Remove any inline onclick handlers and interactive tooltips from clone
+            clone.querySelectorAll('[onclick]').forEach(el => el.removeAttribute('onclick'));
+            clone.querySelectorAll('.tooltip').forEach(el => el.remove());
+            wrapper.appendChild(clone);
+            document.body.appendChild(wrapper);
+            return wrapper;
+        }
+
         let _imageExporting = false;
         async function shareAnnualImage() {
             if (_imageExporting) return;
             const btn = document.getElementById('shareYearBtn');
             _imageExporting = true;
             if (btn) btn.disabled = true;
+            let wrapper = null;
             try {
                 showToast('Generating image\u2026');
-                // Desktop: calendarContainer; Mobile: yearGrid
                 const isMobile = window.matchMedia('(max-width: 900px)').matches;
                 const element = isMobile ? document.getElementById('yearGrid') : document.getElementById('calendarContainer');
                 if (!element || !element.offsetHeight) { showToast('Calendar not visible'); return; }
-                const blob = await captureElementAsPng(element);
-                await shareImageBlob(blob, `time-off-${state.year}-annual.png`);
+                wrapper = buildExportWrapper(String(state.year), element);
+                const blob = await captureElementAsPng(wrapper);
+                await shareImageBlob(blob, `time-off-year-${state.year}.png`);
             } catch (err) {
                 console.error('Year image export failed:', err);
                 showToast('Image export failed: ' + (err.message || 'unknown error'));
             } finally {
+                if (wrapper) wrapper.remove();
                 _imageExporting = false;
                 if (btn) btn.disabled = false;
             }
@@ -3368,37 +3405,44 @@
             const btn = document.getElementById('shareMonthBtn');
             _imageExporting = true;
             if (btn) btn.disabled = true;
+            let wrapper = null;
             try {
                 showToast('Generating image\u2026');
                 const selectedMonth = parseInt(document.getElementById('shareMonthSelect')?.value ?? new Date().getMonth());
+                const monthName = MONTH_NAMES[selectedMonth];
+                const titleText = `${monthName} ${state.year}`;
                 const isMobile = window.matchMedia('(max-width: 900px)').matches;
-                let element;
+                let sourceElement;
                 if (isMobile) {
-                    // Temporarily render the selected month
+                    // Temporarily render the selected month into mobileMonthCalendar
                     const savedMonth = state.currentMobileMonth;
                     state.currentMobileMonth = selectedMonth;
                     renderMobileMonth();
-                    element = document.getElementById('mobileMonthCalendar');
-                    // Capture, then restore original month
-                    if (!element || !element.offsetHeight) { showToast('Month view not visible'); state.currentMobileMonth = savedMonth; renderMobileMonth(); return; }
-                    const blob = await captureElementAsPng(element);
+                    sourceElement = document.getElementById('mobileMonthCalendar');
+                    // Build wrapper from it, then restore
+                    wrapper = buildExportWrapper(titleText, sourceElement);
                     state.currentMobileMonth = savedMonth;
                     renderMobileMonth();
-                    const monthName = MONTH_NAMES[selectedMonth];
-                    await shareImageBlob(blob, `time-off-${monthName.toLowerCase()}-${state.year}.png`);
                 } else {
                     // Desktop: grab the month card from the year grid
                     const cards = document.querySelectorAll('#calendarContainer .month-card');
-                    element = cards[selectedMonth] || cards[0];
-                    if (!element || !element.offsetHeight) { showToast('Month view not visible'); return; }
-                    const blob = await captureElementAsPng(element);
-                    const monthName = MONTH_NAMES[selectedMonth];
-                    await shareImageBlob(blob, `time-off-${monthName.toLowerCase()}-${state.year}.png`);
+                    sourceElement = cards[selectedMonth] || cards[0];
+                    if (!sourceElement || !sourceElement.offsetHeight) { showToast('Month view not visible'); return; }
+                    // For desktop, the month-card already has the month name in .month-title,
+                    // but we want "Month Year" instead — build wrapper with our own title
+                    wrapper = buildExportWrapper(titleText, sourceElement);
+                    // Hide the original .month-title inside the clone to avoid duplicate
+                    const clonedTitle = wrapper.querySelector('.month-title');
+                    if (clonedTitle) clonedTitle.style.display = 'none';
                 }
+                const blob = await captureElementAsPng(wrapper);
+                const shortMonth = monthName.slice(0, 3);
+                await shareImageBlob(blob, `time-off-${shortMonth}-${state.year}.png`);
             } catch (err) {
                 console.error('Month image export failed:', err);
                 showToast('Image export failed: ' + (err.message || 'unknown error'));
             } finally {
+                if (wrapper) wrapper.remove();
                 _imageExporting = false;
                 if (btn) btn.disabled = false;
             }
