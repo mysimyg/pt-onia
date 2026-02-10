@@ -540,7 +540,8 @@
             position: relative;
             cursor: pointer;
             user-select: none;
-            border: 1px solid transparent;
+            border: 2px solid transparent;
+            box-sizing: border-box;
         }
 
         .day:hover:not(.empty):not(.weekend):not(.holiday):not(.nine80):not(.holiday-nine80) {
@@ -656,6 +657,8 @@
             aspect-ratio: 1;
             border-radius: 2px;
             font-size: 6px;
+            border: 1.5px solid transparent;
+            box-sizing: border-box;
         }
         .mini-day.empty { background: transparent; }
         .mini-day.weekend { background: var(--color-weekend); }
@@ -2403,8 +2406,8 @@
                 <span class="share-option-text">Copy shareable link<span class="share-option-sub">Anyone with the link can view &amp; edit</span></span>
             </button>
             <button class="share-option" id="shareYearBtn" onclick="shareAnnualImage()">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                <span class="share-option-text">Share year view (PNG)<span class="share-option-sub">Full annual calendar image</span></span>
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <span class="share-option-text">Download year view (PNG)<span class="share-option-sub">Full annual calendar image</span></span>
             </button>
             <div class="share-month-row">
                 <select id="shareMonthSelect">
@@ -2417,8 +2420,8 @@
                 </select>
             </div>
             <button class="share-option" id="shareMonthBtn" onclick="shareMonthImage()">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-                <span class="share-option-text">Share month view (PNG)<span class="share-option-sub">Selected month calendar image</span></span>
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                <span class="share-option-text">Download month view (PNG)<span class="share-option-sub">Selected month calendar image</span></span>
             </button>
             <button class="share-option" onclick="exportICS()">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -3321,9 +3324,11 @@
         }
 
         async function shareImageBlob(blob, filename) {
+            const isMobile = window.matchMedia('(max-width: 900px)').matches;
             const file = new File([blob], filename, { type: 'image/png' });
-            // Try Web Share API (mobile)
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+
+            if (isMobile && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                // Mobile: use native share sheet (includes Save Image, AirDrop, etc.)
                 try {
                     await navigator.share({ files: [file], title: 'Time Off Calendar' });
                     showToast('Shared!');
@@ -3331,20 +3336,18 @@
                     return;
                 } catch { /* user cancelled — fall through to download */ }
             }
-            // Try clipboard (desktop)
-            if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+
+            // Desktop (or mobile fallback): always download the file
+            triggerDownload(blob, filename);
+            // Also try clipboard copy as a bonus on desktop
+            let copiedToClipboard = false;
+            if (!isMobile && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
                 try {
                     await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-                    // Also download
-                    triggerDownload(blob, filename);
-                    showToast('Image copied & downloaded');
-                    closeShareModal();
-                    return;
-                } catch { /* fall through to download only */ }
+                    copiedToClipboard = true;
+                } catch { /* clipboard failed — that's ok, we already downloaded */ }
             }
-            // Fallback: download
-            triggerDownload(blob, filename);
-            showToast('Image downloaded');
+            showToast(copiedToClipboard ? 'Downloaded & copied to clipboard' : 'Image downloaded');
             closeShareModal();
         }
 
