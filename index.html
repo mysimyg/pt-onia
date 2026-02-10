@@ -3380,6 +3380,7 @@
 
         let _imageExporting = false;
         async function shareAnnualImage() {
+            // Year export forces 4×3 grid to avoid CSS/media-query collapse
             if (_imageExporting) return;
             const btn = document.getElementById('shareYearBtn');
             _imageExporting = true;
@@ -3391,6 +3392,12 @@
                 const element = isMobile ? document.getElementById('yearGrid') : document.getElementById('calendarContainer');
                 if (!element || !element.offsetHeight) { showToast('Calendar not visible'); return; }
                 wrapper = buildExportWrapper(String(state.year), element);
+                // Force 4×3 grid layout for year export regardless of viewport/media queries
+                wrapper.style.width = '1200px';
+                const gridClone = wrapper.querySelector('.year-grid, .calendar-container');
+                if (gridClone) {
+                    gridClone.style.cssText += ';display:grid;grid-template-columns:repeat(4,1fr);gap:12px;';
+                }
                 const blob = await captureElementAsPng(wrapper);
                 await shareImageBlob(blob, `time-off-year-${state.year}.png`);
             } catch (err) {
