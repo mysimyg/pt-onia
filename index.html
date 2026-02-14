@@ -3830,19 +3830,29 @@
             if (shortMatch) {
                 // On /s/<code> — resolve the short URL to get state
                 currentShortCode = shortMatch[1];
-                resolveShortCode(currentShortCode).then(longUrl => {
-                    if (longUrl) {
-                        try {
-                            const url = new URL(longUrl);
-                            if (url.hash.length > 1) {
-                                decodeState(url.hash.slice(1));
-                                return;
-                            }
-                        } catch { /* fall through */ }
-                    }
-                    // If resolve fails, just load defaults
-                    regenerate();
-                }).catch(() => regenerate());
+
+                // The worker injects a <meta name="x-resolved-url"> tag with the
+                // long URL when serving the SPA at /s/<code>. Read it directly so
+                // we don't depend on a separate /api/resolve round-trip.
+                function tryRestoreFromUrl(longUrl) {
+                    if (!longUrl) return false;
+                    try {
+                        const url = new URL(longUrl);
+                        if (url.hash.length > 1) { decodeState(url.hash.slice(1)); return true; }
+                    } catch { /* invalid URL */ }
+                    return false;
+                }
+
+                const metaEl = document.querySelector('meta[name="x-resolved-url"]');
+                const embeddedUrl = metaEl ? metaEl.getAttribute('content') : null;
+                if (tryRestoreFromUrl(embeddedUrl)) {
+                    // State restored from embedded meta tag — done
+                } else {
+                    // Fallback: try /api/resolve (in case worker hasn't been updated yet)
+                    resolveShortCode(currentShortCode).then(longUrl => {
+                        if (!tryRestoreFromUrl(longUrl)) regenerate();
+                    }).catch(() => regenerate());
+                }
             } else if (window.location.hash.length > 1) {
                 decodeState(window.location.hash.slice(1));
             } else {

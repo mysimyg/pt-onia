@@ -448,11 +448,17 @@ async function handleRedirect(shortCode, env, ctx, request) {
         }
 
         // Fetch the origin index.html and serve it at /s/<code>
+        // Inject the resolved long URL as a meta tag so the client can
+        // restore state without needing a separate /api/resolve call.
         try {
             const originResponse = await fetch(`${DOMAIN}/`, {
                 headers: { 'Accept': 'text/html' },
             });
-            const html = await originResponse.text();
+            let html = await originResponse.text();
+            // Inject resolved URL meta tag into <head>
+            const escapedUrl = longUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+            const metaTag = `<meta name="x-resolved-url" content="${escapedUrl}">`;
+            html = html.replace('<head>', `<head>\n${metaTag}`);
             return withResponseHeaders(new Response(html, {
                 status: 200,
                 headers: {
