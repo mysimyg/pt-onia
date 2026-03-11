@@ -426,7 +426,7 @@
         .balance-card.warning { border-left-color: var(--color-warning); }
         .balance-card.danger { border-left-color: var(--color-danger); }
 
-        /* Quick Select */
+        /* Opportunities */
         .quick-section { margin-bottom: 12px; }
         .quick-section-title { font-size: 10px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
         .quick-actions { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -477,11 +477,35 @@
             margin-bottom: 16px;
         }
         .chart-section h3 { font-size: 13px; font-weight: 600; margin-bottom: 12px; }
+        .chart-summary { font-size: 11px; color: var(--text-secondary); margin: -4px 0 10px; }
         .projection-chart { height: 80px; position: relative; background: var(--bg-tertiary); border-radius: 6px; overflow: hidden; }
         .chart-bar { position: absolute; bottom: 0; background: var(--color-success); border-radius: 2px 2px 0 0; }
         .chart-bar.warning { background: var(--color-warning); }
         .chart-bar.danger { background: var(--color-danger); }
         .chart-max-line { position: absolute; left: 0; right: 0; border-top: 2px dashed var(--color-danger); opacity: 0.6; }
+        .chart-boundary-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            border-left: 2px dashed var(--accent-highlight);
+            opacity: 0.9;
+            pointer-events: none;
+        }
+        .chart-boundary-label {
+            position: absolute;
+            top: 6px;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--accent-highlight);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 2px 6px;
+            border-radius: 999px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
         .chart-data-table { margin-top: 12px; overflow-x: auto; font-size: 10px; }
         .chart-data-table table { width: 100%; border-collapse: collapse; min-width: 400px; }
         .chart-data-table th, .chart-data-table td { padding: 4px 6px; text-align: center; border-bottom: 1px solid var(--border-color); }
@@ -821,7 +845,20 @@
         .mobile-type-btn.activism { background: var(--color-activism); }
         .mobile-type-btn.personal { background: var(--color-personal); }
         .mobile-type-btn.wellness { background: var(--color-wellness); }
+        .mobile-type-btn.add-custom {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            border-style: dashed;
+        }
         .mobile-type-btn.active { border-color: var(--text-primary); }
+
+        .field-help {
+            margin-top: 6px;
+            font-size: 11px;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
 
         /* Unit Toggle */
         .unit-toggle {
@@ -844,6 +881,41 @@
         .unit-btn.active {
             background: var(--accent-primary);
             color: #fff;
+        }
+
+        /* Projection Mode Toggle */
+        .projection-toggle-wrapper {
+            margin: 10px 0 6px 0;
+        }
+        .projection-toggle {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+            width: 100%;
+        }
+        .projection-toggle .proj-btn {
+            flex: 1;
+            padding: 6px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            border: none;
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .projection-toggle .proj-btn.active {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+        .projection-mode-help {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+            line-height: 1.3;
         }
 
         /* Sidebar Cards */
@@ -1965,6 +2037,13 @@
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="projectedContent" class="collapsible-content open">
+                    <div class="projection-toggle-wrapper">
+                        <div class="projection-toggle">
+                            <button class="proj-btn active" id="projBtnProjected" onclick="setProjectionMode('projected')">Projected</button>
+                            <button class="proj-btn" id="projBtnWorkday" onclick="setProjectionMode('workday')">Workday-style</button>
+                        </div>
+                        <div class="projection-mode-help" id="projectionModeHelp">Includes future accrual and planned time off.</div>
+                    </div>
                     <div class="balance-stack" style="margin-top:10px">
                         <div class="balance-card pto" id="statBoxPto"><div class="label">PTO Balance</div><div class="value" id="projectedPto">0h</div><div class="detail" id="ptoDetail">-</div></div>
                         <div class="balance-card activism"><div class="label">Activism</div><div class="value" id="projectedActivism">0h</div><div class="detail" id="activismDetail">-</div></div>
@@ -2008,11 +2087,11 @@
             </div>
 
             <div class="sidebar-card">
-                <div class="collapsible-header" onclick="toggleSection('settingsContent', this)">
-                    <span class="section-title" style="margin-bottom:0">Settings</span>
+                <div class="collapsible-header" onclick="toggleSection('settingsBalancesContent', this)">
+                    <span class="section-title" style="margin-bottom:0">Settings & Current Balances</span>
                     <span class="toggle-icon open">▼</span>
                 </div>
-                <div id="settingsContent" class="collapsible-content open">
+                <div id="settingsBalancesContent" class="collapsible-content open">
                     <div class="input-row" style="margin-top:10px">
                         <div class="input-group">
                             <label>Year</label>
@@ -2031,30 +2110,17 @@
                     </div>
                     <div id="customPtoFields" class="custom-pto-fields">
                         <div class="input-row">
-                            <div class="input-group"><label>PTO/Paycheck</label><input type="number" id="customPtoPerPaycheck" step="0.01" value="3.07" onchange="applyCustomPto()"></div>
+                            <div class="input-group"><label>PTO / Pay Period</label><input type="number" id="customPtoPerPaycheck" step="0.01" value="3.07" onchange="applyCustomPto()"></div>
                             <div class="input-group"><label>Max Cap</label><input type="number" id="customMaxPto" value="120" onchange="applyCustomPto()"></div>
                         </div>
                     </div>
-                    <div class="input-row">
-                        <div class="input-group"><label>First Paycheck</label><input type="date" id="nextPaycheck" onchange="regenerate()"></div>
-                        <div class="input-group"><label>First 9/80 Friday</label><input type="date" id="next980Friday" onchange="regenerate()"></div>
-                    </div>
                     <div class="input-group"><label>Year-End PTO Goal</label><input type="number" id="yearEndGoal" placeholder="Optional" onchange="recalculate()"></div>
-                </div>
-            </div>
-
-            <div class="sidebar-card">
-                <div class="collapsible-header" onclick="toggleSection('balancesContent', this)">
-                    <span class="section-title" style="margin-bottom:0">Current Balances</span>
-                    <span class="toggle-icon open">▼</span>
-                </div>
-                <div id="balancesContent" class="collapsible-content open">
                     <div style="margin-top:10px">
                         <label style="font-size:10px;color:var(--text-muted)">PTO / Vacation</label>
                         <div class="input-row-3">
                             <div class="input-group"><label>Current</label><input type="number" id="currentPto" step="0.01" value="0" onchange="recalculate()"></div>
-                            <div class="input-group"><label>Per Pay</label><input type="number" id="ptoPerPaycheck" value="3.07" readonly></div>
-                            <div class="input-group"><label>Max</label><input type="number" id="maxPto" value="120" readonly></div>
+                            <div class="input-group"><label>Per Pay Period</label><input type="number" id="ptoPerPaycheck" value="3.07" readonly></div>
+                            <div class="input-group"><label>Cap</label><input type="number" id="maxPto" value="120" readonly></div>
                         </div>
                     </div>
                     <div style="margin-top:8px">
@@ -2084,8 +2150,8 @@
                         <label style="font-size:10px;color:var(--text-muted)">Wellness / Sick</label>
                         <div class="input-row-3">
                             <div class="input-group"><label>Current</label><input type="number" id="currentWellness" step="0.01" value="0" onchange="recalculate()"></div>
-                            <div class="input-group"><label>Per Pay</label><input type="text" value="2.76" readonly></div>
-                            <div class="input-group"><label>Max</label><input type="text" value="108" readonly></div>
+                            <div class="input-group"><label>Per Pay Period</label><input type="text" value="2.76" readonly></div>
+                            <div class="input-group"><label>Rolls Over At</label><input type="text" value="108" readonly></div>
                         </div>
                     </div>
                 </div>
@@ -2103,7 +2169,7 @@
 
             <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('quickSelectContent', this)">
-                    <span class="section-title" style="margin-bottom:0">Quick Select</span>
+                    <span class="section-title" style="margin-bottom:0">Opportunities</span>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div id="quickSelectContent" class="collapsible-content">
@@ -2115,6 +2181,9 @@
                                 <button class="quick-btn accent" onclick="selectAllType('super')">Super</button>
                                 <button class="quick-btn" onclick="selectAllType('4day')">4-Day</button>
                             </div>
+                            <div class="field-help">Mega: Maximum consecutive break by extending a super combo.</div>
+                            <div class="field-help">Super: Take 3 days to get 9 days off when a Monday holiday aligns with a 9/80 Friday.</div>
+                            <div class="field-help">4-Day: Use one day off to create a 4-day break around a holiday.</div>
                         </div>
                         <div class="quick-section">
                             <div class="quick-section-title">Fridays</div>
@@ -2122,21 +2191,13 @@
                                 <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
                                 <button class="quick-btn" onclick="selectAllType('summer')">Summer</button>
                             </div>
+                            <div class="field-help">All Fridays: Every working Friday off.</div>
+                            <div class="field-help">Summer: Working Fridays off June through September.</div>
                         </div>
-                        <div class="quick-section" id="twoForFiveSection"><div class="quick-section-title">2 for 5 Fridays</div><div class="quick-actions" id="twoForFiveButtons"></div></div>
-                        <div class="quick-section" id="threeForFiveSection"><div class="quick-section-title">3 for 5 Fridays</div><div class="quick-actions" id="threeForFiveButtons"></div></div>
+                        <div class="quick-section" id="twoForFiveSection"><div class="quick-section-title">2 for 5 Fridays</div><div class="quick-actions" id="twoForFiveButtons"></div><div class="field-help">Months where taking 2 Fridays off gives you every Friday in that month.</div></div>
+                        <div class="quick-section" id="threeForFiveSection"><div class="quick-section-title">3 for 5 Fridays</div><div class="quick-actions" id="threeForFiveButtons"></div><div class="field-help">Months where taking 3 Fridays off gives you every Friday in that month.</div></div>
                         <div class="quick-section"><div class="quick-actions"><button class="quick-btn clear" onclick="clearAllSelections()">Clear All</button></div></div>
                     </div>
-                </div>
-            </div>
-
-            <div class="sidebar-card">
-                <div class="collapsible-header" onclick="toggleSection('opportunitiesContent', this)">
-                    <span class="section-title" style="margin-bottom:0">Opportunities</span>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div id="opportunitiesContent" class="collapsible-content">
-                    <div class="opportunity-list" id="opportunityList" style="margin-top:10px"></div>
                 </div>
             </div>
 
@@ -2152,16 +2213,19 @@
         <main class="content-area">
             <div class="chart-section">
                 <h3>PTO Balance Projection</h3>
+                <div class="chart-summary" id="ptoChartSummary">-</div>
                 <div class="projection-chart" id="projectionChart"></div>
                 <div class="chart-data-table" id="ptoDataTable"></div>
             </div>
             <div class="chart-section">
                 <h3>Wellness Balance Projection</h3>
+                <div class="chart-summary" id="wellnessChartSummary">-</div>
                 <div class="projection-chart" id="wellnessProjectionChart"></div>
                 <div class="chart-data-table" id="wellnessDataTable"></div>
             </div>
             <div class="chart-section">
                 <h3>Personal Days &amp; Activism Hours</h3>
+                <div class="chart-summary" id="otherChartSummary">-</div>
                 <div class="chart-data-table" id="activismPersonalDataTable"></div>
             </div>
             <div class="legend">
@@ -2186,6 +2250,7 @@
             <button class="mobile-type-btn activism" onclick="setTimeOffType('activism')">Activism</button>
             <button class="mobile-type-btn personal" onclick="setTimeOffType('personal')">Personal</button>
             <button class="mobile-type-btn wellness" onclick="setTimeOffType('wellness')">Wellness</button>
+            <button class="mobile-type-btn add-custom" id="mobileAddCustomBtn" onclick="openCustomTypeModal()">+ Custom Type</button>
         </div>
 
         <div id="mobileYearTab" class="mobile-tab active">
@@ -2209,6 +2274,13 @@
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="mProjectedContent" class="mobile-collapsible-content open">
+                    <div class="projection-toggle-wrapper">
+                        <div class="projection-toggle">
+                            <button class="proj-btn active" id="mProjBtnProjected" onclick="setProjectionMode('projected')">Projected</button>
+                            <button class="proj-btn" id="mProjBtnWorkday" onclick="setProjectionMode('workday')">Workday-style</button>
+                        </div>
+                        <div class="projection-mode-help" id="mProjectionModeHelp">Includes future accrual and planned time off.</div>
+                    </div>
                     <div class="optimize-kpi-stack" style="margin-top:10px">
                         <div class="mobile-stat-card pto"><div class="label">PTO</div><div class="value" id="mProjPto">0h</div><div class="detail" id="mPtoDetail">-</div></div>
                         <div class="mobile-stat-card activism"><div class="label">Activism</div><div class="value" id="mProjActivism">0h</div><div class="detail" id="mActivismDetail">-</div></div>
@@ -2237,10 +2309,10 @@
                 </div>
             </div>
 
-            <!-- Quick Actions — collapsible boxed section -->
+            <!-- Opportunities — collapsible boxed section -->
             <div class="mobile-collapsible-section">
                 <div class="mobile-collapsible-header" onclick="toggleMobileSection('mQuickActionsContent', this)">
-                    <span class="section-title">Quick Actions</span>
+                    <span class="section-title">Opportunities</span>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div id="mQuickActionsContent" class="mobile-collapsible-content">
@@ -2251,21 +2323,16 @@
                             <button class="quick-btn" onclick="selectAllType('4day')">4-Day Weekends</button>
                             <button class="quick-btn" onclick="selectAllType('allFridays')">All Fridays</button>
                         </div>
+                        <div class="field-help">Mega: Maximum consecutive break by extending a super combo.</div>
+                        <div class="field-help">Super: Take 3 days to get 9 days off when a Monday holiday aligns with a 9/80 Friday.</div>
+                        <div class="field-help">4-Day: Use one day off to create a 4-day break around a holiday.</div>
+                        <div class="field-help">All Fridays: Every working Friday off.</div>
+                        <div class="field-help">Summer: Working Fridays off June through September.</div>
                         <button class="mobile-clear-all" onclick="if(confirm('Clear all selected days?'))clearAllSelections()">Clear All Selections</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Opportunities — collapsible boxed section -->
-            <div class="mobile-collapsible-section">
-                <div class="mobile-collapsible-header" onclick="toggleMobileSection('mOpportunitiesContent', this)">
-                    <span class="section-title">Opportunities</span>
-                    <span class="toggle-icon">▼</span>
-                </div>
-                <div id="mOpportunitiesContent" class="mobile-collapsible-content">
-                    <div class="opportunity-list" id="mobileOpportunityList" style="margin-top:10px"></div>
-                </div>
-            </div>
         </div>
 
         <div id="mobileSettingsTab" class="mobile-tab">
@@ -2281,7 +2348,7 @@
             </div>
             <div class="settings-section">
                 <div class="settings-collapsible-header" onclick="toggleMobileSection('mSettingsGeneral', this)">
-                    <span class="settings-section-title">General</span>
+                    <span class="settings-section-title">Settings & Current Balances</span>
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="mSettingsGeneral" class="settings-collapsible-content open">
@@ -2297,18 +2364,6 @@
                             </select>
                         </div>
                     </div>
-                    <div class="input-row">
-                        <div class="input-group"><label>First Paycheck</label><input type="date" id="mNextPaycheck" onchange="document.getElementById('nextPaycheck').value=this.value;regenerate()"></div>
-                        <div class="input-group"><label>First 9/80 Fri</label><input type="date" id="mNext980Friday" onchange="document.getElementById('next980Friday').value=this.value;regenerate()"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="settings-section">
-                <div class="settings-collapsible-header" onclick="toggleMobileSection('mSettingsBalances', this)">
-                    <span class="settings-section-title">Current Balances</span>
-                    <span class="toggle-icon open">▼</span>
-                </div>
-                <div id="mSettingsBalances" class="settings-collapsible-content open">
                     <div class="input-row">
                         <div class="input-group"><label>PTO Hours</label><input type="number" id="mCurrentPto" step="0.01" value="0" onchange="document.getElementById('currentPto').value=this.value;recalculate()"></div>
                         <div class="input-group"><label>Activism</label><input type="number" id="mCurrentActivism" step="0.01" value="0" onchange="document.getElementById('currentActivism').value=this.value;recalculate()"></div>
@@ -2921,6 +2976,7 @@
             allThreeForFiveMonths: [],
             currentMobileMonth: new Date().getMonth(),
             displayUnits: 'hours',
+            projectionMode: 'projected',
             customTypes: []
         };
 
@@ -2991,6 +3047,30 @@
             renderOpportunities();
         }
 
+        function setProjectionMode(mode) {
+            if (mode !== 'projected' && mode !== 'workday') mode = 'projected';
+            state.projectionMode = mode;
+            // Update desktop toggle
+            const projBtn = document.getElementById('projBtnProjected');
+            const wdBtn = document.getElementById('projBtnWorkday');
+            if (projBtn) projBtn.classList.toggle('active', mode === 'projected');
+            if (wdBtn) wdBtn.classList.toggle('active', mode === 'workday');
+            // Update mobile toggle
+            const mProjBtn = document.getElementById('mProjBtnProjected');
+            const mWdBtn = document.getElementById('mProjBtnWorkday');
+            if (mProjBtn) mProjBtn.classList.toggle('active', mode === 'projected');
+            if (mWdBtn) mWdBtn.classList.toggle('active', mode === 'workday');
+            // Update help text
+            const helpText = mode === 'projected'
+                ? 'Includes future accrual and planned time off.'
+                : 'Starts with your current balance and subtracts planned time off only.';
+            const helpEl = document.getElementById('projectionModeHelp');
+            const mHelpEl = document.getElementById('mProjectionModeHelp');
+            if (helpEl) helpEl.textContent = helpText;
+            if (mHelpEl) mHelpEl.textContent = helpText;
+            recalculate();
+        }
+
         // Custom type helpers
         function isCustomType(type) { return !BUILTIN_TYPES.includes(type); }
         function getCustomType(id) { return state.customTypes.find(t => t.id === id); }
@@ -3032,19 +3112,24 @@
             { id: 'columbus', name: "Columbus Day", default: false },
             { id: 'veterans', name: "Veterans Day", default: false },
             { id: 'thanksgiving', name: "Thanksgiving", default: true },
+            { id: 'dayafterthanksgiving', name: "Day After Thanksgiving", default: true },
             { id: 'christmaseve', name: "Christmas Eve", default: true },
-            { id: 'christmas', name: "Christmas Day", default: true }
+            { id: 'christmas', name: "Christmas Day", default: true },
+            { id: 'newyearseve', name: "New Year's Eve", default: false }
         ];
 
         const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         const SHORT_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const BIWEEKLY_BASE_DATES = {
+            paycheck: '2026-01-09',
+            nine80: '2026-01-09'
+        };
+        const PROJECTION_EXTENSION_MONTHS = 6;
 
         // URL State Management
         function encodeState() {
             const data = {
                 y: state.year,
-                pp: document.getElementById('nextPaycheck').value,
-                ff: document.getElementById('next980Friday').value,
                 yos: document.getElementById('yearsOfService').value,
                 cp: document.getElementById('currentPto').value,
                 ca: document.getElementById('currentActivism').value,
@@ -3057,7 +3142,8 @@
                 per: [...state.selectedDays.personal],
                 wel: [...state.selectedDays.wellness],
                 t: document.body.getAttribute('data-theme'),
-                du: state.displayUnits
+                du: state.displayUnits,
+                pm: state.projectionMode === 'projected' ? 'p' : 'w'
             };
             if (document.getElementById('yearsOfService').value === 'custom') {
                 data.cpp = document.getElementById('customPtoPerPaycheck').value;
@@ -3082,8 +3168,6 @@
 
                 const y = Number(data.y);
                 if (Number.isInteger(y) && y >= 2000 && y <= 2100) document.getElementById('year').value = y;
-                if (isValidDateKey(data.pp)) document.getElementById('nextPaycheck').value = data.pp;
-                if (isValidDateKey(data.ff)) document.getElementById('next980Friday').value = data.ff;
                 if (typeof data.yos === 'string') document.getElementById('yearsOfService').value = data.yos;
                 if (Number.isFinite(Number(data.cp))) document.getElementById('currentPto').value = data.cp;
                 if (Number.isFinite(Number(data.ca))) document.getElementById('currentActivism').value = data.ca;
@@ -3102,8 +3186,6 @@
                 [
                     ['year', 'mYear'],
                     ['yearsOfService', 'mYearsOfService'],
-                    ['nextPaycheck', 'mNextPaycheck'],
-                    ['next980Friday', 'mNext980Friday'],
                     ['currentPto', 'mCurrentPto'],
                     ['currentActivism', 'mCurrentActivism'],
                     ['currentPersonal', 'mCurrentPersonal'],
@@ -3141,6 +3223,9 @@
                 });
                 renderCustomTypeButtons();
                 renderMobileTypeBar();
+
+                if (data.pm === 'w') setProjectionMode('workday');
+                else setProjectionMode('projected');
 
                 if (data.du !== undefined) setDisplayUnits(sanitizeDisplayUnits(data.du));
                 else {
@@ -3639,6 +3724,12 @@
                 case 'columbus': return nthWeekday(year, 9, 1, 2);
                 case 'veterans': return observedDate(new Date(year, 10, 11));
                 case 'thanksgiving': return nthWeekday(year, 10, 4, 4);
+                case 'dayafterthanksgiving': {
+                    const thanksgiving = nthWeekday(year, 10, 4, 4);
+                    const dayAfter = new Date(thanksgiving);
+                    dayAfter.setDate(dayAfter.getDate() + 1);
+                    return dayAfter;
+                }
                 case 'christmaseve': {
                     const xmasEve = new Date(year, 11, 24);
                     const day = xmasEve.getDay();
@@ -3647,13 +3738,220 @@
                     return xmasEve;
                 }
                 case 'christmas': return observedDate(new Date(year, 11, 25));
+                case 'newyearseve': return observedDate(new Date(year, 11, 31));
             }
         }
 
+        function atStartOfDay(date) {
+            const d = new Date(date);
+            d.setHours(0, 0, 0, 0);
+            return d;
+        }
+
+        function atNoon(date) {
+            const d = new Date(date);
+            d.setHours(12, 0, 0, 0);
+            return d;
+        }
+
+        function atEndOfDay(date) {
+            const d = new Date(date);
+            d.setHours(23, 59, 59, 999);
+            return d;
+        }
+
+        function parseDateInputValue(value) {
+            if (!isValidDateKey(value)) return null;
+            return new Date(value + 'T12:00:00');
+        }
+
         function dateKey(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`; }
+        function formatDateInputValue(date) { return dateKey(atNoon(date)); }
         function formatShortDate(date) { return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
         function getHoursForDay(date) { const day = date.getDay(); if (day === 0 || day === 6) return 0; if (day === 5) return 8; return 9; }
-        function isPastDate(key) { const today = new Date(); today.setHours(0,0,0,0); return new Date(key + 'T12:00:00') < today; }
+        function getToday() { return atStartOfDay(new Date()); }
+
+        function getDefaultAsOfDate(year = state.year) {
+            const today = getToday();
+            if (today.getFullYear() === year) return today;
+            // TODO: If the app later supports cross-year carry-in planning, revisit this fallback.
+            return new Date(year, 0, 1);
+        }
+
+        // syncAsOfDate and syncBalanceInterpretation removed — projection mode toggle replaces them
+
+        function isDebugMode() {
+            return new URLSearchParams(window.location.search).get('debug') === '1';
+        }
+
+        function getAsOfDate() {
+            const selectedYear = parseInt(document.getElementById('year').value, 10) || state.year;
+            return atStartOfDay(getDefaultAsOfDate(selectedYear));
+        }
+
+        function getBiweeklyBaseDate(type) {
+            return parseDateInputValue(BIWEEKLY_BASE_DATES[type]);
+        }
+
+        function getMostRecentBiweeklyDateOnOrBefore(baseDate, targetDate) {
+            const current = atNoon(baseDate);
+            const target = atNoon(targetDate);
+            while (current > target) current.setDate(current.getDate() - 14);
+            let next = new Date(current);
+            next.setDate(next.getDate() + 14);
+            while (next <= target) {
+                current.setTime(next.getTime());
+                next = new Date(current);
+                next.setDate(next.getDate() + 14);
+            }
+            return current;
+        }
+
+        function getBiweeklyDatesBetween(baseDate, startDate, endDate) {
+            const dates = [];
+            const start = atNoon(startDate);
+            const end = atNoon(endDate);
+            let current = getMostRecentBiweeklyDateOnOrBefore(baseDate, start);
+            if (current < start) current.setDate(current.getDate() + 14);
+            while (current <= end) {
+                dates.push(new Date(current));
+                current.setDate(current.getDate() + 14);
+            }
+            return dates;
+        }
+
+        function getFirstBiweeklyDateInYear(type, year) {
+            const dates = getBiweeklyDatesBetween(getBiweeklyBaseDate(type), new Date(year, 0, 1), new Date(year, 11, 31));
+            return dates[0] || null;
+        }
+
+        function getProjectionEndDate(year = state.year) {
+            return new Date(year + 1, PROJECTION_EXTENSION_MONTHS, 0);
+        }
+
+        function getPayPeriodsFromYear(year, asOfDate, endDate = getProjectionEndDate(year)) {
+            const baseDate = getBiweeklyBaseDate('paycheck');
+            const startPeriod = getMostRecentBiweeklyDateOnOrBefore(baseDate, asOfDate);
+            const chartStart = startPeriod.getFullYear() < year ? getFirstBiweeklyDateInYear('paycheck', year) : startPeriod;
+            return getBiweeklyDatesBetween(baseDate, chartStart, endDate);
+        }
+
+        function getPayPeriodsFrom(asOfDate, endDate = getProjectionEndDate()) {
+            return getPayPeriodsFromYear(state.year, asOfDate, endDate);
+        }
+
+        function getSelectionAmount(type, key) {
+            if (type === 'personal') return 1;
+            return getHoursForDay(new Date(key + 'T12:00:00'));
+        }
+
+        function applyWellnessRollover(balance) {
+            return Math.min(balance, 108);
+        }
+
+        function projectBalance({
+            asOfDate,
+            startingBalanceHours,
+            accrualPerPaycheckHours = 0,
+            maxCapHours = Infinity,
+            paychecks = [],
+            selectedDaysSet = new Set(),
+            type,
+            rolloverRule = null,
+            includeFutureAccruals = true
+        }) {
+            const asOfKey = dateKey(asOfDate);
+            const sortedPaychecks = [...paychecks].sort((a, b) => a - b);
+            const sortedSelections = [...selectedDaysSet].filter(key => key > asOfKey).sort();
+            const ledger = [];
+            const timeline = [];
+            let runningBalance = startingBalanceHours;
+            let usageIndex = 0;
+            let currentYear = asOfDate.getFullYear();
+
+            ledger.push({
+                date: asOfKey,
+                eventType: 'starting-balance',
+                appliedOn: 'as of date',
+                hours: 0,
+                balance: Number(runningBalance.toFixed(2))
+            });
+
+            sortedPaychecks.forEach(paycheckDate => {
+                const paycheckKey = dateKey(paycheckDate);
+
+                while (rolloverRule && currentYear < paycheckDate.getFullYear()) {
+                    currentYear++;
+                    const rolloverDate = new Date(currentYear, 0, 1);
+                    const beforeRollover = runningBalance;
+                    runningBalance = rolloverRule(runningBalance, currentYear);
+                    ledger.push({
+                        date: dateKey(rolloverDate),
+                        eventType: 'rollover',
+                        appliedOn: 'year rollover',
+                        hours: Number((runningBalance - beforeRollover).toFixed(2)),
+                        balance: Number(runningBalance.toFixed(2))
+                    });
+                }
+
+                while (usageIndex < sortedSelections.length && sortedSelections[usageIndex] <= paycheckKey) {
+                    const usageKey = sortedSelections[usageIndex];
+                    runningBalance -= getSelectionAmount(type, usageKey);
+                    ledger.push({
+                        date: usageKey,
+                        eventType: 'usage',
+                        appliedOn: 'day itself',
+                        hours: Number((-getSelectionAmount(type, usageKey)).toFixed(2)),
+                        balance: Number(runningBalance.toFixed(2))
+                    });
+                    usageIndex++;
+                }
+
+                let accrualApplied = 0;
+                if (paycheckDate > asOfDate && includeFutureAccruals && accrualPerPaycheckHours > 0) {
+                    const beforeCap = runningBalance + accrualPerPaycheckHours;
+                    runningBalance = Math.min(beforeCap, maxCapHours);
+                    accrualApplied = runningBalance - (beforeCap - accrualPerPaycheckHours);
+                }
+
+                ledger.push({
+                    date: paycheckKey,
+                    eventType: accrualApplied ? 'accrual' : 'accrual-skipped',
+                    appliedOn: 'paycheck day',
+                    hours: Number(accrualApplied.toFixed(2)),
+                    balance: Number(runningBalance.toFixed(2))
+                });
+
+                timeline.push({
+                    paycheckDate: new Date(paycheckDate),
+                    balanceAfterPaycheck: runningBalance
+                });
+            });
+
+            const applyRemainingEventsThrough = (targetDate) => {
+                const cutoff = atEndOfDay(targetDate);
+                let balance = startingBalanceHours;
+                let eventIndex = 0;
+                while (eventIndex < ledger.length && new Date(ledger[eventIndex].date + 'T23:59:59') <= cutoff) {
+                    balance = ledger[eventIndex].balance;
+                    eventIndex++;
+                }
+                return Number(balance.toFixed(2));
+            };
+
+            return {
+                timeline,
+                ledger,
+                balanceAsOf(date) {
+                    return applyRemainingEventsThrough(date);
+                }
+            };
+        }
+
+        function updateChartSummary(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = text;
+        }
 
         function setTimeOffType(type) {
             state.currentTimeOffType = type;
@@ -3730,10 +4028,10 @@
             div1.className = 'fab-menu-divider';
             menu.appendChild(div1);
 
-            // — Quick Select section —
+            // — Opportunities section —
             const qsTitle = document.createElement('div');
             qsTitle.className = 'fab-menu-section-title';
-            qsTitle.textContent = 'Quick Select';
+            qsTitle.textContent = 'Opportunities';
             menu.appendChild(qsTitle);
 
             const items = [
@@ -3806,12 +4104,6 @@
                 }
             });
 
-            const year = currentYear;
-            document.getElementById('nextPaycheck').value = `${year}-01-08`;
-            document.getElementById('next980Friday').value = `${year}-01-09`;
-            document.getElementById('mNextPaycheck').value = `${year}-01-08`;
-            document.getElementById('mNext980Friday').value = `${year}-01-09`;
-
             [document.getElementById('holidayCheckboxes'), document.getElementById('mHolidayCheckboxes')].forEach(container => {
                 ALL_HOLIDAYS.forEach(h => {
                     const label = document.createElement('label');
@@ -3871,6 +4163,8 @@
 
         function regenerate() {
             state.year = parseInt(document.getElementById('year').value);
+            document.getElementById('mYear').value = state.year;
+            getAsOfDate();
             state.holidays = {};
             ALL_HOLIDAYS.forEach(h => {
                 const cb = document.getElementById(`holiday_${h.id}`);
@@ -3880,19 +4174,15 @@
                 }
             });
 
-            const next980 = new Date(document.getElementById('next980Friday').value + 'T12:00:00');
             state.nine80Fridays = {};
-            let current = new Date(next980);
-            let temp = new Date(current);
-            while (temp.getFullYear() >= state.year - 1) { temp.setDate(temp.getDate() - 14); if (temp.getFullYear() === state.year) state.nine80Fridays[dateKey(temp)] = true; else if (temp.getFullYear() < state.year) break; }
-            while (current.getFullYear() <= state.year) { if (current.getFullYear() === state.year) state.nine80Fridays[dateKey(current)] = true; current.setDate(current.getDate() + 14); }
+            getBiweeklyDatesBetween(getBiweeklyBaseDate('nine80'), new Date(state.year, 0, 1), new Date(state.year, 11, 31))
+                .forEach(date => { state.nine80Fridays[dateKey(date)] = true; });
 
-            const nextPaycheck = new Date(document.getElementById('nextPaycheck').value + 'T12:00:00');
-            state.paycheckDates = [];
-            current = new Date(nextPaycheck);
-            temp = new Date(current);
-            while (temp.getFullYear() >= state.year - 1) { temp.setDate(temp.getDate() - 14); if (temp.getFullYear() === state.year) state.paycheckDates.unshift(new Date(temp)); else if (temp.getFullYear() < state.year) break; }
-            while (current.getFullYear() <= state.year) { if (current.getFullYear() === state.year) state.paycheckDates.push(new Date(current)); current.setDate(current.getDate() + 14); }
+            state.paycheckDates = getBiweeklyDatesBetween(
+                getBiweeklyBaseDate('paycheck'),
+                new Date(state.year, 0, 1),
+                new Date(state.year, 11, 31)
+            );
 
             findOpportunities();
             calculateFridayDeals();
@@ -3982,13 +4272,43 @@
                     }
                 }
             }
-            for (const fridayKey of Object.keys(state.nine80Fridays)) {
-                const friday = new Date(fridayKey + 'T12:00:00');
-                if (friday < today) continue;
-                const monday = new Date(friday); monday.setDate(monday.getDate() + 3);
-                const mondayKey = dateKey(monday);
-                if (state.holidays[mondayKey] || monday.getFullYear() !== state.year) continue;
-                state.opportunities.push({ id: `4day_${fridayKey}`, type: '4day', title: '4-Day Weekend', description: `Mon ${formatShortDate(monday)}`, dates: [mondayKey], hours: 9, daysOff: 4 });
+            // 4-day combos: find 1-day PTO opportunities that create 4-day breaks around holidays
+            for (const [hKey, holidayName] of Object.entries(state.holidays)) {
+                const holidayDate = new Date(hKey + 'T12:00:00');
+                if (holidayDate < today) continue;
+                const dow = holidayDate.getDay();
+                // Thursday holiday -> take Friday off for Thu-Sun
+                if (dow === 4) {
+                    const friday = new Date(holidayDate); friday.setDate(friday.getDate() + 1);
+                    const fridayKey = dateKey(friday);
+                    if (!state.holidays[fridayKey] && !state.nine80Fridays[fridayKey] && friday.getDay() === 5) {
+                        state.opportunities.push({ id: `4day_${fridayKey}`, type: '4day', title: '4-Day: ' + holidayName, description: `Take Fri ${formatShortDate(friday)} off`, dates: [fridayKey], hours: getHoursForDay(friday), daysOff: 4 });
+                    }
+                }
+                // Tuesday holiday -> take Monday off for Sat-Tue
+                if (dow === 2) {
+                    const monday = new Date(holidayDate); monday.setDate(monday.getDate() - 1);
+                    const mondayKey = dateKey(monday);
+                    if (!state.holidays[mondayKey] && !state.nine80Fridays[mondayKey] && monday.getDay() === 1) {
+                        state.opportunities.push({ id: `4day_${mondayKey}`, type: '4day', title: '4-Day: ' + holidayName, description: `Take Mon ${formatShortDate(monday)} off`, dates: [mondayKey], hours: getHoursForDay(monday), daysOff: 4 });
+                    }
+                }
+                // Friday holiday -> take Thursday off for Thu-Sun
+                if (dow === 5) {
+                    const thursday = new Date(holidayDate); thursday.setDate(thursday.getDate() - 1);
+                    const thursdayKey = dateKey(thursday);
+                    if (!state.holidays[thursdayKey] && !state.nine80Fridays[thursdayKey] && thursday.getDay() === 4) {
+                        state.opportunities.push({ id: `4day_${thursdayKey}`, type: '4day', title: '4-Day: ' + holidayName, description: `Take Thu ${formatShortDate(thursday)} off`, dates: [thursdayKey], hours: getHoursForDay(thursday), daysOff: 4 });
+                    }
+                }
+                // Monday holiday -> take Friday before for Fri-Mon
+                if (dow === 1) {
+                    const friday = new Date(holidayDate); friday.setDate(friday.getDate() - 3);
+                    const fridayKey = dateKey(friday);
+                    if (!state.holidays[fridayKey] && !state.nine80Fridays[fridayKey] && friday.getDay() === 5) {
+                        state.opportunities.push({ id: `4day_${fridayKey}`, type: '4day', title: '4-Day: ' + holidayName, description: `Take Fri ${formatShortDate(friday)} off`, dates: [fridayKey], hours: getHoursForDay(friday), daysOff: 4 });
+                    }
+                }
             }
             const allFridays = [];
             for (let d = new Date(state.year, 0, 1); d <= new Date(state.year, 11, 31); d.setDate(d.getDate() + 1)) {
@@ -3998,32 +4318,17 @@
             }
             if (allFridays.length > 0) state.opportunities.push({ id: 'all_fridays', type: 'allFridays', title: 'Every Friday', description: `${allFridays.length} Fridays`, dates: allFridays, hours: allFridays.length * 8, daysOff: 52 });
             const summerFridays = [];
-            for (let month = 4; month <= 7; month++) {
+            for (let month = 5; month <= 8; month++) {
                 for (let d = new Date(state.year, month, 1); d <= new Date(state.year, month + 1, 0); d.setDate(d.getDate() + 1)) {
                     if (d.getDay() === 5 && d >= today) { const key = dateKey(d); if (!state.nine80Fridays[key] && !state.holidays[key]) summerFridays.push(key); }
                 }
             }
-            if (summerFridays.length > 0) state.opportunities.push({ id: 'summer_fridays', type: 'summer', title: 'Summer Fridays', description: `May-Aug (${summerFridays.length})`, dates: summerFridays, hours: summerFridays.length * 8, daysOff: summerFridays.length });
+            if (summerFridays.length > 0) state.opportunities.push({ id: 'summer_fridays', type: 'summer', title: 'Summer Fridays', description: `Jun-Sep (${summerFridays.length})`, dates: summerFridays, hours: summerFridays.length * 8, daysOff: summerFridays.length });
             state.opportunities.sort((a, b) => { const order = { mega: 0, super: 1, '4day': 2, allFridays: 3, summer: 4 }; if (order[a.type] !== order[b.type]) return order[a.type] - order[b.type]; return a.dates[0].localeCompare(b.dates[0]); });
         }
 
         function renderOpportunities() {
-            [document.getElementById('opportunityList'), document.getElementById('mobileOpportunityList')].forEach(container => {
-                container.innerHTML = '';
-                const groups = { mega: { title: 'Mega', items: [] }, super: { title: 'Super', items: [] }, '4day': { title: '4-Day', items: [] }, allFridays: { title: 'All Fridays', items: [] }, summer: { title: 'Summer', items: [] } };
-                state.opportunities.forEach(opp => { if (groups[opp.type]) groups[opp.type].items.push(opp); });
-                Object.values(groups).forEach(group => {
-                    if (group.items.length === 0) return;
-                    const header = document.createElement('div'); header.className = 'opp-group-header'; header.textContent = `${group.title} (${group.items.length})`; container.appendChild(header);
-                    group.items.slice(0, 8).forEach(opp => {
-                        const isSelected = state.selectedOpportunities.has(opp.id);
-                        const item = document.createElement('div'); item.className = `opportunity-item ${isSelected ? 'selected' : ''}`;
-                        item.onclick = () => toggleOpportunity(opp.id);
-                        item.innerHTML = `<div class="title">${opp.title}</div><div class="details">${opp.description}</div><div class="badges"><span class="badge badge-hours">${toDisplayInt(opp.hours)}</span><span class="badge badge-days">${opp.daysOff}d</span></div>`;
-                        container.appendChild(item);
-                    });
-                });
-            });
+            // Opportunities are now shown via the Quick Select buttons; no separate list to render
         }
 
         function toggleOpportunity(oppId) {
@@ -4255,52 +4560,63 @@
         }
 
         function recalculate() {
+            const asOfDate = getAsOfDate();
             const ptoPerPaycheck = parseFloat(document.getElementById('ptoPerPaycheck').value) || 0;
             const currentPto = parseFloat(document.getElementById('currentPto').value) || 0;
             const maxPto = parseFloat(document.getElementById('maxPto').value) || 999;
             const yearEndGoal = document.getElementById('yearEndGoal').value ? parseFloat(document.getElementById('yearEndGoal').value) : null;
             const currentActivism = parseFloat(document.getElementById('currentActivism').value) || 0;
-            const currentPersonal = parseInt(document.getElementById('currentPersonal').value) || 0;
+            const currentPersonal = parseInt(document.getElementById('currentPersonal').value, 10) || 0;
             const currentWellness = parseFloat(document.getElementById('currentWellness').value) || 0;
-            const wellnessPerPaycheck = 2.76, maxWellness = 108;
+            const wellnessPerPaycheck = 2.76;
+            const maxWellness = 108;
+            const projectionPayPeriods = getPayPeriodsFrom(asOfDate);
+            const yearEnd = new Date(state.year, 11, 31);
+            const projectionMode = { includeFutureAccruals: state.projectionMode === 'projected' };
 
-            let futurePtoUsed = 0, futureActivismUsed = 0, futurePersonalUsed = 0, futureWellnessUsed = 0;
-            Object.keys(state.selectedDays).forEach(type => {
-                state.selectedDays[type].forEach(key => {
-                    if (!isPastDate(key)) {
-                        const hours = getHoursForDay(new Date(key + 'T12:00:00'));
-                        if (type === 'pto') futurePtoUsed += hours;
-                        else if (type === 'activism') futureActivismUsed += hours;
-                        else if (type === 'personal') futurePersonalUsed += 1;
-                        else if (type === 'wellness') futureWellnessUsed += hours;
-                    }
-                });
+            const ptoProjection = projectBalance({
+                asOfDate,
+                startingBalanceHours: currentPto,
+                accrualPerPaycheckHours: ptoPerPaycheck,
+                maxCapHours: maxPto,
+                paychecks: projectionPayPeriods,
+                selectedDaysSet: state.selectedDays.pto,
+                type: 'pto',
+                includeFutureAccruals: projectionMode.includeFutureAccruals
+            });
+            const wellnessProjection = projectBalance({
+                asOfDate,
+                startingBalanceHours: currentWellness,
+                accrualPerPaycheckHours: wellnessPerPaycheck,
+                paychecks: projectionPayPeriods,
+                selectedDaysSet: state.selectedDays.wellness,
+                type: 'wellness',
+                rolloverRule: applyWellnessRollover,
+                includeFutureAccruals: projectionMode.includeFutureAccruals
+            });
+            const activismProjection = projectBalance({
+                asOfDate,
+                startingBalanceHours: currentActivism,
+                paychecks: projectionPayPeriods,
+                selectedDaysSet: state.selectedDays.activism,
+                type: 'activism',
+                includeFutureAccruals: false
+            });
+            const personalProjection = projectBalance({
+                asOfDate,
+                startingBalanceHours: currentPersonal,
+                paychecks: projectionPayPeriods,
+                selectedDaysSet: state.selectedDays.personal,
+                type: 'personal',
+                includeFutureAccruals: false
             });
 
-            let ptoBalance = currentPto;
-            const sortedPtoDays = [...state.selectedDays.pto].filter(k => !isPastDate(k)).sort();
-            let ptoIndex = 0;
-            for (const paycheck of state.paycheckDates) {
-                const paycheckKey = dateKey(paycheck);
-                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) { ptoBalance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00')); ptoIndex++; }
-                ptoBalance = Math.min(ptoBalance + ptoPerPaycheck, maxPto);
-            }
-            while (ptoIndex < sortedPtoDays.length) { ptoBalance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00')); ptoIndex++; }
+            const ptoBalance = ptoProjection.balanceAsOf(yearEnd);
+            const wellnessBalance = wellnessProjection.balanceAsOf(yearEnd);
+            const activismBalance = activismProjection.balanceAsOf(yearEnd);
+            const personalBalance = personalProjection.balanceAsOf(yearEnd);
+            const postRolloverWellness = applyWellnessRollover(wellnessBalance);
 
-            const activismBalance = currentActivism - futureActivismUsed;
-            const personalBalance = currentPersonal - futurePersonalUsed;
-
-            let wellnessBalance = currentWellness;
-            const sortedWellnessDays = [...state.selectedDays.wellness].filter(k => !isPastDate(k)).sort();
-            let wellnessIndex = 0;
-            for (const paycheck of state.paycheckDates) {
-                const paycheckKey = dateKey(paycheck);
-                while (wellnessIndex < sortedWellnessDays.length && sortedWellnessDays[wellnessIndex] < paycheckKey) { wellnessBalance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00')); wellnessIndex++; }
-                wellnessBalance += wellnessPerPaycheck;
-            }
-            while (wellnessIndex < sortedWellnessDays.length) { wellnessBalance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00')); wellnessIndex++; }
-
-            // Update all displays
             ['', 'm'].forEach(prefix => {
                 const ptoEl = document.getElementById(prefix ? 'mProjPto' : 'projectedPto');
                 const actEl = document.getElementById(prefix ? 'mProjActivism' : 'projectedActivism');
@@ -4317,10 +4633,11 @@
             document.getElementById('personalAvailDisplay').textContent = personalBalance + 'd';
             document.getElementById('wellnessAvailDisplay').textContent = toDisplayInt(wellnessBalance);
 
-            const welLoseAmt = state.displayUnits === 'days' ? ((wellnessBalance - maxWellness) / 9).toFixed(1) + 'd' : (wellnessBalance - maxWellness).toFixed(0) + 'h';
             const actDetail = activismBalance < 0 ? 'Over limit!' : 'Use or lose';
             const perDetail = personalBalance < 0 ? 'Over limit!' : 'Max 5/yr';
-            const welDetail = wellnessBalance < 0 ? 'Negative!' : wellnessBalance > maxWellness ? `Lose ${welLoseAmt}` : 'Rolls over';
+            let welDetail = 'Carries into next year';
+            if (wellnessBalance < 0) welDetail = 'Negative!';
+            else if (wellnessBalance > maxWellness) welDetail = `Resets to ${toDisplayInt(postRolloverWellness)} on Jan 1`;
 
             ['activismDetail', 'mActivismDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = actDetail; });
             ['personalDetail', 'mPersonalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = perDetail; });
@@ -4337,8 +4654,8 @@
                 else if (diff > 0) { statBox.classList.add('warning'); ptoDetail = `${diffDisplay} over goal`; }
                 else { statBox.classList.add('danger'); ptoDetail = `${diffDisplay} under goal`; }
             } else {
-                if (ptoBalance >= maxPto) { statBox.classList.add('danger'); ptoDetail = 'At max!'; }
-                else if (ptoBalance >= maxPto * 0.9) { statBox.classList.add('warning'); ptoDetail = 'Near max'; }
+                if (ptoBalance >= maxPto) { statBox.classList.add('danger'); ptoDetail = 'At cap'; }
+                else if (ptoBalance >= maxPto * 0.9) { statBox.classList.add('warning'); ptoDetail = 'Near cap'; }
                 else if (ptoBalance < 0) { statBox.classList.add('danger'); ptoDetail = 'Not enough'; }
                 else { statBox.classList.add('success'); ptoDetail = 'Healthy'; }
             }
@@ -4355,98 +4672,165 @@
 
             let workDaysOff = 0, totalDaysOff = 0;
             for (let d = new Date(state.year, 0, 1); d <= new Date(state.year, 11, 31); d.setDate(d.getDate() + 1)) {
-                const key = dateKey(d), dow = d.getDay();
-                const isWeekend = dow === 0 || dow === 6, isHoliday = state.holidays[key], is980 = state.nine80Fridays[key];
+                const key = dateKey(d);
+                const dow = d.getDay();
+                const isWeekend = dow === 0 || dow === 6;
+                const isHoliday = state.holidays[key];
+                const is980 = state.nine80Fridays[key];
                 const isSelectedAny = selectedCountedDays.has(key);
-                if (isWeekend || isHoliday || is980 || isSelectedAny) { totalDaysOff++; if (!isWeekend) workDaysOff++; }
+                if (isWeekend || isHoliday || is980 || isSelectedAny) {
+                    totalDaysOff++;
+                    if (!isWeekend) workDaysOff++;
+                }
             }
 
             ['countWorkDaysOff', 'mWorkDays'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = workDaysOff; });
             ['totalDaysDetail', 'mTotalDetail'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = `Projected total days off (incl. weekends): ${totalDaysOff}`; });
 
-            renderProjectionChart(currentPto, ptoPerPaycheck, maxPto);
-            renderWellnessChart(currentWellness, wellnessPerPaycheck, maxWellness);
-            renderActivismPersonalTable();
+            window.ptoDebugState = {
+                asOfDate: formatDateInputValue(asOfDate),
+                projectionMode,
+                balancesByType: {
+                    pto: ptoProjection,
+                    wellness: wellnessProjection,
+                    activism: activismProjection,
+                    personal: personalProjection
+                }
+            };
+
+            if (isDebugMode()) {
+                console.groupCollapsed('PTO debug ledger');
+                console.log('Starting balance', currentPto, 'as of', formatDateInputValue(asOfDate));
+                console.log('Paychecks used', projectionPayPeriods.map(date => formatDateInputValue(date)));
+                console.table(ptoProjection.ledger);
+                console.log('Balance on 2026-04-30', ptoProjection.balanceAsOf(parseDateInputValue('2026-04-30')));
+                console.log('Balance on 2026-05-01', ptoProjection.balanceAsOf(parseDateInputValue('2026-05-01')));
+                console.groupEnd();
+
+                console.groupCollapsed('Wellness debug ledger');
+                console.log('Starting balance', currentWellness, 'as of', formatDateInputValue(asOfDate));
+                console.log('Paychecks used', projectionPayPeriods.map(date => formatDateInputValue(date)));
+                console.table(wellnessProjection.ledger);
+                console.log('Balance on 2026-04-30', wellnessProjection.balanceAsOf(parseDateInputValue('2026-04-30')));
+                console.log('Balance on 2026-05-01', wellnessProjection.balanceAsOf(parseDateInputValue('2026-05-01')));
+                console.groupEnd();
+            }
+
+            renderProjectionChart(ptoProjection, currentPto, maxPto, asOfDate);
+            renderWellnessChart(wellnessProjection, currentWellness, maxWellness, asOfDate);
+            renderActivismPersonalTable(activismProjection, personalProjection, asOfDate);
             computeOptimizeKPIs();
         }
 
-        function renderProjectionChart(startBalance, ptoPerPaycheck, maxPto) {
-            const container = document.getElementById('projectionChart');
-            const dataTable = document.getElementById('ptoDataTable');
-            container.innerHTML = ''; dataTable.innerHTML = '';
-            const chartHeight = 80, maxValue = Math.max(maxPto * 1.1, startBalance + state.paycheckDates.length * ptoPerPaycheck);
-            const maxLine = document.createElement('div'); maxLine.className = 'chart-max-line'; maxLine.style.top = `${chartHeight - (maxPto / maxValue * chartHeight)}px`; container.appendChild(maxLine);
-            let balance = startBalance;
-            const sortedPtoDays = [...state.selectedDays.pto].filter(k => !isPastDate(k)).sort();
-            let ptoIndex = 0;
-            const barWidth = Math.max(4, Math.floor((container.offsetWidth || 400) / state.paycheckDates.length) - 2);
-            const tableData = { dates: [], balances: [] };
-            state.paycheckDates.forEach((paycheck, i) => {
-                const paycheckKey = dateKey(paycheck);
-                while (ptoIndex < sortedPtoDays.length && sortedPtoDays[ptoIndex] < paycheckKey) { balance -= getHoursForDay(new Date(sortedPtoDays[ptoIndex] + 'T12:00:00')); ptoIndex++; }
-                balance = Math.min(balance + ptoPerPaycheck, maxPto);
-                tableData.dates.push(paycheck); tableData.balances.push({ value: balance, danger: balance >= maxPto || balance < 0, warning: balance >= maxPto * 0.9 });
-                const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
-                const bar = document.createElement('div'); bar.className = 'chart-bar';
-                if (balance >= maxPto || balance < 0) bar.classList.add('danger'); else if (balance >= maxPto * 0.9) bar.classList.add('warning');
-                bar.style.cssText = `height:${height}px;left:${i * (barWidth + 1)}px;width:${barWidth}px`; bar.title = `${paycheck.toLocaleDateString()}: ${toDisplayValue(balance)}`;
+        function renderPayPeriodChart(containerId, tableId, rowLabel, rowClass, projection, baselineValue, warningConfig = {}) {
+            const container = document.getElementById(containerId);
+            const dataTable = document.getElementById(tableId);
+            container.innerHTML = '';
+            dataTable.innerHTML = '';
+
+            const checkpoints = projection.timeline;
+            if (checkpoints.length === 0) return;
+
+            const chartHeight = 80;
+            const values = checkpoints.map(point => point.balanceAfterPaycheck);
+            const explicitMax = Number.isFinite(warningConfig.maxLineValue) ? warningConfig.maxLineValue : null;
+            const maxValue = Math.max(
+                (explicitMax || 0) * 1.2,
+                baselineValue,
+                ...values,
+                1
+            );
+
+            if (explicitMax !== null) {
+                const maxLine = document.createElement('div');
+                maxLine.className = 'chart-max-line';
+                maxLine.style.top = `${chartHeight - (explicitMax / maxValue * chartHeight)}px`;
+                container.appendChild(maxLine);
+            }
+
+            const step = (container.offsetWidth || 400) / checkpoints.length;
+            const barWidth = Math.max(4, Math.floor(step) - 2);
+            checkpoints.forEach((point, index) => {
+                const value = point.balanceAfterPaycheck;
+                const height = Math.max(2, (Math.max(0, value) / maxValue) * chartHeight);
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                if (warningConfig.isDanger?.(value)) bar.classList.add('danger');
+                else if (warningConfig.isWarning?.(value)) bar.classList.add('warning');
+                bar.style.cssText = `height:${height}px;left:${index * step}px;width:${barWidth}px`;
+                bar.title = `${point.paycheckDate.toLocaleDateString()}: ${toDisplayValue(value)}`;
                 container.appendChild(bar);
             });
-            let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
-            tableHTML += '</tr><tr class="pto-row"><th>PTO</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.warning ? 'warning' : ''); tableHTML += `<td class="${cls}">${toDisplayInt(b.value)}</td>`; });
-            tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
+
+            const nextYearIndex = checkpoints.findIndex(point => point.paycheckDate.getFullYear() > state.year);
+            if (nextYearIndex > 0) {
+                const boundary = document.createElement('div');
+                boundary.className = 'chart-boundary-line';
+                boundary.style.left = `${nextYearIndex * step}px`;
+                container.appendChild(boundary);
+
+                const label = document.createElement('div');
+                label.className = 'chart-boundary-label';
+                label.style.left = `${nextYearIndex * step}px`;
+                label.textContent = `${state.year + 1} boundary`;
+                container.appendChild(label);
+            }
+
+            let tableHTML = '<table><tr><th>Date</th>';
+            checkpoints.forEach(point => { tableHTML += `<td>${SHORT_MONTHS[point.paycheckDate.getMonth()]} ${point.paycheckDate.getDate()}</td>`; });
+            tableHTML += `</tr><tr class="${rowClass}"><th>${rowLabel}</th>`;
+            checkpoints.forEach(point => {
+                const value = point.balanceAfterPaycheck;
+                const cls = warningConfig.isDanger?.(value) ? 'danger' : (warningConfig.isWarning?.(value) ? 'warning' : '');
+                tableHTML += `<td class="${cls}">${rowClass === 'personal-row' ? value : toDisplayInt(value)}</td>`;
+            });
+            tableHTML += '</tr></table>';
+            dataTable.innerHTML = tableHTML;
         }
 
-        function renderActivismPersonalTable() {
+        function getProjectionSummary(asOfDate, payPeriods) {
+            if (!payPeriods.length) return 'No pay periods found for this view.';
+            const first = payPeriods[0];
+            const last = payPeriods[payPeriods.length - 1];
+            return `Starts with the ${first.toLocaleDateString()} pay period. Extends through ${last.toLocaleDateString()}.`;
+        }
+
+        function renderProjectionChart(projection, startBalance, maxPto, asOfDate) {
+            updateChartSummary('ptoChartSummary', getProjectionSummary(asOfDate, projection.timeline.map(point => point.paycheckDate)));
+            renderPayPeriodChart('projectionChart', 'ptoDataTable', 'PTO', 'pto-row', projection, startBalance, {
+                maxLineValue: maxPto,
+                isDanger: value => value >= maxPto || value < 0,
+                isWarning: value => value >= maxPto * 0.9
+            });
+        }
+
+        function renderActivismPersonalTable(activismProjection, personalProjection, asOfDate) {
             const dataTable = document.getElementById('activismPersonalDataTable');
             dataTable.innerHTML = '';
-            const currentActivism = parseFloat(document.getElementById('currentActivism').value) || 0;
-            const currentPersonal = parseInt(document.getElementById('currentPersonal').value) || 0;
-            let actBalance = currentActivism, perBalance = currentPersonal;
-            const sortedActDays = [...state.selectedDays.activism].filter(k => !isPastDate(k)).sort();
-            const sortedPerDays = [...state.selectedDays.personal].filter(k => !isPastDate(k)).sort();
-            let actIndex = 0, perIndex = 0;
-            const tableData = { dates: [], activismBalances: [], personalBalances: [] };
-            state.paycheckDates.forEach(paycheck => {
-                const paycheckKey = dateKey(paycheck);
-                while (actIndex < sortedActDays.length && sortedActDays[actIndex] < paycheckKey) { actBalance -= getHoursForDay(new Date(sortedActDays[actIndex] + 'T12:00:00')); actIndex++; }
-                while (perIndex < sortedPerDays.length && sortedPerDays[perIndex] < paycheckKey) { perBalance -= 1; perIndex++; }
-                tableData.dates.push(paycheck);
-                tableData.activismBalances.push({ value: actBalance, danger: actBalance < 0 });
-                tableData.personalBalances.push({ value: perBalance, danger: perBalance < 0 });
+            updateChartSummary('otherChartSummary', getProjectionSummary(asOfDate, activismProjection.timeline.map(point => point.paycheckDate)));
+
+            const dates = activismProjection.timeline.map(point => point.paycheckDate);
+            let tableHTML = '<table><tr><th>Date</th>';
+            dates.forEach(date => { tableHTML += `<td>${SHORT_MONTHS[date.getMonth()]} ${date.getDate()}</td>`; });
+            tableHTML += '</tr><tr class="activism-row"><th>Act</th>';
+            activismProjection.timeline.forEach(point => {
+                tableHTML += `<td class="${point.balanceAfterPaycheck < 0 ? 'danger' : ''}">${toDisplayInt(point.balanceAfterPaycheck)}</td>`;
             });
-            let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
-            tableHTML += '</tr><tr class="activism-row"><th>Act</th>'; tableData.activismBalances.forEach(b => { const cls = b.danger ? 'danger' : ''; tableHTML += `<td class="${cls}">${toDisplayInt(b.value)}</td>`; });
-            tableHTML += '</tr><tr class="personal-row"><th>Per</th>'; tableData.personalBalances.forEach(b => { const cls = b.danger ? 'danger' : ''; tableHTML += `<td class="${cls}">${b.value}</td>`; });
-            tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
+            tableHTML += '</tr><tr class="personal-row"><th>Per</th>';
+            personalProjection.timeline.forEach(point => {
+                tableHTML += `<td class="${point.balanceAfterPaycheck < 0 ? 'danger' : ''}">${point.balanceAfterPaycheck}</td>`;
+            });
+            tableHTML += '</tr></table>';
+            dataTable.innerHTML = tableHTML;
         }
 
-        function renderWellnessChart(startBalance, wellnessPerPaycheck, maxWellness) {
-            const container = document.getElementById('wellnessProjectionChart');
-            const dataTable = document.getElementById('wellnessDataTable');
-            container.innerHTML = ''; dataTable.innerHTML = '';
-            const chartHeight = 80, projectedMax = startBalance + state.paycheckDates.length * wellnessPerPaycheck;
-            const maxValue = Math.max(maxWellness * 1.5, projectedMax);
-            const maxLine = document.createElement('div'); maxLine.className = 'chart-max-line'; maxLine.style.top = `${chartHeight - (maxWellness / maxValue * chartHeight)}px`; container.appendChild(maxLine);
-            let balance = startBalance;
-            const sortedWellnessDays = [...state.selectedDays.wellness].filter(k => !isPastDate(k)).sort();
-            let wellnessIndex = 0;
-            const barWidth = Math.max(4, Math.floor((container.offsetWidth || 400) / state.paycheckDates.length) - 2);
-            const tableData = { dates: [], balances: [] };
-            state.paycheckDates.forEach((paycheck, i) => {
-                const paycheckKey = dateKey(paycheck);
-                while (wellnessIndex < sortedWellnessDays.length && sortedWellnessDays[wellnessIndex] < paycheckKey) { balance -= getHoursForDay(new Date(sortedWellnessDays[wellnessIndex] + 'T12:00:00')); wellnessIndex++; }
-                balance += wellnessPerPaycheck;
-                tableData.dates.push(paycheck); tableData.balances.push({ value: balance, over: balance > maxWellness, danger: balance < 0 });
-                const height = Math.max(2, (Math.max(0, balance) / maxValue) * chartHeight);
-                const bar = document.createElement('div'); bar.className = 'chart-bar';
-                if (balance < 0) bar.classList.add('danger'); else if (balance > maxWellness) bar.classList.add('warning');
-                bar.style.cssText = `height:${height}px;left:${i * (barWidth + 1)}px;width:${barWidth}px`; bar.title = `${paycheck.toLocaleDateString()}: ${toDisplayValue(balance)}`;
-                container.appendChild(bar);
+        function renderWellnessChart(projection, startBalance, maxWellness, asOfDate) {
+            updateChartSummary('wellnessChartSummary', getProjectionSummary(asOfDate, projection.timeline.map(point => point.paycheckDate)));
+            renderPayPeriodChart('wellnessProjectionChart', 'wellnessDataTable', 'Well', 'wellness-row', projection, startBalance, {
+                maxLineValue: maxWellness,
+                isDanger: value => value < 0,
+                isWarning: value => value > maxWellness
             });
-            let tableHTML = '<table><tr><th>Date</th>'; tableData.dates.forEach(d => tableHTML += `<td>${SHORT_MONTHS[d.getMonth()]} ${d.getDate()}</td>`);
-            tableHTML += '</tr><tr class="wellness-row"><th>Well</th>'; tableData.balances.forEach(b => { const cls = b.danger ? 'danger' : (b.over ? 'warning' : ''); tableHTML += `<td class="${cls}">${toDisplayInt(b.value)}</td>`; });
-            tableHTML += '</tr></table>'; dataTable.innerHTML = tableHTML;
         }
 
         function renderCalendar() {
@@ -4668,6 +5052,7 @@
         }
         function renderMobileTypeBar() {
             const bar = document.getElementById('mobileTypeBar');
+            const addBtn = document.getElementById('mobileAddCustomBtn');
             // Remove existing custom buttons
             bar.querySelectorAll('[data-custom-id]').forEach(el => el.remove());
             state.customTypes.forEach(ct => {
@@ -4678,7 +5063,7 @@
                 btn.dataset.customId = ct.id;
                 btn.textContent = ct.name;
                 btn.onclick = () => setTimeOffType(ct.id);
-                bar.appendChild(btn);
+                bar.insertBefore(btn, addBtn);
             });
         }
         function saveCustomTypesToStorage() {
@@ -4713,6 +5098,69 @@
             toast.classList.add('show');
             dayInfoTimer = setTimeout(() => { toast.classList.remove('show'); dayInfoTimer = null; }, 2000);
         }
+
+        window.ptoTestHelper = {
+            getBalanceOn(type, queryDate) {
+                const projection = window.ptoDebugState?.balancesByType?.[type];
+                if (!projection) return null;
+                return Number(projection.balanceAsOf(parseDateInputValue(queryDate) || new Date(queryDate)).toFixed(2));
+            },
+            dumpLedger(type, queryDate = null) {
+                const projection = window.ptoDebugState?.balancesByType?.[type];
+                if (!projection) {
+                    console.warn(`No projection found for ${type}`);
+                    return [];
+                }
+                const cutoff = queryDate ? dateKey(parseDateInputValue(queryDate) || new Date(queryDate)) : null;
+                const rows = projection.ledger.filter(row => !cutoff || row.date <= cutoff);
+                console.table(rows);
+                if (queryDate) {
+                    console.log(`${type} balance on ${queryDate}:`, this.getBalanceOn(type, queryDate));
+                }
+                return rows;
+            },
+            loadEmployerScenario() {
+                const wellnessDays = [
+                    '2026-03-13', '2026-03-16', '2026-03-27',
+                    '2026-04-01', '2026-04-02', '2026-04-06',
+                    '2026-04-07', '2026-04-08', '2026-04-10',
+                    '2026-04-24'
+                ];
+                const ptoDays = ['2026-03-31'];
+
+                document.getElementById('year').value = '2026';
+                document.getElementById('mYear').value = '2026';
+                document.getElementById('currentPto').value = '231.29';
+                document.getElementById('mCurrentPto').value = '231.29';
+                document.getElementById('currentWellness').value = '93.96';
+                document.getElementById('mCurrentWellness').value = '93.96';
+                document.getElementById('currentActivism').value = '18';
+                document.getElementById('mCurrentActivism').value = '18';
+                document.getElementById('currentPersonal').value = '5';
+                document.getElementById('mCurrentPersonal').value = '5';
+                setProjectionMode('workday');
+
+                regenerate();
+                state.selectedDays.pto.clear();
+                state.selectedDays.wellness.clear();
+                state.selectedDays.activism.clear();
+                state.selectedDays.personal.clear();
+                ptoDays.forEach(key => state.selectedDays.pto.add(key));
+                wellnessDays.forEach(key => state.selectedDays.wellness.add(key));
+                refreshPlannerViews(true);
+
+                const result = {
+                    pto_2026_04_30: this.getBalanceOn('pto', '2026-04-30'),
+                    wellness_2026_04_30: this.getBalanceOn('wellness', '2026-04-30'),
+                    activism_2026_04_30: this.getBalanceOn('activism', '2026-04-30'),
+                    personal_2026_04_30: this.getBalanceOn('personal', '2026-04-30')
+                };
+                console.log('Employer scenario balances on 2026-04-30', result);
+                this.dumpLedger('pto', '2026-04-30');
+                this.dumpLedger('wellness', '2026-04-30');
+                return result;
+            }
+        };
 
         document.addEventListener('DOMContentLoaded', init);
         document.addEventListener('click', (e) => {
