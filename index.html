@@ -1901,6 +1901,204 @@
         .share-header-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
         .share-header-btn svg { width: 16px; height: 16px; }
 
+        /* Help / FAQ button in header — matches share-header-btn */
+        .help-header-btn {
+            padding: 8px;
+            background: none;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            line-height: 1;
+        }
+        .help-header-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+        .help-header-btn svg { width: 16px; height: 16px; }
+
+        /* FAQ Modal */
+        .faq-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 40px 16px;
+        }
+        .faq-modal.open { display: flex; }
+        .faq-modal-content {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 600px;
+            max-width: 100%;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+        .faq-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            background: var(--bg-primary);
+            border-radius: 12px 12px 0 0;
+            z-index: 1;
+        }
+        .faq-modal-header h2 {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .faq-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            line-height: 1;
+        }
+        .faq-close-btn:hover { background: var(--bg-tertiary); }
+        .faq-body {
+            padding: 20px;
+        }
+        .faq-intro {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .faq-section {
+            margin-bottom: 20px;
+        }
+        .faq-section:last-child { margin-bottom: 0; }
+        .faq-section h3 {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        .faq-section p, .faq-section li {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 6px;
+        }
+        .faq-section ul {
+            padding-left: 18px;
+            margin-bottom: 6px;
+        }
+        .faq-section li { margin-bottom: 4px; }
+        .faq-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin: 8px 0;
+        }
+        .faq-tier-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            min-width: 380px;
+        }
+        .faq-tier-table th, .faq-tier-table td {
+            padding: 6px 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .faq-tier-table th {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .faq-tier-table td { color: var(--text-secondary); }
+        @media (max-width: 500px) {
+            .faq-tier-table { font-size: 11px; }
+            .faq-tier-table th { font-size: 9px; }
+            .faq-tier-table th, .faq-tier-table td { padding: 5px 6px; }
+        }
+        .faq-disclaimer {
+            font-size: 11px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        @media (max-width: 900px) {
+            .faq-modal { padding: 20px 10px; }
+            .faq-modal-content { max-height: calc(100vh - 40px); }
+            .faq-modal-header { padding: 14px 16px; }
+            .faq-body { padding: 16px; }
+        }
+
+        /* Contextual help icon */
+        .ctx-help {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 4px;
+            vertical-align: middle;
+            flex-shrink: 0;
+            border: none;
+            font-family: inherit;
+            line-height: 1;
+        }
+        .ctx-help:hover { background: var(--border-color); color: var(--text-primary); }
+        /* Portal tooltip — rendered at body level to avoid clipping */
+        #ctxHelpPortal {
+            display: none;
+            position: fixed;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 400;
+            line-height: 1.4;
+            width: 230px;
+            z-index: 10000;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        #ctxHelpPortal.visible { display: block; }
+        #ctxHelpPortal .tip-arrow {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+        }
+        #ctxHelpPortal.arrow-below .tip-arrow {
+            top: 100%;
+            border-top-color: var(--text-primary);
+        }
+        #ctxHelpPortal.arrow-above .tip-arrow {
+            bottom: 100%;
+            border-bottom-color: var(--text-primary);
+        }
+
         /* ══════════════════════════════════════════════════════════════
            MOBILE OPTIMIZE — collapsible boxed sections
            ══════════════════════════════════════════════════════════════ */
@@ -2009,6 +2207,9 @@
                 <button class="unit-btn active" onclick="setDisplayUnits('hours')">Hours</button>
                 <button class="unit-btn" onclick="setDisplayUnits('days')">Days</button>
             </div>
+            <button class="help-header-btn" onclick="openFaqModal()" title="How this works">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </button>
             <button class="share-header-btn" onclick="openShareModal()" title="Share">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
             </button>
@@ -2027,6 +2228,7 @@
 
     <div class="toast" id="toast"></div>
     <div class="day-info-toast" id="dayInfoToast"></div>
+    <div id="ctxHelpPortal"><span class="tip-arrow"></span><span class="tip-text"></span></div>
 
     <!-- Desktop Layout -->
     <div class="desktop-layout">
@@ -2034,6 +2236,7 @@
             <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('projectedContent', this)">
                     <span class="section-title" style="margin-bottom:0">Projected Year-End</span>
+                    <button class="ctx-help" data-tip="Projected shows what you may have by year-end including future accrual. Workday-style shows only what you have today minus planned time off." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button>
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="projectedContent" class="collapsible-content open">
@@ -2060,13 +2263,13 @@
                 </div>
                 <div id="optimizeContent" class="collapsible-content">
                     <div class="optimize-kpi-stack" style="margin-top:10px">
-                        <div class="optimize-tile"><div class="label">Projected Workdays Off</div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
-                        <div class="optimize-tile"><div class="label">Next Long Weekend</div><div class="value" id="dNextLongWeekend">—</div><div class="detail" id="dNextLongWeekendDetail">—</div></div>
-                        <div class="optimize-tile"><div class="label">Longest Out of Office</div><div class="value" id="dLongestStreak">0</div><div class="detail" id="dLongestStreakDetail">days</div></div>
-                        <div class="optimize-tile"><div class="label">Days Off Efficiency</div><div class="value" id="dEfficiency">—</div><div class="detail" id="dEfficiencyDetail">ratio</div></div>
-                        <div class="optimize-tile"><div class="label">Fridays Off</div><div class="value" id="dFridaysOff">0</div><div class="detail" id="dFridaysOffDetail">planned</div></div>
-                        <div class="optimize-tile"><div class="label">Total Breaks This Year</div><div class="value" id="dBreaksPlanned">0</div><div class="detail" id="dBreaksPlannedDetail">—</div></div>
-                        <div class="optimize-tile"><div class="label">Avg Break Length</div><div class="value" id="dAvgBreakLen">—</div><div class="detail" id="dAvgBreakLenDetail">days</div></div>
+                        <div class="optimize-tile"><div class="label">Projected Workdays Off <button class="ctx-help" data-tip="The total number of workdays (Monday–Friday) you are projected to have off this year, based on your current selections." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="countWorkDaysOff">0</div><div class="detail" id="totalDaysDetail">-</div></div>
+                        <div class="optimize-tile"><div class="label">Next Long Weekend <button class="ctx-help" data-tip="Your next upcoming break of 3 or more consecutive days off, including weekends and holidays." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="dNextLongWeekend">—</div><div class="detail" id="dNextLongWeekendDetail">—</div></div>
+                        <div class="optimize-tile"><div class="label">Longest Out of Office <button class="ctx-help" data-tip="The longest stretch of consecutive days off you have planned this year, counting weekends and holidays." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="dLongestStreak">0</div><div class="detail" id="dLongestStreakDetail">days</div></div>
+                        <div class="optimize-tile"><div class="label">Days Off Efficiency <button class="ctx-help" data-tip="How many total days off you get for each PTO day you use. A higher ratio means you are getting more value from your time off by combining with weekends and holidays." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="dEfficiency">—</div><div class="detail" id="dEfficiencyDetail">ratio</div></div>
+                        <div class="optimize-tile"><div class="label">Fridays Off <button class="ctx-help" data-tip="The number of Fridays you have planned off this year. Taking Fridays off is a popular way to create long weekends." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="dFridaysOff">0</div><div class="detail" id="dFridaysOffDetail">planned</div></div>
+                        <div class="optimize-tile"><div class="label">Total Breaks This Year <button class="ctx-help" data-tip="The number of separate breaks (3+ consecutive days off) you have planned for the year." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="dBreaksPlanned">0</div><div class="detail" id="dBreaksPlannedDetail">—</div></div>
+                        <div class="optimize-tile"><div class="label">Avg Break Length <button class="ctx-help" data-tip="The average length of your planned breaks in days. Longer averages mean more extended time away from work." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="dAvgBreakLen">—</div><div class="detail" id="dAvgBreakLenDetail">days</div></div>
                     </div>
                 </div>
             </div>
@@ -2089,6 +2292,7 @@
             <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('settingsBalancesContent', this)">
                     <span class="section-title" style="margin-bottom:0">Settings & Current Balances</span>
+                    <button class="ctx-help" data-tip="Enter the balances currently shown in your employer's system. Your accrual rate depends on years of service." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button>
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="settingsBalancesContent" class="collapsible-content open">
@@ -2170,6 +2374,7 @@
             <div class="sidebar-card">
                 <div class="collapsible-header" onclick="toggleSection('quickSelectContent', this)">
                     <span class="section-title" style="margin-bottom:0">Opportunities</span>
+                    <button class="ctx-help" data-tip="Planning shortcuts that find high-leverage combinations — like turning one PTO day into a 4-day weekend around a holiday." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div id="quickSelectContent" class="collapsible-content">
@@ -2202,7 +2407,7 @@
             </div>
 
             <div class="sidebar-card">
-                <div class="section-title" style="margin-bottom:8px">Share / Export</div>
+                <div class="section-title" style="margin-bottom:8px">Share / Export <button class="ctx-help" data-tip="Share a link to your plan, save an image of your calendar, or export dates to your calendar app (.ics file)." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div>
                 <button class="share-option" onclick="openShareModal()" style="margin-bottom:0">
                     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/></svg>
                     <span class="share-option-text">Share / Export<span class="share-option-sub">Link, image, or calendar</span></span>
@@ -2271,6 +2476,7 @@
             <div class="mobile-collapsible-section">
                 <div class="mobile-collapsible-header" onclick="toggleMobileSection('mProjectedContent', this)">
                     <span class="section-title">Projected Year-End</span>
+                    <button class="ctx-help" data-tip="Projected shows what you may have by year-end including future accrual. Workday-style shows only what you have today minus planned time off." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button>
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="mProjectedContent" class="mobile-collapsible-content open">
@@ -2298,13 +2504,13 @@
                 </div>
                 <div id="mOptimizeContent" class="mobile-collapsible-content open">
                     <div class="optimize-kpi-stack" style="margin-top:10px">
-                        <div class="mobile-optimize-tile"><div class="label">Projected Workdays Off</div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Projected total days off (incl. weekends): 0</div></div>
-                        <div class="mobile-optimize-tile"><div class="label">Next Long Weekend</div><div class="value" id="mNextLongWeekend">—</div><div class="detail" id="mNextLongWeekendDetail">—</div></div>
-                        <div class="mobile-optimize-tile"><div class="label">Longest Out of Office</div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
-                        <div class="mobile-optimize-tile"><div class="label">Days Off Efficiency</div><div class="value" id="mEfficiency">—</div><div class="detail" id="mEfficiencyDetail">ratio</div></div>
-                        <div class="mobile-optimize-tile"><div class="label">Fridays Off</div><div class="value" id="mFridaysOff">0</div><div class="detail" id="mFridaysOffDetail">planned</div></div>
-                        <div class="mobile-optimize-tile"><div class="label">Total Breaks This Year</div><div class="value" id="mBreaksPlanned">0</div><div class="detail" id="mBreaksPlannedDetail">—</div></div>
-                        <div class="mobile-optimize-tile"><div class="label">Avg Break Length</div><div class="value" id="mAvgBreakLen">—</div><div class="detail" id="mAvgBreakLenDetail">days</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Projected Workdays Off <button class="ctx-help" data-tip="The total number of workdays (Monday–Friday) you are projected to have off this year, based on your current selections." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="mWorkDays">0</div><div class="detail" id="mTotalDetail">Projected total days off (incl. weekends): 0</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Next Long Weekend <button class="ctx-help" data-tip="Your next upcoming break of 3 or more consecutive days off, including weekends and holidays." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="mNextLongWeekend">—</div><div class="detail" id="mNextLongWeekendDetail">—</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Longest Out of Office <button class="ctx-help" data-tip="The longest stretch of consecutive days off you have planned this year, counting weekends and holidays." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="mLongestStreak">0</div><div class="detail" id="mLongestStreakDetail">days</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Days Off Efficiency <button class="ctx-help" data-tip="How many total days off you get for each PTO day you use. A higher ratio means you are getting more value from your time off by combining with weekends and holidays." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="mEfficiency">—</div><div class="detail" id="mEfficiencyDetail">ratio</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Fridays Off <button class="ctx-help" data-tip="The number of Fridays you have planned off this year. Taking Fridays off is a popular way to create long weekends." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="mFridaysOff">0</div><div class="detail" id="mFridaysOffDetail">planned</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Total Breaks This Year <button class="ctx-help" data-tip="The number of separate breaks (3+ consecutive days off) you have planned for the year." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="mBreaksPlanned">0</div><div class="detail" id="mBreaksPlannedDetail">—</div></div>
+                        <div class="mobile-optimize-tile"><div class="label">Avg Break Length <button class="ctx-help" data-tip="The average length of your planned breaks in days. Longer averages mean more extended time away from work." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button></div><div class="value" id="mAvgBreakLen">—</div><div class="detail" id="mAvgBreakLenDetail">days</div></div>
                     </div>
                 </div>
             </div>
@@ -2313,6 +2519,7 @@
             <div class="mobile-collapsible-section">
                 <div class="mobile-collapsible-header" onclick="toggleMobileSection('mQuickActionsContent', this)">
                     <span class="section-title">Opportunities</span>
+                    <button class="ctx-help" data-tip="Planning shortcuts that find high-leverage combinations — like turning one PTO day into a 4-day weekend around a holiday." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button>
                     <span class="toggle-icon">▼</span>
                 </div>
                 <div id="mQuickActionsContent" class="mobile-collapsible-content">
@@ -2349,6 +2556,7 @@
             <div class="settings-section">
                 <div class="settings-collapsible-header" onclick="toggleMobileSection('mSettingsGeneral', this)">
                     <span class="settings-section-title">Settings & Current Balances</span>
+                    <button class="ctx-help" data-tip="Enter the balances currently shown in your employer's system. Your accrual rate depends on years of service." onclick="event.stopPropagation();toggleCtxHelp(this)" aria-label="Help">?</button>
                     <span class="toggle-icon open">▼</span>
                 </div>
                 <div id="mSettingsGeneral" class="settings-collapsible-content open">
@@ -2424,6 +2632,17 @@
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
     </button>
     <div class="fab-menu" id="fabMenu"></div>
+
+    <!-- FAQ Modal -->
+    <div class="faq-modal" id="faqModal">
+        <div class="faq-modal-content">
+            <div class="faq-modal-header">
+                <h2>How This Works</h2>
+                <button class="faq-close-btn" onclick="closeFaqModal()" aria-label="Close">&times;</button>
+            </div>
+            <div class="faq-body" id="faqBody"></div>
+        </div>
+    </div>
 
     <!-- Custom Type Modal -->
     <div class="custom-type-modal" id="customTypeModal">
@@ -5162,15 +5381,193 @@
             }
         };
 
+        /* ── FAQ Modal ── */
+        function openFaqModal() {
+            const body = document.getElementById('faqBody');
+            body.innerHTML = buildFaqContent();
+            document.getElementById('faqModal').classList.add('open');
+        }
+        function closeFaqModal() {
+            document.getElementById('faqModal').classList.remove('open');
+        }
+        function buildFaqContent() {
+            // Employer source-of-truth data for PTO tiers
+            // Per-straight-time-hour rates: 0.03846, 0.05769, 0.07692, 0.09615
+            // Annual max hours: 80, 120, 160, 200
+            // The work schedule is 9/80: Mon–Thu = 9h, Fri = 8h, so a standard workweek = 44h (one week) / 36h (off-Friday week)
+            // For day conversions: a mixed workday averages ~8.89h, but it's cleaner to use the actual workday counts:
+            //   80h  = 10 workdays = 2 workweeks
+            //   120h = 15 workdays = 3 workweeks
+            //   160h = 20 workdays = 4 workweeks
+            //   200h = 25 workdays = 5 workweeks
+            const tierData = [
+                { label: '0\u20133 years', hourRate: '.03846', perPay: '3.07', annual: '80', days: '10', weeks: '2', cap: '120' },
+                { label: '4\u20136 years', hourRate: '.05769', perPay: '4.61', annual: '120', days: '15', weeks: '3', cap: '180' },
+                { label: '7\u20139 years', hourRate: '.07692', perPay: '6.15', annual: '160', days: '20', weeks: '4', cap: '240' },
+                { label: '10+ years', hourRate: '.09615', perPay: '7.69', annual: '200', days: '25', weeks: '5', cap: '300' }
+            ];
+
+            let html = '';
+            // Intro
+            html += '<div class="faq-intro">This tool helps you compare your current time-off balance with future planning scenarios, so you can understand both what\u2019s available today and what may be available later in the year.</div>';
+
+            // 1. What this app does
+            html += '<div class="faq-section"><h3>What this app does</h3>';
+            html += '<p>The Time Off Optimizer helps you plan and budget your time off for the year. You enter your current balances, select days on the calendar, and the app projects how your balances will change over time as you accrue and use hours.</p></div>';
+
+            // 2. Projected vs Workday-style
+            html += '<div class="faq-section"><h3>Projected vs. Workday-style balance</h3>';
+            html += '<p><strong>Projected</strong> includes future accrual and planned time off through the end of the year. Think of it as what you expect to have available by year-end.</p>';
+            html += '<p><strong>Workday-style</strong> starts from your current balance and only subtracts planned time off. It does not count hours you haven\u2019t earned yet. This matches the balance you\u2019d see in your employer\u2019s system today.</p>';
+            html += '<p>It\u2019s similar to budgeting: one number is what you have right now, and the other is what you expect to have by future pay periods.</p></div>';
+
+            // 3. PTO accrual by years of service
+            html += '<div class="faq-section"><h3>PTO accrual by years of service</h3>';
+            html += '<p>Your PTO accrual rate depends on how long you\u2019ve been with the company. Hours are added to your balance each pay period (biweekly, 26 pay periods per year).</p>';
+            html += '<div class="faq-table-wrap"><table class="faq-tier-table"><thead><tr><th>Service</th><th>Per Hour Worked</th><th>Per Pay Period</th><th>Annual Max</th><th>Workdays</th><th>Workweeks</th></tr></thead><tbody>';
+            tierData.forEach(t => {
+                html += '<tr><td>' + t.label + '</td><td>' + t.hourRate + '</td><td>' + t.perPay + 'h</td><td>' + t.annual + 'h</td><td>' + t.days + '</td><td>' + t.weeks + '</td></tr>';
+            });
+            html += '</tbody></table></div>';
+            html += '<p>For reference, 200 hours equals 25 workdays, or about 5 standard workweeks in this schedule. The other tiers follow the same pattern proportionally.</p></div>';
+
+            // 4. Wellness accrual
+            html += '<div class="faq-section"><h3>How wellness time accrual works</h3>';
+            html += '<p>Wellness (sick) time accrues differently than PTO. Instead of being tied to years of service, it accrues at a rate of <strong>1 hour per 29 hours worked</strong> for all employees, regardless of status. Exempt employees are deemed to work 40 hours per week.</p>';
+            html += '<p>In practice, this works out to approximately <strong>2.76 hours per pay period</strong>, or about <strong>71.8 hours per year</strong>.</p>';
+            html += '<p>Unused wellness time rolls over into the next year, up to a maximum balance of <strong>108 hours</strong> (about 12 workdays). Any balance above 108 hours is reduced to 108 at year-end.</p></div>';
+
+            // 5. Max balance / cap (with 1.5x explanation)
+            html += '<div class="faq-section"><h3>How the maximum PTO balance (cap) works</h3>';
+            html += '<p>Each service tier has a maximum amount of PTO you can accrue in one year. Your total PTO balance cannot exceed <strong>1.5 times</strong> that annual accrual amount. Once you hit that maximum balance, you stop accruing new PTO until you use some.</p>';
+            html += '<div class="faq-table-wrap"><table class="faq-tier-table"><thead><tr><th>Service</th><th>Annual Max</th><th>Balance Cap (1.5\u00d7)</th></tr></thead><tbody>';
+            tierData.forEach(t => {
+                html += '<tr><td>' + t.label + '</td><td>' + t.annual + 'h</td><td>' + t.cap + 'h</td></tr>';
+            });
+            html += '</tbody></table></div>';
+            html += '<p>Once you reach the cap, you stop accruing new PTO until you use some. Planning ahead helps avoid losing accrual.</p></div>';
+
+            // 6. Opportunities
+            html += '<div class="faq-section"><h3>What the Opportunities section means</h3>';
+            html += '<p>Opportunities are planning shortcuts that help you get the most from your time off:</p><ul>';
+            html += '<li><strong>Mega Combos:</strong> The longest possible consecutive break by extending around holidays.</li>';
+            html += '<li><strong>Super Combos:</strong> Use a few days to get an extended break when a holiday aligns well with the calendar.</li>';
+            html += '<li><strong>4-Day Weekends:</strong> Use one day off to create a 4-day break around a holiday.</li>';
+            html += '<li><strong>All Fridays / Summer Fridays:</strong> Take working Fridays off for the year or just during summer months.</li>';
+            html += '<li><strong>2-for-5 / 3-for-5:</strong> Months where taking 2 or 3 Fridays gives you every Friday off that month.</li>';
+            html += '</ul></div>';
+
+            // 7. Calendar views
+            html += '<div class="faq-section"><h3>Annual and monthly calendar views</h3>';
+            html += '<p>The <strong>annual view</strong> shows every month at a glance with color-coded day types \u2014 tap or click any day to assign time off.</p>';
+            html += '<p>The <strong>monthly view</strong> (on mobile) zooms in on one month at a time for easier selection on smaller screens.</p>';
+            html += '<p>Colors indicate the type of time off (PTO, activism, personal, wellness, holidays, etc.). Weekends and holidays are marked automatically.</p></div>';
+
+            // 8. Custom types
+            html += '<div class="faq-section"><h3>Custom time off types</h3>';
+            html += '<p>If you have time off that doesn\u2019t fit the built-in categories \u2014 such as jury duty, maternity/paternity leave, or child\u2019s school schedule \u2014 you can add custom types with their own color. Choose whether each custom type counts toward your total days-off stats.</p></div>';
+
+            // 9. Sharing & export
+            html += '<div class="faq-section"><h3>Sharing, images, and calendar export</h3>';
+            html += '<p>The Share / Export feature offers three options:</p><ul>';
+            html += '<li><strong>Link:</strong> A shareable link that saves your entire plan so you can reopen it later or share with someone.</li>';
+            html += '<li><strong>Image:</strong> Save a screenshot of your calendar as an image file.</li>';
+            html += '<li><strong>Calendar (.ics):</strong> Export your planned days off to your calendar app (Outlook, Google Calendar, Apple Calendar, etc.).</li>';
+            html += '</ul></div>';
+
+            // 10. Disclaimer
+            html += '<div class="faq-disclaimer">This tool is for personal planning purposes only. Your employer\u2019s official time-off system (e.g., Workday) remains the system of record for all balances, accrual, and approvals. Always verify important decisions with your actual balances.</div>';
+
+            return html;
+        }
+
+        /* ── Portal-based contextual help tooltip ── */
+        let _activeCtxHelp = null;
+        function toggleCtxHelp(el) {
+            const portal = document.getElementById('ctxHelpPortal');
+            if (_activeCtxHelp === el) {
+                hideCtxHelp();
+                return;
+            }
+            _activeCtxHelp = el;
+            const tipText = el.getAttribute('data-tip');
+            if (!tipText) return;
+            portal.querySelector('.tip-text').textContent = tipText;
+
+            // Position: measure the button, decide above or below
+            const rect = el.getBoundingClientRect();
+            const portalW = 230;
+            const GAP = 8;
+
+            // Horizontal: center on button, clamp to viewport
+            let left = rect.left + rect.width / 2 - portalW / 2;
+            left = Math.max(8, Math.min(left, window.innerWidth - portalW - 8));
+
+            // Vertical: prefer above, fall back to below
+            portal.style.width = portalW + 'px';
+            portal.classList.remove('arrow-below', 'arrow-above');
+            portal.classList.add('visible');
+            portal.style.left = left + 'px';
+            // Temporarily show to measure height
+            portal.style.top = '-9999px';
+            const portalH = portal.offsetHeight;
+
+            const spaceAbove = rect.top;
+            const spaceBelow = window.innerHeight - rect.bottom;
+
+            if (spaceAbove >= portalH + GAP || spaceAbove >= spaceBelow) {
+                // Place above
+                portal.style.top = (rect.top - portalH - GAP) + 'px';
+                portal.classList.add('arrow-below');
+            } else {
+                // Place below
+                portal.style.top = (rect.bottom + GAP) + 'px';
+                portal.classList.add('arrow-above');
+            }
+
+            // Position the arrow to point at the button center
+            const arrow = portal.querySelector('.tip-arrow');
+            const arrowLeft = rect.left + rect.width / 2 - left;
+            arrow.style.left = Math.max(12, Math.min(arrowLeft, portalW - 12)) + 'px';
+            arrow.style.transform = 'translateX(-50%)';
+        }
+        function hideCtxHelp() {
+            _activeCtxHelp = null;
+            const portal = document.getElementById('ctxHelpPortal');
+            portal.classList.remove('visible', 'arrow-below', 'arrow-above');
+        }
+        // Desktop hover support
+        document.addEventListener('mouseover', function(e) {
+            const btn = e.target.closest('.ctx-help');
+            if (btn && window.matchMedia('(hover: hover)').matches) {
+                toggleCtxHelp(btn);
+            }
+        });
+        document.addEventListener('mouseout', function(e) {
+            const btn = e.target.closest('.ctx-help');
+            if (btn && window.matchMedia('(hover: hover)').matches) {
+                // Small delay so we don't flicker
+                setTimeout(() => { if (_activeCtxHelp === btn) hideCtxHelp(); }, 100);
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', init);
         document.addEventListener('click', (e) => {
             if (!e.target.closest('.fab') && !e.target.closest('.fab-menu')) closeFabMenu();
             if (e.target.classList.contains('custom-type-modal')) closeCustomTypeModal();
             if (e.target.classList.contains('share-modal')) closeShareModal();
             if (e.target.classList.contains('admin-overlay')) closeAdmin();
+            if (e.target.classList.contains('faq-modal')) closeFaqModal();
+            // Close portal tooltip when clicking elsewhere
+            if (!e.target.closest('.ctx-help')) {
+                hideCtxHelp();
+            }
         });
         document.addEventListener('keydown', (e) => {
             if (e.key !== 'Escape') return;
+            if (_activeCtxHelp) { hideCtxHelp(); return; }
+            const faqModal = document.getElementById('faqModal');
+            if (faqModal?.classList.contains('open')) { closeFaqModal(); return; }
             const shareModal = document.getElementById('shareModal');
             if (shareModal?.classList.contains('open')) { closeShareModal(); return; }
             const adminOverlay = document.getElementById('adminOverlay');
@@ -5179,6 +5576,8 @@
             if (customTypeModal?.classList.contains('open')) closeCustomTypeModal();
             closeFabMenu();
         });
+        // Hide tooltip on scroll (prevents stale positioning)
+        document.addEventListener('scroll', hideCtxHelp, true);
     </script>
 </body>
 </html>
