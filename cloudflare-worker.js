@@ -101,7 +101,7 @@ const WORDLIST = [
     'palm', 'path', 'peak', 'pearl', 'pier', 'pilot', 'pine', 'pixel', 'plum', 'point', 'pond', 'port', 'prism', 'pulse',
     'quartz', 'quest', 'quick', 'quill',
     'rain', 'rapid', 'raven', 'realm', 'reed', 'reef', 'ridge', 'rift', 'river', 'robin', 'root', 'rose', 'ruby', 'rust',
-    'sage', 'sail', 'sand', 'satin', 'seed', 'shade', 'shore', 'silk', 'slate', 'snow', 'solar', 'sonic', 'spark', 'spire', 'star', 'steel', 'stone', 'storm', 'swift', 'sage',
+    'sage', 'sail', 'sand', 'satin', 'seed', 'shade', 'shore', 'silk', 'slate', 'snow', 'solar', 'sonic', 'spark', 'spire', 'star', 'steel', 'stone', 'storm', 'swift', 'swan',
     'teal', 'tempo', 'terra', 'thyme', 'tide', 'timber', 'torch', 'trail', 'trove', 'tulip', 'tusk',
     'vale', 'vapor', 'vault', 'vine', 'viola', 'vivid', 'volt',
     'wave', 'weave', 'wheat', 'wild', 'willow', 'wind', 'wren',
@@ -454,9 +454,13 @@ async function handleRedirect(shortCode, env, ctx, request) {
             const originResponse = await fetch(`${DOMAIN}/`, {
                 headers: { 'Accept': 'text/html' },
             });
+            // Don't dress up an origin error page as a 200 — fall back to redirect.
+            if (!originResponse.ok) {
+                return withResponseHeaders(Response.redirect(longUrl, 302), { request });
+            }
             let html = await originResponse.text();
             // Inject resolved URL meta tag into <head>
-            const escapedUrl = longUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+            const escapedUrl = longUrl.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             const metaTag = `<meta name="x-resolved-url" content="${escapedUrl}">`;
             html = html.replace('<head>', `<head>\n${metaTag}`);
             return withResponseHeaders(new Response(html, {

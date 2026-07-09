@@ -196,6 +196,34 @@
             .header h1 .title-short { display: inline; }
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+
+        /* Sidebar collapse toggle — button-secondary treatment */
+        .sidebar-toggle-btn {
+            padding: 10px;
+            background: var(--bg-canvas);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color 0.15s, color 0.15s;
+        }
+        .sidebar-toggle-btn:hover { border-color: var(--text-primary); color: var(--text-primary); }
+        .sidebar-toggle-btn svg { width: 16px; height: 16px; }
+        @media (max-width: 900px) {
+            /* Mobile has no sidebar — hide the toggle */
+            .sidebar-toggle-btn { display: none; }
+            .header-left { flex: 1; min-width: 0; }
+        }
+
         .header-controls {
             display: flex;
             align-items: center;
@@ -319,6 +347,17 @@
             display: grid;
             grid-template-columns: 340px 1fr;
             min-height: calc(100vh - var(--header-height));
+            transition: grid-template-columns 0.25s ease;
+        }
+        .desktop-layout.sidebar-collapsed {
+            grid-template-columns: 0px 1fr;
+        }
+        .desktop-layout.sidebar-collapsed .sidebar {
+            padding-left: 0;
+            padding-right: 0;
+            border-right: none;
+            opacity: 0;
+            pointer-events: none;
         }
 
         @media (max-width: 900px) {
@@ -343,9 +382,11 @@
             border-right: 1px solid var(--border-color);
             padding: 20px 16px;
             overflow-y: auto;
+            overflow-x: hidden;
             max-height: calc(100vh - var(--header-height));
             position: sticky;
             top: var(--header-height);
+            transition: padding 0.25s ease, opacity 0.2s ease;
         }
 
         .section { margin-bottom: 24px; }
@@ -2313,7 +2354,12 @@
 </head>
 <body data-theme="light">
     <header class="header">
-        <h1><span class="title-full">Time Off Optimizer</span><span class="title-short">PTO</span></h1>
+        <div class="header-left">
+            <button class="sidebar-toggle-btn" id="sidebarToggleBtn" onclick="toggleSidebar()" title="Collapse sidebar" aria-label="Toggle sidebar" aria-expanded="true">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9" y1="4" x2="9" y2="20"/></svg>
+            </button>
+            <h1><span class="title-full">Time Off Optimizer</span><span class="title-short">PTO</span></h1>
+        </div>
         <div class="header-controls">
             <div class="theme-toggle" id="themeToggle" role="group" aria-label="Theme">
                 <button class="theme-tab active" data-theme-value="light" onclick="changeTheme('light')">Light</button>
@@ -3966,6 +4012,10 @@
                 return dateKey(d).replace(/-/g, '');
             }
             function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+            // RFC 5545 §3.3.11: backslash-escape \ ; , and newlines in TEXT values
+            function icsEscape(text) {
+                return String(text).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+            }
 
             // Add merged OOO events
             ranges.forEach(range => {
@@ -3976,7 +4026,7 @@
                     `DTSTART;VALUE=DATE:${icsDate(range.start)}`,
                     `DTEND;VALUE=DATE:${icsDatePlusOne(range.end)}`,
                     'SUMMARY:Out of office',
-                    `DESCRIPTION:${range.start} to ${range.end} — ${typeSummary}`,
+                    `DESCRIPTION:${icsEscape(`${range.start} to ${range.end} — ${typeSummary}`)}`,
                     'TRANSP:OPAQUE',
                     'END:VEVENT'
                 );
@@ -4023,6 +4073,21 @@
             toast.textContent = message;
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Sidebar collapse (desktop)
+        function toggleSidebar() {
+            const layout = document.querySelector('.desktop-layout');
+            const collapsed = layout.classList.toggle('sidebar-collapsed');
+            const btn = document.getElementById('sidebarToggleBtn');
+            if (btn) {
+                btn.title = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+                btn.setAttribute('aria-expanded', String(!collapsed));
+            }
+            safeStorage.setItem('sidebarCollapsed', collapsed ? '1' : '0');
+            // Chart bars are positioned in px from the container width at
+            // render time — re-render once the 0.25s width transition settles
+            setTimeout(recalculate, 320);
         }
 
         // Theme
@@ -4441,6 +4506,34 @@
             const savedTheme = sanitizeTheme(safeStorage.getItem('preferredTheme'));
             if (savedTheme) { document.body.setAttribute('data-theme', savedTheme); syncThemeToggle(savedTheme); }
 
+            if (safeStorage.getItem('sidebarCollapsed') === '1') {
+                document.querySelector('.desktop-layout').classList.add('sidebar-collapsed');
+                const sbBtn = document.getElementById('sidebarToggleBtn');
+                if (sbBtn) { sbBtn.title = 'Expand sidebar'; sbBtn.setAttribute('aria-expanded', 'false'); }
+            }
+
+            // Chart bars are positioned in px from the container width at
+            // render time, so re-render when that width changes: window
+            // resize/maximize (resize event) plus any other container size
+            // change like browser zoom (ResizeObserver backstop). Debounced.
+            let chartReflowTimer = null;
+            const scheduleChartReflow = () => {
+                clearTimeout(chartReflowTimer);
+                chartReflowTimer = setTimeout(recalculate, 200);
+            };
+            window.addEventListener('resize', scheduleChartReflow);
+            const chartHost = document.getElementById('projectionChart');
+            if (window.ResizeObserver && chartHost) {
+                let lastChartWidth = null;
+                new ResizeObserver(entries => {
+                    const width = entries[0].contentRect.width;
+                    if (lastChartWidth !== null && Math.abs(width - lastChartWidth) >= 1) {
+                        scheduleChartReflow();
+                    }
+                    lastChartWidth = width;
+                }).observe(chartHost);
+            }
+
             const currentYear = new Date().getFullYear();
             [document.getElementById('year'), document.getElementById('mYear')].forEach(sel => {
                 for (let y = currentYear - 1; y <= currentYear + 2; y++) {
@@ -4478,7 +4571,7 @@
                     if (!longUrl) return false;
                     try {
                         const url = new URL(longUrl);
-                        if (url.hash.length > 1) { decodeState(url.hash.slice(1)); return true; }
+                        if (url.hash.length > 1) return decodeState(url.hash.slice(1));
                     } catch { /* invalid URL */ }
                     return false;
                 }
@@ -4494,7 +4587,7 @@
                     }).catch(() => regenerate());
                 }
             } else if (window.location.hash.length > 1) {
-                decodeState(window.location.hash.slice(1));
+                if (!decodeState(window.location.hash.slice(1))) regenerate();
             } else {
                 regenerate();
             }
