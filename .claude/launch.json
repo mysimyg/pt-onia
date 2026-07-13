@@ -4,8 +4,9 @@
     {
       "name": "pto-app",
       "runtimeExecutable": "/usr/local/bin/node",
-      "runtimeArgs": ["/usr/local/bin/npx", "http-server", "-p", "8080", "-c-1"],
-      "port": 8080
+      "runtimeArgs": ["/usr/local/bin/npx", "http-server", "-c-1"],
+      "port": 8080,
+      "autoPort": true
     }
   ]
 }

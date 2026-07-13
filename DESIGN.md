@@ -1,125 +1,159 @@
 ---
 version: alpha
-name: Clay-design-analysis
-description: A vibrant claymation-meets-data interface for Clay.com (GTM data-orchestration platform). Anchors on white canvas with dark-navy primary CTAs, custom rounded display type, and saturated single-color feature cards — hot pink, deep teal, lavender, peach, ochre — that punctuate long-scroll explainer pages. Brand voltage comes from 3D-rendered claymation illustrations (mountains, characters, mascots) used as full-bleed hero artifacts and the bright multi-color card surfaces showing product UI fragments.
+name: Patagonia-pto-optimizer-design
+description: A utilitarian, photography-optional interface built on Patagonia.com's black-and-white chrome — Ridgeway Sans throughout, black as the only interactive color, squared geometry, hairline dividers instead of shadows. Status and data visualization borrow a restrained ramp from the Fitz Roy label sunset (orange, peach, sky, lavender, indigo), the one place color is allowed to speak. Built for the internal PTO Optimizer app — dense, honest, and calm. Gear, not marketing.
 
 colors:
-  primary: "#0a0a0a"
-  primary-active: "#1f1f1f"
-  primary-disabled: "#e5e5e5"
-  ink: "#0a0a0a"
-  body: "#3a3a3a"
-  body-strong: "#1a1a1a"
-  muted: "#6a6a6a"
-  muted-soft: "#9a9a9a"
-  hairline: "#e5e5e5"
-  hairline-soft: "#f0f0f0"
-  canvas: "#fffaf0"
-  surface-soft: "#faf5e8"
-  surface-card: "#f5f0e0"
-  surface-strong: "#ebe6d6"
-  surface-dark: "#0a1a1a"
-  surface-dark-elevated: "#1a2a2a"
+  primary: "#000000"
+  primary-hover: "#333333"
   on-primary: "#ffffff"
-  on-dark: "#ffffff"
-  on-dark-soft: "#a0a0a0"
-  brand-pink: "#ff4d8b"
-  brand-teal: "#1a3a3a"
-  brand-lavender: "#b8a4ed"
-  brand-peach: "#ffb084"
-  brand-ochre: "#e8b94a"
-  brand-mint: "#a4d4c5"
-  brand-coral: "#ff6b5a"
-  success: "#22c55e"
-  warning: "#f59e0b"
-  error: "#ef4444"
+  ink: "#222222"
+  ink-strong: "#000000"
+  ink-muted: "#666666"
+  ink-subtle: "#8c8c8c"
+  ink-on-dark: "#ffffff"
+  ink-on-dark-muted: "#b3b3b3"
+  canvas: "#ffffff"
+  canvas-alt: "#f5f5f5"
+  surface-footer: "#000000"
+  surface-overlay: "rgba(0, 0, 0, 0.55)"
+  hairline: "#e5e5e5"
+  border-strong: "#cccccc"
+  border-input: "#8c8c8c"
+  focus-ring: "#0165a5"
+  alert: "#cc0000"
+  status-approved: "#2c6e49"
+  status-pending: "#b45309"
+  status-denied: "#cc0000"
+  status-holiday: "#0165a5"
+  tint-approved: "#e8f1ec"
+  tint-pending: "#f7ecdd"
+  tint-denied: "#f9e6e6"
+  tint-holiday: "#e6eff6"
+  tint-blackout: "#efefef"
+  fitz-orange: "#fb6526"
+  fitz-peach: "#f9a971"
+  fitz-sky: "#0165a5"
+  fitz-lavender: "#a68deb"
+  fitz-indigo: "#3b2089"
 
 typography:
-  display-xl:
-    fontFamily: "Plain Black, Inter, sans-serif"
-    fontSize: 72px
-    fontWeight: 500
-    lineHeight: 1
-    letterSpacing: -2.5px
-  display-lg:
-    fontFamily: "Plain Black, Inter, sans-serif"
-    fontSize: 56px
-    fontWeight: 500
-    lineHeight: 1.05
-    letterSpacing: -2px
-  display-md:
-    fontFamily: "Plain Black, Inter, sans-serif"
-    fontSize: 40px
-    fontWeight: 500
-    lineHeight: 1.1
-    letterSpacing: -1px
-  display-sm:
-    fontFamily: "Plain Black, Inter, sans-serif"
-    fontSize: 32px
-    fontWeight: 500
-    lineHeight: 1.15
-    letterSpacing: -0.5px
-  title-lg:
-    fontFamily: "Inter, sans-serif"
+  wordmark:
+    fontFamily: "Belwe Bold, Belwe Std, Georgia, serif"
     fontSize: 24px
-    fontWeight: 600
+    fontWeight: 700
+    lineHeight: 1.0
+    letterSpacing: 0
+  hero-display:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 48px
+    fontWeight: 700
+    lineHeight: 1.05
+    letterSpacing: -0.5px
+  display-lg:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 36px
+    fontWeight: 700
+    lineHeight: 1.1
+    letterSpacing: -0.25px
+  heading-md:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 28px
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: 0
+  heading-sm:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 20px
+    fontWeight: 500
     lineHeight: 1.3
-    letterSpacing: -0.3px
-  title-md:
-    fontFamily: "Inter, sans-serif"
-    fontSize: 18px
-    fontWeight: 600
-    lineHeight: 1.4
     letterSpacing: 0
-  title-sm:
-    fontFamily: "Inter, sans-serif"
-    fontSize: 16px
-    fontWeight: 600
-    lineHeight: 1.4
-    letterSpacing: 0
-  body-md:
-    fontFamily: "Inter, sans-serif"
+  eyebrow:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 12px
+    fontWeight: 700
+    lineHeight: 1.2
+    letterSpacing: 1.5px
+    textTransform: uppercase
+  body:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
     fontSize: 16px
     fontWeight: 400
-    lineHeight: 1.55
+    lineHeight: 1.5
     letterSpacing: 0
-  body-sm:
-    fontFamily: "Inter, sans-serif"
+  body-strong:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 1.5
+    letterSpacing: 0
+  body-compact:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
     fontSize: 14px
     fontWeight: 400
     lineHeight: 1.55
     letterSpacing: 0
   caption:
-    fontFamily: "Inter, sans-serif"
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 13px
+    fontWeight: 400
+    lineHeight: 1.4
+    letterSpacing: 0
+  caption-strong:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
     fontSize: 13px
     fontWeight: 500
     lineHeight: 1.4
+    letterSpacing: 0.25px
+  data-display:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 40px
+    fontWeight: 700
+    lineHeight: 1.0
+    letterSpacing: -0.5px
+  data-md:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 24px
+    fontWeight: 700
+    lineHeight: 1.1
     letterSpacing: 0
-  caption-uppercase:
-    fontFamily: "Inter, sans-serif"
-    fontSize: 12px
-    fontWeight: 600
-    lineHeight: 1.4
-    letterSpacing: 1.5px
   button:
-    fontFamily: "Inter, sans-serif"
-    fontSize: 14px
-    fontWeight: 600
-    lineHeight: 1
-    letterSpacing: 0
-  nav-link:
-    fontFamily: "Inter, sans-serif"
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 1.0
+    letterSpacing: 0.25px
+  button-compact:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
     fontSize: 14px
     fontWeight: 500
+    lineHeight: 1.0
+    letterSpacing: 0.25px
+  nav-link:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 1.0
+    letterSpacing: 0
+  footer-link:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 2.0
+    letterSpacing: 0
+  fine-print:
+    fontFamily: "Ridgeway Sans, Helvetica Neue, Helvetica, Arial, sans-serif"
+    fontSize: 12px
+    fontWeight: 400
     lineHeight: 1.4
     letterSpacing: 0
 
 rounded:
-  xs: 6px
-  sm: 8px
-  md: 12px
+  none: 0px
+  xs: 2px
+  sm: 4px
+  md: 8px
   lg: 16px
-  xl: 24px
   pill: 9999px
   full: 9999px
 
@@ -131,373 +165,377 @@ spacing:
   lg: 24px
   xl: 32px
   xxl: 48px
-  section: 96px
+  section: 64px
 
 components:
+  pencil-banner:
+    backgroundColor: "{colors.surface-footer}"
+    textColor: "{colors.ink-on-dark}"
+    typography: "{typography.body-compact}"
+    height: 40px
+    rounded: "{rounded.none}"
+  global-nav:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    borderBottom: "1px solid {colors.hairline}"
+    height: 64px
+    paddingX: "{spacing.lg}"
+  nav-link:
+    textColor: "{colors.ink}"
+    typography: "{typography.nav-link}"
+    padding: 8px 12px
+  nav-link-active:
+    textColor: "{colors.ink-strong}"
+    typography: "{typography.nav-link}"
+    borderBottom: "2px solid {colors.ink-strong}"
   button-primary:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.on-primary}"
     typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: 12px 20px
-    height: 44px
-  button-primary-active:
-    backgroundColor: "{colors.primary-active}"
+    rounded: "{rounded.xs}"
+    padding: 14px 24px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
     textColor: "{colors.on-primary}"
-    rounded: "{rounded.md}"
+    rounded: "{rounded.xs}"
   button-primary-disabled:
-    backgroundColor: "{colors.primary-disabled}"
-    textColor: "{colors.muted}"
-    rounded: "{rounded.md}"
+    backgroundColor: "{colors.border-strong}"
+    textColor: "{colors.canvas}"
+    rounded: "{rounded.xs}"
   button-secondary:
     backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
+    textColor: "{colors.ink-strong}"
+    border: "1px solid {colors.ink-strong}"
     typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: 12px 20px
-    height: 44px
-  button-on-color:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.button}"
-    rounded: "{rounded.md}"
-    padding: 12px 20px
-    height: 44px
-  button-text-link:
+    rounded: "{rounded.xs}"
+    padding: 13px 23px
+  button-ghost-danger:
     backgroundColor: transparent
-    textColor: "{colors.ink}"
-    typography: "{typography.button}"
+    textColor: "{colors.alert}"
+    typography: "{typography.button-compact}"
+    padding: 8px 12px
   text-link:
-    backgroundColor: transparent
     textColor: "{colors.ink}"
-    typography: "{typography.body-md}"
-  top-nav:
+    typography: "{typography.body}"
+    textDecoration: underline
+  field-label:
+    textColor: "{colors.ink}"
+    typography: "{typography.caption-strong}"
+    marginBottom: "{spacing.xxs}"
+  input-field:
     backgroundColor: "{colors.canvas}"
     textColor: "{colors.ink}"
-    typography: "{typography.nav-link}"
-    height: 64px
-  hero-band:
+    border: "1px solid {colors.border-input}"
+    typography: "{typography.body}"
+    rounded: "{rounded.xs}"
+    padding: 12px 14px
+  input-field-focus:
+    backgroundColor: "{colors.canvas}"
+    border: "1px solid {colors.ink-strong}"
+    outline: "2px solid {colors.focus-ring}"
+    outlineOffset: 1px
+  input-field-error:
+    border: "1px solid {colors.alert}"
+    helperTextColor: "{colors.alert}"
+    helperTypography: "{typography.caption}"
+  select-field:
     backgroundColor: "{colors.canvas}"
     textColor: "{colors.ink}"
-    typography: "{typography.display-xl}"
-    padding: 96px
-  hero-illustration-card:
-    backgroundColor: "{colors.surface-soft}"
+    border: "1px solid {colors.border-input}"
+    rounded: "{rounded.xs}"
+    padding: 12px 40px 12px 14px
+    chevronColor: "{colors.ink-strong}"
+  calendar-grid:
+    backgroundColor: "{colors.canvas}"
+    border: "1px solid {colors.hairline}"
+    internalDividers: "1px solid {colors.hairline}"
+    rounded: "{rounded.none}"
+  calendar-weekday-header:
+    textColor: "{colors.ink-muted}"
+    typography: "{typography.eyebrow}"
+    padding: "{spacing.xs} 0"
+  calendar-day:
+    backgroundColor: "{colors.canvas}"
     textColor: "{colors.ink}"
-    rounded: "{rounded.xl}"
-  feature-card-pink:
-    backgroundColor: "{colors.brand-pink}"
+    typography: "{typography.body-compact}"
+    minSize: 44px
+  calendar-day-weekend:
+    backgroundColor: "{colors.canvas-alt}"
+    textColor: "{colors.ink-muted}"
+  calendar-day-holiday:
+    backgroundColor: "{colors.tint-holiday}"
+    textColor: "{colors.ink}"
+    indicatorDot: "{colors.status-holiday}"
+  calendar-day-pto-approved:
+    backgroundColor: "{colors.tint-approved}"
+    textColor: "{colors.ink}"
+    bottomBar: "3px solid {colors.status-approved}"
+  calendar-day-pto-pending:
+    backgroundColor: "{colors.tint-pending}"
+    textColor: "{colors.ink}"
+    bottomBar: "3px dashed {colors.status-pending}"
+  calendar-day-blackout:
+    backgroundColor: "{colors.tint-blackout}"
+    textColor: "{colors.ink-subtle}"
+    pattern: diagonal-hatch
+  calendar-day-selected:
+    backgroundColor: "{colors.primary}"
     textColor: "{colors.on-primary}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.xl}"
-    padding: 32px
-  feature-card-teal:
-    backgroundColor: "{colors.brand-teal}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.xl}"
-    padding: 32px
-  feature-card-lavender:
-    backgroundColor: "{colors.brand-lavender}"
-    textColor: "{colors.ink}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.xl}"
-    padding: 32px
-  feature-card-peach:
-    backgroundColor: "{colors.brand-peach}"
-    textColor: "{colors.ink}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.xl}"
-    padding: 32px
-  feature-card-ochre:
-    backgroundColor: "{colors.brand-ochre}"
-    textColor: "{colors.ink}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.xl}"
-    padding: 32px
-  feature-card-cream:
-    backgroundColor: "{colors.surface-card}"
-    textColor: "{colors.ink}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.xl}"
-    padding: 32px
-  product-mockup-card:
+  balance-card:
     backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.lg}"
-    padding: 24px
-  testimonial-card:
-    backgroundColor: "{colors.surface-card}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.lg}"
-    padding: 24px
-  pricing-tier-card:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.title-lg}"
-    rounded: "{rounded.lg}"
-    padding: 32px
-  pricing-tier-card-featured:
-    backgroundColor: "{colors.brand-teal}"
-    textColor: "{colors.on-dark}"
-    typography: "{typography.title-lg}"
-    rounded: "{rounded.lg}"
-    padding: 32px
-  text-input:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    typography: "{typography.body-md}"
-    rounded: "{rounded.md}"
-    padding: 12px 16px
-    height: 44px
-  text-input-focused:
-    backgroundColor: "{colors.canvas}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.md}"
-  category-tab:
-    backgroundColor: transparent
-    textColor: "{colors.muted}"
-    typography: "{typography.nav-link}"
+    border: "1px solid {colors.hairline}"
+    rounded: "{rounded.sm}"
+    padding: "{spacing.lg}"
+    labelTypography: "{typography.eyebrow}"
+    valueTypography: "{typography.data-display}"
+    valueColor: "{colors.ink-strong}"
+  balance-meter:
+    trackColor: "{colors.canvas-alt}"
+    fillColor: "{colors.primary}"
+    height: 6px
     rounded: "{rounded.pill}"
-    padding: 8px 16px
-  category-tab-active:
-    backgroundColor: "{colors.surface-card}"
+  suggestion-card:
+    backgroundColor: "{colors.canvas-alt}"
     textColor: "{colors.ink}"
-    typography: "{typography.nav-link}"
-    rounded: "{rounded.pill}"
-  badge-pill:
-    backgroundColor: "{colors.surface-card}"
-    textColor: "{colors.ink}"
-    typography: "{typography.caption}"
-    rounded: "{rounded.pill}"
-    padding: 4px 12px
-  expert-card:
+    rounded: "{rounded.sm}"
+    padding: "{spacing.lg}"
+  suggestion-card-best:
     backgroundColor: "{colors.canvas}"
+    border: "2px solid {colors.ink-strong}"
+    rounded: "{rounded.sm}"
+    padding: "{spacing.lg}"
+    badgeBackground: "{colors.primary}"
+    badgeTextColor: "{colors.on-primary}"
+    badgeTypography: "{typography.eyebrow}"
+  status-chip-approved:
+    backgroundColor: "{colors.tint-approved}"
+    textColor: "{colors.status-approved}"
+    typography: "{typography.caption-strong}"
+    rounded: "{rounded.pill}"
+    padding: 4px 10px
+  status-chip-pending:
+    backgroundColor: "{colors.tint-pending}"
+    textColor: "{colors.status-pending}"
+    typography: "{typography.caption-strong}"
+    rounded: "{rounded.pill}"
+    padding: 4px 10px
+  status-chip-denied:
+    backgroundColor: "{colors.tint-denied}"
+    textColor: "{colors.status-denied}"
+    typography: "{typography.caption-strong}"
+    rounded: "{rounded.pill}"
+    padding: 4px 10px
+  request-table-header:
+    textColor: "{colors.ink-muted}"
+    typography: "{typography.eyebrow}"
+    borderBottom: "1px solid {colors.ink-strong}"
+    padding: "{spacing.sm} 0"
+  request-table-row:
     textColor: "{colors.ink}"
-    typography: "{typography.title-md}"
-    rounded: "{rounded.lg}"
-    padding: 24px
-  cta-band-illustrated:
-    backgroundColor: "{colors.surface-soft}"
+    typography: "{typography.body-compact}"
+    borderBottom: "1px solid {colors.hairline}"
+    padding: "{spacing.md} 0"
+  toast-success:
+    backgroundColor: "{colors.ink-strong}"
+    textColor: "{colors.ink-on-dark}"
+    typography: "{typography.body-compact}"
+    rounded: "{rounded.sm}"
+    padding: "{spacing.sm} {spacing.md}"
+  alert-banner-error:
+    backgroundColor: "{colors.tint-denied}"
     textColor: "{colors.ink}"
-    typography: "{typography.display-md}"
-    rounded: "{rounded.xl}"
-    padding: 80px
+    borderLeft: "3px solid {colors.alert}"
+    typography: "{typography.body-compact}"
+    padding: "{spacing.sm} {spacing.md}"
+  modal:
+    backgroundColor: "{colors.canvas}"
+    rounded: "{rounded.sm}"
+    shadow: "0 8px 32px rgba(0, 0, 0, 0.24)"
+    overlayColor: "{colors.surface-overlay}"
+    padding: "{spacing.xl}"
+  empty-state:
+    textColor: "{colors.ink-muted}"
+    typography: "{typography.body}"
+    padding: "{spacing.section} {spacing.lg}"
+    alignment: center
   footer:
-    backgroundColor: "{colors.surface-soft}"
-    textColor: "{colors.body}"
-    typography: "{typography.body-sm}"
-    padding: 80px
+    backgroundColor: "{colors.surface-footer}"
+    textColor: "{colors.ink-on-dark}"
+    linkColor: "{colors.ink-on-dark}"
+    linkTypography: "{typography.footer-link}"
+    mutedTextColor: "{colors.ink-on-dark-muted}"
+    padding: "{spacing.section} {spacing.lg}"
 ---
+
+# Patagonia — PTO Optimizer Design System
 
 ## Overview
 
-Clay.com is the most playful B2B SaaS interface in the GTM-data category. The base atmosphere is **cream-tinted white canvas** (`{colors.canvas}` — #fffaf0) holding dark-navy ink type and **3D-rendered claymation illustrations** (mountains, mascot characters, peach/ochre/lavender landscapes) as the dominant brand voltage. Where most data-platform brands play it cool with grids and gradients, Clay leans hard into hand-crafted-looking 3D illustrations and saturated single-color feature cards.
+Patagonia.com runs on one of the most disciplined chrome palettes in retail: black, white, and a narrow band of grays. The storefront's `meta theme-color` is literally `black`. Photography carries all emotion; the interface around it is deliberately mute — black text on white canvas, black CTAs, hairline dividers, a black footer, and almost no radius anywhere. The label art (the Fitz Roy skyline at sunset) is the only sanctioned burst of color in the brand's visual world, and it never leaks into buttons or nav.
 
-Type voice runs **Plain Black** (or substituted with Inter weight 500-600) — a custom rounded display face used at very large sizes (72px hero) with negative letter-spacing. Body type uses Inter at standard weights. The display weight stays at 500, never bolder — the rounded character of the typeface gives it warmth without needing weight.
+The PTO Optimizer inherits that discipline and adapts it for a data-dense internal tool. Where the storefront uses full-bleed imagery, the app uses whitespace and structure. Where the storefront saves color for photographs, the app saves color for **meaning**: request status (approved / pending / denied), holidays, and data visualization. Everything a user can click is black. Everything the system is telling them is a status tint. Nothing is decorative.
 
-Component voltage comes from **saturated single-color feature cards** in a 6-color palette: hot pink, deep teal, lavender, peach, ochre, and cream-card. Each card shows product UI fragments at small scale — Claygent agent runs, sequencer flows, CRM enrichment outputs. The colored card IS the primary visual element on every long-scroll page.
+The cultural anchor is *Let My People Go Surfing* — this is a tool that helps people leave the building, so it should feel like Patagonia gear: functional, durable, zero flash. Dense but never cramped, honest about numbers, quiet enough that a balance of `14.5 days` in `{typography.data-display}` is the loudest thing on the screen.
 
 **Key Characteristics:**
-- Cream-tinted white canvas (`{colors.canvas}` — #fffaf0). The warmth differentiates Clay from cool-gray competitor sites.
-- Dark navy/black primary CTAs (`{colors.primary}` — #0a0a0a). Buttons rounded `{rounded.md}` (12px) — friendly modern but not pill.
-- 6-color saturated feature card palette: `{colors.brand-pink}`, `{colors.brand-teal}`, `{colors.brand-lavender}`, `{colors.brand-peach}`, `{colors.brand-ochre}`, `{colors.surface-card}` (cream).
-- 3D claymation illustrations (mountains, characters, abstract shapes) as full-bleed hero artifacts — the brand's most-recognized visual element.
-- Custom rounded Plain Black display typeface at 500 weight with -1 to -2.5px letter-spacing on display sizes.
-- Border radius is generous: `{rounded.md}` (12px) for buttons + inputs, `{rounded.lg}` (16px) for content cards, `{rounded.xl}` (24px) for feature cards. The bigger radius matches the rounded display type's character.
-- Product UI fragments embedded inside colored cards at small scale — agent run logs, sequencer flows, enrichment results.
-- Section rhythm `{spacing.section}` (96px) between major bands.
-- Footer is cream-tinted (`{colors.surface-soft}`) — Clay does NOT use a dark footer. Even the closing band stays warm-light.
+- Black is the only interactive color: `{colors.primary}` carries every CTA, selected calendar day, active nav state, and meter fill — exactly as black carries "Add to Cart" on the storefront
+- Ridgeway Sans everywhere (Patagonia's custom grotesque, introduced 2025); Belwe Bold appears only in the `{typography.wordmark}` lockup, mirroring the logo/heritage split on patagonia.com
+- Squared geometry: buttons and inputs sit at `{rounded.xs}` (2px), cards at `{rounded.sm}` (4px) max — pills are reserved for status chips and meters
+- Flat elevation: hairlines (`{colors.hairline}`) do the separating; the only shadow in the system belongs to `{component.modal}`
+- Status semantics own the color budget: approved green, pending amber, denied red, holiday blue — each paired with a soft tint for calendar fills so the grid stays readable at a glance
+- The Fitz Roy accent ramp (`{colors.fitz-orange}` → `{colors.fitz-indigo}`) is sampled from the label sunset and is legal **only** in charts and data visualization — never in chrome
+- Black footer on white canvas, black pencil banner up top: the page is bookended in ink just like the storefront
 
 ## Colors
 
-### Brand & Accent
-- **Primary** (`{colors.primary}` — #0a0a0a): All primary CTAs, h1/h2 ink type. Near-black with slight warmth.
-- **Brand Pink** (`{colors.brand-pink}` — #ff4d8b): Hot-pink feature card surface. Sequencer / outbound feature pages.
-- **Brand Teal** (`{colors.brand-teal}` — #1a3a3a): Deep teal-green feature card. Often the featured pricing tier.
-- **Brand Lavender** (`{colors.brand-lavender}` — #b8a4ed): Soft lavender feature card.
-- **Brand Peach** (`{colors.brand-peach}` — #ffb084): Warm peach feature card.
-- **Brand Ochre** (`{colors.brand-ochre}` — #e8b94a): Mustard / ochre feature card and illustration accents.
-- **Brand Mint** (`{colors.brand-mint}` — #a4d4c5): Mint accent on illustrations and small badges.
-- **Brand Coral** (`{colors.brand-coral}` — #ff6b5a): Coral accent for highlights.
+> **Source pages:** patagonia.com home, shop landing (`/shop/mens`, `/shop/web-specials`), and the global nav/footer chrome shared across them. Storefront values that could not be pulled from a live stylesheet are close approximations and are listed in **Known Gaps** — true them up against the internal brand guide before locking `v1`.
+
+### Brand & Chrome
+- **Ink Black** (`{colors.primary}`, `{colors.ink-strong}`, `{colors.surface-footer}` — `#000000`): The brand's working color. Primary buttons, the pencil banner, the footer, selected calendar days, active nav underlines. When the app wants you to act, it goes black — same rule as the storefront.
+- **Hover Charcoal** (`{colors.primary-hover}` — `#333333`): The single hover shift for black surfaces. No color change on hover, only a lightening — interaction stays monochrome.
+- **Pure White** (`{colors.canvas}`, `{colors.on-primary}` — `#ffffff`): Every page background and every label on black. White is a full partner, not a void.
 
 ### Surface
-- **Canvas** (`{colors.canvas}` — #fffaf0): The default page floor. Cream-tinted white.
-- **Surface Soft** (`{colors.surface-soft}` — #faf5e8): Footer and CTA-band background.
-- **Surface Card** (`{colors.surface-card}` — #f5f0e0): Cream feature cards, testimonial cards.
-- **Surface Strong** (`{colors.surface-strong}` — #ebe6d6): Stronger cream for emphasized bands.
-- **Surface Dark** (`{colors.surface-dark}` — #0a1a1a): Dark teal-tinted near-black for occasional dark cards (rare).
-- **Surface Dark Elevated** (`{colors.surface-dark-elevated}` — #1a2a2a): Elevated dark cards.
-- **Hairline** (`{colors.hairline}` — #e5e5e5): 1px borders on cards and inputs.
+- **Canvas** (`{colors.canvas}` — `#ffffff`): Default app background, cards, inputs, calendar weekdays.
+- **Canvas Alt** (`{colors.canvas-alt}` — `#f5f5f5`): Weekend calendar cells, secondary suggestion cards, meter tracks — the quiet gray Patagonia uses for utility blocks.
+- **Footer Black** (`{colors.surface-footer}` — `#000000`): Footer and pencil banner. The app is framed in ink top and bottom.
+- **Overlay** (`{colors.surface-overlay}` — `rgba(0, 0, 0, 0.55)`): Modal scrim only.
 
 ### Text
-- **Ink** (`{colors.ink}` — #0a0a0a): Headlines and primary text.
-- **Body Strong** (`{colors.body-strong}` — #1a1a1a): Emphasized body, lead paragraphs.
-- **Body** (`{colors.body}` — #3a3a3a): Default running-text.
-- **Muted** (`{colors.muted}` — #6a6a6a): Sub-headings, breadcrumbs, footer body.
-- **Muted Soft** (`{colors.muted-soft}` — #9a9a9a): Captions, fine-print.
-- **On Primary / On Dark** (`{colors.on-primary}` — #ffffff): Text on primary buttons + dark feature cards (teal).
+- **Body Ink** (`{colors.ink}` — `#222222`): Default text. Near-black, softened one step from pure black so long tables read comfortably.
+- **Strong Ink** (`{colors.ink-strong}` — `#000000`): Headings, data values, table header rules.
+- **Muted** (`{colors.ink-muted}` — `#666666`) and **Subtle** (`{colors.ink-subtle}` — `#8c8c8c`): Secondary metadata and disabled/blackout text. Subtle is the floor — nothing lighter carries words.
+- **On Dark** (`{colors.ink-on-dark}` — `#ffffff`, muted `#b3b3b3`): Footer and toast text.
 
-### Semantic
-- **Success** (`{colors.success}` — #22c55e): Success states.
-- **Warning** (`{colors.warning}` — #f59e0b): Warning callouts.
-- **Error** (`{colors.error}` — #ef4444): Validation errors.
+### Status & Signal
+- **Approved** (`{colors.status-approved}` — `#2c6e49`): Alpine green. Approved requests, confirmed days.
+- **Pending** (`{colors.status-pending}` — `#b45309`): Dry-amber. Awaiting manager action.
+- **Denied / Alert** (`{colors.status-denied}`, `{colors.alert}` — `#cc0000`): The lone red, in the spirit of the storefront's sale-price red — used for denials, blackout violations, and destructive actions. Never decorative.
+- **Holiday** (`{colors.status-holiday}` — `#0165a5`): Company holidays and office closures; doubles as the `{colors.focus-ring}` for keyboard focus.
+- Each status has a matching **tint** (`{colors.tint-approved}`, `{colors.tint-pending}`, `{colors.tint-denied}`, `{colors.tint-holiday}`, `{colors.tint-blackout}`) for calendar fills and chips. Text on a tint is always the full-strength status color or `{colors.ink}` — never white.
+
+### Fitz Roy Accent Ramp (data visualization only)
+Sampled from the label's sunset skyline: `{colors.fitz-orange}` `#fb6526`, `{colors.fitz-peach}` `#f9a971`, `{colors.fitz-sky}` `#0165a5`, `{colors.fitz-lavender}` `#a68deb`, `{colors.fitz-indigo}` `#3b2089`. Use in this order for categorical series (PTO type breakdowns, team coverage charts, year-over-year comparisons). These hexes are community-sampled from label art, not pulled from the brand guide — see Known Gaps. The rule is absolute: **the ramp never touches buttons, nav, links, or text.**
+
+### Hairlines & Borders
+- **Hairline** (`{colors.hairline}` — `#e5e5e5`): Card edges, table rows, nav bottom, calendar grid lines. The system's primary separator.
+- **Border Strong** (`{colors.border-strong}` — `#cccccc`): Disabled button fill and heavier structural rules.
+- **Border Input** (`{colors.border-input}` — `#8c8c8c`): Resting input stroke — dark enough to read as fillable, one step below full ink which is reserved for focus.
 
 ## Typography
 
 ### Font Family
-The system runs **Plain Black** (a custom rounded display face) for headlines and **Inter** for body, navigation, and UI. Plain Black at weight 500 with negative letter-spacing handles every display headline; Inter handles the rest. The fallback stack walks `Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif` for both.
+- **Ridgeway Sans** — Patagonia's first custom grotesque, introduced in early 2025 and named for a former colleague. It is the app's only working face: headings, body, data, buttons, captions. Proprietary; request desktop/web files and the licensed weight set from Brand/Creative. Fallback stack: `Helvetica Neue, Helvetica, Arial, sans-serif`.
+- **Belwe Bold** — the wordmark face since 1973. In the app it appears exactly once: the `{typography.wordmark}` lockup in `{component.global-nav}` ("Patagonia · PTO Optimizer" or equivalent). It never sets headings, UI copy, or data. Belwe is a licensed commercial face (Bitstream); confirm coverage before shipping it in a web bundle, or render the lockup as an SVG asset.
 
 ### Hierarchy
-
-| Token | Size | Weight | Line Height | Letter Spacing | Use |
-|---|---|---|---|---|---|
-| `{typography.display-xl}` | 72px | 500 | 1.0 | -2.5px | Homepage h1 ("Go to market with unique data") — Plain Black |
-| `{typography.display-lg}` | 56px | 500 | 1.05 | -2px | Section heads — Plain Black |
-| `{typography.display-md}` | 40px | 500 | 1.1 | -1px | Sub-section heads, product names |
-| `{typography.display-sm}` | 32px | 500 | 1.15 | -0.5px | CTA-band heads, feature card titles |
-| `{typography.title-lg}` | 24px | 600 | 1.3 | -0.3px | Pricing plan names, larger feature titles |
-| `{typography.title-md}` | 18px | 600 | 1.4 | 0 | Card titles, intro paragraphs |
-| `{typography.title-sm}` | 16px | 600 | 1.4 | 0 | Small card titles, list labels |
-| `{typography.body-md}` | 16px | 400 | 1.55 | 0 | Default running-text |
-| `{typography.body-sm}` | 14px | 400 | 1.55 | 0 | Footer body, fine-print |
-| `{typography.caption}` | 13px | 500 | 1.4 | 0 | Badge labels, captions |
-| `{typography.caption-uppercase}` | 12px | 600 | 1.4 | 1.5px | Section labels, "FEATURED" badges |
-| `{typography.button}` | 14px | 600 | 1.0 | 0 | Standard button labels |
-| `{typography.nav-link}` | 14px | 500 | 1.4 | 0 | Top-nav menu items |
+| Token | Face | Size / Weight | Use |
+|---|---|---|---|
+| `{typography.wordmark}` | Belwe Bold | 24 / 700 | Nav lockup only |
+| `{typography.hero-display}` | Ridgeway Sans | 48 / 700 | Dashboard greeting, empty-state hero |
+| `{typography.display-lg}` | Ridgeway Sans | 36 / 700 | Page titles |
+| `{typography.heading-md}` | Ridgeway Sans | 28 / 700 | Section heads ("Your Balance", "Suggested Windows") |
+| `{typography.heading-sm}` | Ridgeway Sans | 20 / 500 | Card titles, modal titles |
+| `{typography.eyebrow}` | Ridgeway Sans | 12 / 700 / +1.5px / caps | Labels above data, table headers, weekday row |
+| `{typography.body}` / `{typography.body-strong}` | Ridgeway Sans | 16 / 400–500 | Default copy, form values |
+| `{typography.body-compact}` | Ridgeway Sans | 14 / 400 | Tables, calendar cells, toasts |
+| `{typography.data-display}` / `{typography.data-md}` | Ridgeway Sans | 40–24 / 700 | Balance numbers — set with tabular numerals (`font-variant-numeric: tabular-nums`) |
+| `{typography.caption}` / `{typography.caption-strong}` | Ridgeway Sans | 13 / 400–500 | Helper text, chips, field labels |
+| `{typography.button}` / `{typography.button-compact}` | Ridgeway Sans | 16–14 / 500 | CTAs — sentence case, never uppercase |
+| `{typography.nav-link}` / `{typography.footer-link}` | Ridgeway Sans | 14 / 400 | Chrome links |
+| `{typography.fine-print}` | Ridgeway Sans | 12 / 400 | Policy footnotes, accrual math disclosures |
 
 ### Principles
-Plain Black at weight 500 + negative letter-spacing IS the brand voice. Going to weight 700 reads as bombastic; the rounded character of the typeface adds warmth that bolder weight would flatten.
-
-The body-vs-display split is functional: Plain Black for Plain Black moments (headlines), Inter for everything else (running text, UI, buttons). Mixing them is a system violation.
+- The weight ladder is 400 / 500 / 700. Nothing lighter than 400 carries text; 700 is reserved for headings and data values so bold always means "this is the point."
+- Display sizes tighten (`-0.5px` to `-0.25px`); body and below sit at neutral tracking. Only `{typography.eyebrow}` tracks open, and only in caps.
+- Numbers are content. PTO balances, day counts, and dates get `{typography.data-display}` / `{typography.data-md}` with tabular numerals so columns and meters align.
+- Sentence case everywhere except eyebrows. The storefront's voice is plainspoken; buttons say "Request time off," not "REQUEST TIME OFF."
 
 ### Note on Font Substitutes
-If Plain Black is unavailable, **Inter** at weight 500 with -0.05em letter-spacing is a usable approximation. **Söhne Breit** at weight Buch is an alternative if licensed. **Recoleta** at weight 500 carries similar rounded-display warmth.
+If Ridgeway Sans files are unavailable in an environment, the Helvetica-family fallback preserves proportions closely enough for layout work; `Inter` or `Roboto` at matched sizes are acceptable last-resort stand-ins for prototypes only. For the Belwe wordmark, there is no good free substitute — commonly suggested stand-ins (Cormorant Garamond, Playfair Display, Libre Baskerville) miss its Kuenstler weight and warmth. Prefer shipping the lockup as an approved SVG from Brand rather than substituting.
 
 ## Layout
 
 ### Spacing System
-- **Base unit:** 4px.
-- **Tokens:** `{spacing.xxs}` 4px · `{spacing.xs}` 8px · `{spacing.sm}` 12px · `{spacing.md}` 16px · `{spacing.lg}` 24px · `{spacing.xl}` 32px · `{spacing.xxl}` 48px · `{spacing.section}` 96px.
-- **Section padding:** `{spacing.section}` (96px) between major editorial bands.
-- **Card internal padding:** `{spacing.xl}` (32px) for feature cards and pricing tiers; `{spacing.lg}` (24px) for testimonial and product mockup cards.
+An 8px base with a 4px half-step: `{spacing.xxs}` 4 → `{spacing.xs}` 8 → `{spacing.sm}` 12 → `{spacing.md}` 16 → `{spacing.lg}` 24 → `{spacing.xl}` 32 → `{spacing.xxl}` 48 → `{spacing.section}` 64. The app is denser than the storefront's marketing pages — section rhythm is 64px, not 80+ — because this is a work tool, not a campaign. Card interiors default to `{spacing.lg}`; form fields stack at `{spacing.md}`; page sections separate at `{spacing.section}`.
 
 ### Grid & Container
-- **Max content width:** ~1280px centered.
-- **Editorial body:** Single 12-column grid; hero often uses 7/5 split (h1 left, illustration right).
-- **Feature card grids:** 3-up at desktop, 2-up at tablet, 1-up at mobile.
-- **Pricing grid:** 3-4 up at desktop, 1-up at mobile.
+- 12-column grid, `{spacing.lg}` (24px) gutters, content max-width **1440px**, page padding `{spacing.lg}` (desktop) / `{spacing.md}` (mobile).
+- Dashboard reference layout: balance cards in a 3-up row, calendar taking 8 columns with the optimizer suggestion rail in the remaining 4.
+- Tables and the calendar run full container width; forms cap at ~560px for comfortable line length.
 
 ### Whitespace Philosophy
-Clay uses generous whitespace around big rounded display headlines and saturated feature cards. The cream canvas + colored cards + 3D illustrations create a playful warmth that competing data-platform sites lack.
+The storefront lets photography breathe; the app lets **numbers** breathe. Balance values get empty space around them instead of borders-on-borders. When a region feels crowded, remove a rule line before shrinking a margin — and switch surface (`{colors.canvas}` ↔ `{colors.canvas-alt}`) before adding either.
 
 ## Elevation & Depth
 
-| Level | Treatment | Use |
-|---|---|---|
-| Flat | No shadow, no border | Body sections, top nav, hero |
-| Soft hairline | 1px `{colors.hairline}` border | Inputs, small content cards |
-| Saturated card | Brand pink/teal/lavender/peach/ochre fill — no shadow | Feature cards |
-| Cream card | `{colors.surface-card}` background — no shadow | Testimonial, secondary cards |
-| Subtle drop shadow | Faint shadow at low alpha | Hover-elevated states (rare) |
-
-The system uses no heavy shadows. Depth comes from the saturated color contrast between cream canvas and bright feature cards.
+Patagonia chrome is flat. Separation comes from hairlines and surface swaps, not shadows:
+- Level 0 — page: `{colors.canvas}`, no elevation.
+- Level 0.5 — cards, calendar, tables: `1px {colors.hairline}` border, no shadow.
+- Level 1 — `{component.modal}` only: `0 8px 32px rgba(0, 0, 0, 0.24)` over `{colors.surface-overlay}`. This is the system's single shadow.
+- Toasts float by contrast (black on white), not by blur.
 
 ### Decorative Depth
-- **3D claymation illustrations** — mountains, characters, mascots rendered in a hand-crafted 3D style. The brand's most-recognized depth element. Not a token — these are illustrated assets.
-- **Mascot characters** appear as inline figures in feature cards and CTAs.
+None. No gradients, no glassmorphism, no layered translucency. If a surface needs emphasis, it gets a 2px black border (`{component.suggestion-card-best}`) — the same move the storefront makes with black CTAs on white.
 
 ## Shapes
 
 ### Border Radius Scale
+- `{rounded.none}` 0px — calendar grid, tables, pencil banner, footer: structural surfaces stay square.
+- `{rounded.xs}` 2px — buttons and inputs. Patagonia CTAs read as near-square; 2px keeps corners from pixel-snagging without going soft.
+- `{rounded.sm}` 4px — cards, modals, toasts.
+- `{rounded.md}` 8px / `{rounded.lg}` 16px — reserved; use only if a future surface genuinely needs it (avatar containers, image thumbnails).
+- `{rounded.pill}` — status chips and `{component.balance-meter}` only. A pill always means "read me, don't click me."
 
-| Token | Value | Use |
-|---|---|---|
-| `{rounded.xs}` | 6px | Small badges, dropdown items |
-| `{rounded.sm}` | 8px | Small buttons, hairline-border accent |
-| `{rounded.md}` | 12px | Standard CTA buttons, text inputs |
-| `{rounded.lg}` | 16px | Content cards, testimonial cards, pricing tiers |
-| `{rounded.xl}` | 24px | Feature cards (the saturated brand-color cards) |
-| `{rounded.pill}` | 9999px | Category tabs, badge pills |
-| `{rounded.full}` | 9999px / 50% | Avatars, icon buttons |
+### Geometry
+Blocks are rectangular and grid-locked. The calendar is the app's visual signature: a hairline lattice of perfect squares where color fills — not shapes — carry state. Any photography (login screen, empty states) runs edge-to-edge and uncropped by radius, per storefront convention.
 
 ## Components
 
-### Top Navigation
-
-**`top-nav`** — Cream nav bar pinned to top. 64px tall, `{colors.canvas}` background. Carries the Clay logo + wordmark at left, primary horizontal menu (Product, Solutions, Resources, Pricing, Customers) center, right-side cluster with "Sign in" + "Try free" `{component.button-primary}`. Menu items in `{typography.nav-link}` (Inter 14px / 500).
+### Top Navigation & Pencil Banner
+`{component.pencil-banner}` (black, 40px) carries one line — company holiday reminders, enrollment deadlines — in `{typography.body-compact}` white. Below it, `{component.global-nav}` (white, 64px, hairline bottom): `{typography.wordmark}` lockup left; `{component.nav-link}` items (Dashboard, Calendar, Requests, Team) center-left; user menu right. Active section takes `{component.nav-link-active}`'s 2px black underline — the storefront's active-state grammar.
 
 ### Buttons
+- `{component.button-primary}` — black fill, white label, 2px radius, `14px 24px` padding (44px+ target). One per view region. Hover shifts to `{colors.primary-hover}`; disabled drops to `{colors.border-strong}` fill.
+- `{component.button-secondary}` — white fill, 1px black border. Pairs with primary for cancel/back.
+- `{component.button-ghost-danger}` — text-only red for "Cancel request" / "Delete draft." Red never gets a filled button; denial is signal, not celebration.
+- `{component.text-link}` — underlined ink, storefront-style. Links are always underlined; color alone never marks a link.
 
-**`button-primary`** — Background `{colors.primary}` (near-black), text `{colors.on-primary}` (white), type `{typography.button}` (Inter 14px / 600), padding 12px × 20px, height 44px, rounded `{rounded.md}` (12px).
+### Calendar
+The core surface. `{component.calendar-grid}` is a hairline lattice; `{component.calendar-weekday-header}` runs `{typography.eyebrow}`. Day states, in visual priority order: `{component.calendar-day-selected}` (black/white) > `{component.calendar-day-blackout}` (hatched gray) > `{component.calendar-day-pto-approved}` (green tint + 3px solid bottom bar) > `{component.calendar-day-pto-pending}` (amber tint + 3px dashed bar) > `{component.calendar-day-holiday}` (blue tint + dot) > `{component.calendar-day-weekend}` (`{colors.canvas-alt}`) > `{component.calendar-day}`. Solid bar = confirmed, dashed = provisional — state survives colorblind viewing and grayscale printing.
 
-**`button-secondary`** — Cream button with hairline outline. Background `{colors.canvas}`, text `{colors.ink}`, 1px hairline border.
-
-**`button-on-color`** — White button used over saturated brand-color feature cards. Same shape as primary but inverted (white background, ink text).
-
-**`button-text-link`** — Inline text button, no background. Used for "Sign in" and inline link CTAs.
-
-**`text-link`** — Inline body links in `{colors.ink}` with underline.
-
-### Cards & Containers
-
-**`hero-band`** — Cream-canvas hero with 7-5 grid: h1 + sub-headline + button row on the left, 3D claymation illustration on the right. Vertical padding `{spacing.section}` (96px).
-
-**`hero-illustration-card`** — Right-side artifact holding 3D claymation illustration (mountains, mascot character, abstract shapes). Background `{colors.surface-soft}`, rounded `{rounded.xl}` (24px). The illustration IS the artifact.
-
-**`feature-card-pink`** / **`feature-card-teal`** / **`feature-card-lavender`** / **`feature-card-peach`** / **`feature-card-ochre`** — Saturated single-color feature cards. Background varies per variant; rounded `{rounded.xl}` (24px); padding `{spacing.xl}` (32px). Each card carries an h3 in `{typography.title-md}`, a body description, and a product UI fragment or mascot illustration. Text color flips to `{colors.on-dark}` (white) on pink and teal cards, `{colors.ink}` (dark) on lavender/peach/ochre cards (the lighter saturations have enough contrast for dark text).
-
-**`feature-card-cream`** — Lower-key feature card variant on `{colors.surface-card}`. Used for less-emphasized features that don't warrant a saturated color.
-
-**`product-mockup-card`** — Card showing actual Clay product UI (Claygent agent runs, sequencer flows, CRM enrichment tables). Background `{colors.canvas}` with hairline border, rounded `{rounded.lg}`, padding `{spacing.lg}` (24px).
-
-**`testimonial-card`** — Customer quote cards. Background `{colors.surface-card}` (cream), rounded `{rounded.lg}`, padding `{spacing.lg}` (24px). Top row has avatar + name + role; below sits the testimonial in `{typography.body-md}`.
-
-**`pricing-tier-card`** — Standard tier card. Background `{colors.canvas}` with hairline, rounded `{rounded.lg}`, padding `{spacing.xl}` (32px).
-
-**`pricing-tier-card-featured`** — The featured tier flips to `{colors.brand-teal}` (deep teal-green). The teal surface IS the featured signal.
-
-**`expert-card`** — Used on /experts page. Background `{colors.canvas}` with hairline, rounded `{rounded.lg}`, padding `{spacing.lg}`. Carries an avatar at top, expert name, specialization, and a "Book session" link.
+### Cards & Data
+- `{component.balance-card}` — eyebrow label ("Available PTO"), `{typography.data-display}` value, `{component.balance-meter}` beneath (black fill on gray track), `{typography.caption}` accrual note.
+- `{component.suggestion-card}` — the optimizer's output: gray blocks listing candidate windows ("Take Jul 2–3, get 9 days off for 4 days PTO") with day-math in `{typography.data-md}`. The top recommendation upgrades to `{component.suggestion-card-best}`: white, 2px black border, black "Best value" eyebrow badge.
+- `{component.request-table-header}` + `{component.request-table-row}` — eyebrow headers over a 1px black rule; rows separate on hairlines with a `{component.status-chip-*}` in the status column.
 
 ### Inputs & Forms
+`{component.field-label}` above every control — no floating labels, no placeholder-as-label. `{component.input-field}` and `{component.select-field}` share the 2px-radius, gray-stroke resting state; focus swaps to a black border plus the `{colors.focus-ring}` blue outline (the app's only non-black interactive color, earned by accessibility). Errors stroke red with `{typography.caption}` helper text below. Date ranges compose two inputs joined by an em dash, opening the calendar as picker.
 
-**`text-input`** — Background `{colors.canvas}`, text `{colors.ink}`, type `{typography.body-md}`, rounded `{rounded.md}` (12px), padding 12px × 16px, height 44px. 1px hairline border.
+### Status & Feedback
+`{component.status-chip-approved|pending|denied}` — tinted pills with full-strength status text. `{component.toast-success}` — black bar, bottom-left, auto-dismiss. `{component.alert-banner-error}` — red-tinted banner, 3px red left rule, for blocking problems (insufficient balance, blackout conflict). `{component.empty-state}` — centered muted copy with a single primary button; photography optional.
 
-**`text-input-focused`** — Border thickens to ink for emphasis.
-
-### Tabs / Badges
-
-**`category-tab`** + **`category-tab-active`** — Pill-shaped tabs in sub-nav. Inactive: transparent + muted text. Active: cream-card background + ink text. Padding 8px × 16px.
-
-**`badge-pill`** — Small cream-fill pill labels in `{typography.caption}` (13px / 500), rounded `{rounded.pill}`.
-
-### CTA / Footer
-
-**`cta-band-illustrated`** — Pre-footer "Turn your growth ideas into reality today" band. Background `{colors.surface-soft}`, rounded `{rounded.xl}`, padding 80px. Carries an h2 in `{typography.display-md}`, a sub-line, and a `{component.button-primary}` — usually paired with a 3D illustration of a mascot or scene.
-
-**`footer`** — Cream-tinted footer (NOT dark navy unlike most SaaS sites). Background `{colors.surface-soft}`, text `{colors.body}`. 4-column link list. Vertical padding 80px. Often features a horizon-style 3D mountain illustration at the very bottom — Clay's signature footer mountain.
+### Footer
+`{component.footer}` is storefront-black: white links (Policy handbook, Holiday schedule, HR contact, Ironclad Guarantee-style plain answers), muted gray legal line in `{typography.fine-print}`. Every page ends in ink.
 
 ## Do's and Don'ts
 
 ### Do
-- Anchor every page on the cream canvas (`{colors.canvas}` — #fffaf0). The warm tint differentiates Clay from cool-gray data sites.
-- Use 3D claymation illustrations as hero artifacts. Hand-crafted 3D characters and mountains ARE the brand.
-- Cycle saturated feature cards across the page — pink → teal → lavender → peach → ochre → cream. Repeating the same color twice in a row reads as off-rhythm.
-- Use Plain Black at weight 500 with negative letter-spacing on every display headline.
-- Show product UI fragments inside saturated feature cards. The brand voltage is product-driven, not abstract.
-- Use cream footer (NOT dark). Clay deliberately closes pages with warm cream rather than the standard dark-footer SaaS template.
-- Anchor every band with `{spacing.section}` (96px) vertical rhythm.
+- Keep black the only clickable color — if it's interactive, it's black (or underlined ink).
+- Pair every status color with its tint, and every calendar state with a non-color cue (bar, dash, dot, hatch).
+- Set all balances and day counts in `{typography.data-display}`/`{typography.data-md}` with tabular numerals.
+- Use surface swaps (`{colors.canvas}` ↔ `{colors.canvas-alt}`) before borders, and borders before shadows.
+- Write buttons in sentence case, plainspoken: "Request time off," "Save draft."
+- Reserve the Fitz Roy ramp for charts, applied in the fixed order orange → peach → sky → lavender → indigo.
 
 ### Don't
-- Don't use cool grays for canvas. The cream tint is non-negotiable.
-- Don't use a 7th brand-color card. The 6-color palette is saturated enough.
-- Don't bold display weight beyond 500. Plain Black at 700 reads as bombastic.
-- Don't repeat the same brand-color card twice in a row.
-- Don't replace claymation illustrations with flat vector art. The hand-crafted 3D character IS the brand voice.
-- Don't use a dark footer. The cream footer is part of the system's warm-throughout pacing.
-- Don't add hover state styling beyond what the system already encodes.
+- Don't introduce a "brand accent" button color — the storefront has none, and neither does this app.
+- Don't use `{colors.alert}` red for anything except denial, conflict, and destruction; never for emphasis.
+- Don't round buttons past `{rounded.xs}` or cards past `{rounded.sm}` — pill CTAs read as a different brand entirely.
+- Don't put white text on status tints, or status text on white without its chip.
+- Don't set headings in Belwe — the wordmark is a logo, not a typeface choice.
+- Don't add drop shadows to cards, nav, or calendar; the modal owns the only shadow.
+- Don't let Fitz Roy colors into chrome, chips, or text — data visualization only.
 
 ## Responsive Behavior
 
@@ -505,37 +543,40 @@ The system uses no heavy shadows. Depth comes from the saturated color contrast 
 
 | Name | Width | Key Changes |
 |---|---|---|
-| Mobile | < 768px | Hamburger nav; hero h1 72→36px; hero-illustration-card stacks below; feature grids 1-up; pricing 1-up |
-| Tablet | 768–1024px | Top nav tightens; feature cards 2-up; pricing 2-up |
-| Desktop | 1024–1440px | Full top-nav; 3-up feature cards; 3-up pricing tiers |
-| Wide | > 1440px | Same as desktop with more breathing room; max content 1280px |
+| Phone | ≤ 640px | Single column; calendar switches month-grid → week strip + agenda list; balance cards stack; nav collapses to hamburger + wordmark |
+| Tablet portrait | 641–1023px | 2-up balance cards; calendar full-width with suggestion rail below; tables allow horizontal scroll |
+| Desktop | 1024–1439px | Full 12-col dashboard: 8-col calendar + 4-col rail; 3-up balance cards |
+| Wide | ≥ 1440px | Content locks at 1440px; margins absorb extra width |
 
 ### Touch Targets
-- `{component.button-primary}` at minimum 44 × 44px (matches WCAG AAA).
-- `{component.text-input}` height is 44px.
+- Minimum 44 × 44px everywhere. Calendar day cells hold 44px+ at all breakpoints — on phone the week-strip cells widen rather than shrink.
+- `{component.button-primary}` lands ≈ 44 × 120px; table rows accept full-row tap on mobile with the chip as the visual anchor.
 
 ### Collapsing Strategy
-- Top nav collapses to hamburger at < 768px.
-- Hero 7-5 grid → single-column on mobile.
-- Feature card grids reduce columns rather than scaling.
-- Saturated feature cards retain their colored fill at every breakpoint.
-- Pricing tier cards collapse 4 → 2 → 1.
+- **Nav**: full link row → hamburger sheet at ≤ 640px; wordmark persists, pencil banner truncates to one line with no wrap.
+- **Calendar**: month grid → horizontally scrollable week strip + vertical agenda ("Jul 3 — Approved PTO"). State colors and bars carry over 1:1.
+- **Suggestion rail**: right rail → stacked cards under the calendar; `{component.suggestion-card-best}` always sorts first.
+- **Tables**: column priority Date > Status > Type > Approver; lower-priority columns fold into an expandable row detail.
+
+### Image Behavior
+Photography is optional chrome here — login and empty states only. When used, it runs full-bleed, art-directed crops per breakpoint, `loading="lazy"` except the login hero, and never behind text without a `{colors.surface-overlay}` scrim.
 
 ## Iteration Guide
 
-1. Focus on ONE component at a time. Reference its YAML key (`{component.feature-card-pink}`, `{component.pricing-tier-card-featured}`).
-2. Pick the right brand-color card for the feature: pink for outbound/sequencer, teal for enterprise/featured, lavender for AI-agent products, peach for general SaaS warmth, ochre for community / experts.
-3. Variants of an existing component (`-active`, `-disabled`) live as separate entries.
-4. Use `{token.refs}` everywhere — never inline hex.
-5. Never document hover.
-6. Display headlines stay Plain Black 500 with negative letter-spacing. Body stays Inter 400.
-7. The cream-throughout palette is a system contract — don't add a dark footer.
+1. Work one component at a time and address it by key (`{component.calendar-day-pto-pending}`, `{component.balance-card}`).
+2. State variants live as sibling entries (`-hover`, `-disabled`, `-selected`, `-pending`) — never as prose-only notes.
+3. Reference `{token.refs}` everywhere; a raw hex in a component spec is a bug.
+4. Document default + active/pressed; treat hover as a lightness shift on black, nothing else.
+5. The two hard boundaries: black-only interactivity, and Fitz Roy colors confined to data-viz. Proposals that cross either need Brand sign-off, not a token edit.
+6. New status semantics (e.g., "floating holiday") get a full set: color + tint + chip + calendar-day entry + non-color cue.
+7. When emphasis is needed, escalate in this order: whitespace → surface swap → 2px black border. Stop there.
 
 ## Known Gaps
 
-- Plain Black is licensed to Clay and not available as a public web font; Inter weight 500 with negative letter-spacing is the closest substitute.
-- 3D claymation illustrations are commissioned assets, not system tokens — they're rendered per-page.
-- The mascot characters (named characters that recur across the site) are illustrated assets; their exact lineage and naming are not formalized in tokens.
-- Animation and transition timings (3D illustration parallax on scroll, feature card entrance animations) are not in scope.
-- Form validation states beyond `{component.text-input-focused}` are not extracted.
-- The actual Clay product surface (in-app data tables, formula editor, agent builder) shares some tokens with the marketing site but adds many product-specific components that are out of scope.
+- **Approximated grays and red**: `{colors.ink}` `#222222`, `{colors.canvas-alt}` `#f5f5f5`, `{colors.hairline}` `#e5e5e5`, `{colors.border-strong}` `#cccccc`, and `{colors.alert}` `#cc0000` are close matches to storefront chrome, not values read from a production stylesheet. Verify against the internal brand guide / patagonia.com CSS and true up before `v1`.
+- **Ridgeway Sans weight set**: the shipped weights (and whether a true 500 exists) weren't publicly documented at time of writing; the 400/500/700 ladder assumes a standard grotesque family. Confirm with Brand/Creative and remap `body-strong`/`button` if needed.
+- **Belwe licensing**: Bitstream commercial license; web-embedding rights unverified here. The safe default is the SVG-lockup route.
+- **Fitz Roy ramp**: hexes are community-sampled from label art, not brand-guide values. Fine for internal charts; swap in official values if the brand guide specifies them.
+- **Dark mode**: not defined. The storefront ships light-only; if the app needs one, start by inverting canvas/ink and re-testing every tint for contrast.
+- **Storefront button radius**: documented here as 2px from visual inspection; if production CSS says 0 or 4, adopt it globally via `{rounded.xs}`.
+- **Status colors are an extension**: the storefront has no approved/pending/denied semantics; these were designed to Patagonia's restraint (muted, outdoorsy, AA on white) but are original to this app.

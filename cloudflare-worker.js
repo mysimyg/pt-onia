@@ -16,6 +16,17 @@
  *    - pt-onia.app/api/shorten      -> this worker
  *    - pt-onia.app/api/resolve/*    -> this worker
  *    - pt-onia.app/api/telemetry    -> this worker
+ *    - pt-onia.app/api/feedback     -> this worker
+ *
+ * FEEDBACK USAGE:
+ * - POST /api/feedback with { "type": "bug|idea|other", "msg": "...", "email": null, "at": ISO, "section": "..." }
+ *   Stores one KV record per submission (TELEMETRY namespace, feedback:* keys).
+ *   Rate limited 5/minute per IP. Email is optional and user-volunteered.
+ *   If the FEEDBACK_IP_SALT secret is set (>=16 chars), a salted HMAC digest of
+ *   the sender IP ("iph") + coarse country are stored for abuse prevention;
+ *   raw IPs are never persisted.
+ * - GET /api/feedback with X-Telemetry-Admin-Token header: lists the newest
+ *   100 entries (admin only — used by the in-app Usage Dashboard).
  *
  * SHORT URL USAGE:
  * - POST /api/shorten with { "url": "https://pt-onia.app/#..." }
@@ -236,6 +247,7 @@ const RATE_LIMITS = {
     telemetry: 30,      // 30 requests/minute
     shortenCreate: 5,   // 5 creates/minute (stricter)
     shortenUpdate: 20,  // 20 updates/minute (more lenient)
+    feedback: 5,        // 5 feedback posts/minute (mirrors shortenCreate)
 };
 
 function isRateLimited(ip, bucket = 'telemetry') {
@@ -634,6 +646,106 @@ async function handleTelemetryDelete(request, env) {
     return jsonResponse({ ok: true, message: 'All sitewide counters reset' }, 200, {}, request, { allowDeleteCors: true });
 }
 
+// ── Feedback intake ────────────────────────────────────────────────────────
+// POST /api/feedback { type, msg, email?, at, section }
+// Stored append-only in the TELEMETRY KV namespace under feedback:* keys.
+// GET /api/feedback (X-Telemetry-Admin-Token required) lists recent entries.
+// Notes:
+// - Feedback may contain a user-supplied email if the sender volunteers one.
+// - For abuse prevention, if FEEDBACK_IP_SALT (secret, >=16 chars) is set, a
+//   salted HMAC-SHA256 digest of the sender IP is stored ("iph") along with
+//   the coarse request country. The raw IP is never persisted; the digest
+//   only allows matching repeat submissions from the same address.
+const MAX_FEEDBACK_BODY_BYTES = 8192;
+const FEEDBACK_TYPES = new Set(['bug', 'idea', 'other']);
+const FEEDBACK_LIST_LIMIT = 100;
+
+async function hashIdentifier(value, secret) {
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const sig = await crypto.subtle.sign('HMAC', key, enc.encode(value));
+    return Array.from(new Uint8Array(sig)).slice(0, 12).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function handleFeedbackPost(request, env) {
+    if (!requestLooksSameOrigin(request)) {
+        return jsonResponse({ error: 'Forbidden origin' }, 403, {}, request);
+    }
+    if (!env.TELEMETRY) {
+        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500, {}, request);
+    }
+
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    if (isRateLimited(ip, 'feedback')) {
+        return jsonResponse({ error: 'Rate limited' }, 429, {}, request);
+    }
+
+    let payload;
+    try {
+        const rawBody = await request.text();
+        if (rawBody.length > MAX_FEEDBACK_BODY_BYTES) {
+            return jsonResponse({ error: 'Payload too large' }, 413, {}, request);
+        }
+        payload = JSON.parse(rawBody);
+    } catch {
+        return jsonResponse({ error: 'Invalid JSON' }, 400, {}, request);
+    }
+
+    const type = FEEDBACK_TYPES.has(payload?.type) ? payload.type : 'other';
+    const msg = typeof payload?.msg === 'string' ? payload.msg.trim().slice(0, 1000) : '';
+    if (msg.length < 10) {
+        return jsonResponse({ error: 'Message too short' }, 400, {}, request);
+    }
+    let email = typeof payload?.email === 'string' ? payload.email.trim().slice(0, 254) : null;
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) email = null;
+    const section = typeof payload?.section === 'string' && /^[\w-]{1,40}$/.test(payload.section) ? payload.section : null;
+    const at = typeof payload?.at === 'string' && payload.at.length <= 40 ? payload.at : null;
+
+    // Abuse-prevention identifier: salted digest only, never the raw IP.
+    let iph = null;
+    const salt = env.FEEDBACK_IP_SALT;
+    if (typeof salt === 'string' && salt.length >= 16 && ip !== 'unknown') {
+        try { iph = await hashIdentifier(ip, salt); } catch { iph = null; }
+    }
+    const country = (request.cf && typeof request.cf.country === 'string') ? request.cf.country : null;
+
+    const rand = Math.random().toString(36).slice(2, 8);
+    const key = `feedback:${Date.now()}:${rand}`;
+    await withRetry(() => env.TELEMETRY.put(key, JSON.stringify({
+        type, msg, email, at, section, iph, country,
+        receivedAt: new Date().toISOString(),
+    })));
+
+    return jsonResponse({ ok: true }, 200, {}, request);
+}
+
+async function handleFeedbackGet(request, env) {
+    if (!hasValidAdminToken(request, env)) {
+        return jsonResponse({
+            error: 'Unauthorized',
+            hint: 'Send TELEMETRY_ADMIN_TOKEN as X-Telemetry-Admin-Token to list feedback.',
+        }, 403, {}, request);
+    }
+    if (!env.TELEMETRY) {
+        return jsonResponse({ error: 'TELEMETRY KV namespace not configured' }, 500, {}, request);
+    }
+    // feedback:<ms>:<rand> keys sort lexicographically by timestamp; take the newest.
+    const listed = await env.TELEMETRY.list({ prefix: 'feedback:', limit: 1000 });
+    const keys = listed.keys.map(k => k.name).slice(-FEEDBACK_LIST_LIMIT).reverse();
+    const entries = await Promise.all(keys.map(async name => {
+        try {
+            const raw = await env.TELEMETRY.get(name);
+            const parsed = raw ? JSON.parse(raw) : null;
+            return parsed ? { key: name, ...parsed } : null;
+        } catch { return null; }
+    }));
+    return jsonResponse({
+        count: entries.filter(Boolean).length,
+        truncated: listed.keys.length >= 1000 || !listed.list_complete,
+        entries: entries.filter(Boolean),
+    }, 200, { 'Cache-Control': 'no-store' }, request);
+}
+
 // ── Request Router ─────────────────────────────────────────────────────────
 
 async function handleRequest(request, env, ctx) {
@@ -641,7 +753,7 @@ async function handleRequest(request, env, ctx) {
 
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
-        const allowedPreflightPaths = new Set(['/api/telemetry', '/api/shorten']);
+        const allowedPreflightPaths = new Set(['/api/telemetry', '/api/shorten', '/api/feedback']);
         const isResolvePath = url.pathname.startsWith('/api/resolve/');
 
         if (!allowedPreflightPaths.has(url.pathname) && !isResolvePath) {
@@ -673,6 +785,25 @@ async function handleRequest(request, env, ctx) {
             return handleTelemetryDelete(request, env);
         }
         return jsonResponse({ error: 'Method not allowed' }, 405, { Allow: 'GET, POST, DELETE, OPTIONS' }, request, { allowDeleteCors: true });
+    }
+
+    // ── Feedback route ──
+    if (url.pathname === '/api/feedback') {
+        if (request.method === 'POST') {
+            try {
+                return await handleFeedbackPost(request, env);
+            } catch {
+                return jsonResponse({ error: 'Server error' }, 500, {}, request);
+            }
+        }
+        if (request.method === 'GET') {
+            try {
+                return await handleFeedbackGet(request, env);
+            } catch {
+                return jsonResponse({ error: 'Server error' }, 500, {}, request);
+            }
+        }
+        return jsonResponse({ error: 'Method not allowed' }, 405, { Allow: 'GET, POST, OPTIONS' }, request);
     }
 
     // ── Short URL routes ──
