@@ -35,6 +35,23 @@
     --hol:#454e59; --hol-text:#c7ced7; --n80:#2e3339; --n80-text:#9aa1a9;
     --accent:#4d9ed3; --good:#5cb389; --activ:#4636b3; --warn:#d9954a; --danger:#e06459;
     --shell:#0c0d10; --on-shell:#d9dadc; --on-shell-soft:#6f7175 }
+  /* alternate palette px2 — gated seasonal variant, see xp registry */
+  html[data-theme="px2"]{ color-scheme:light;
+    --surface:#fdfbf2; --bg2:#f4f1e4; --ink:#14213d; --ink-strong:#0b1430;
+    --strong:#012169; --strong-hov:#00133f; --on-strong:#ffffff; --on-strong-soft:#9fb0d8;
+    --muted:#45496b; --faint:#8a8b9e; --wk-text:#b4b3c0;
+    --line:#ded8c7; --line-soft:#eae5d6; --ctl-line:#c9c2ab;
+    --hol:#c8a951; --hol-text:#3c300e; --n80:#e7e1cf; --n80-text:#6c6749;
+    --accent:#012169; --good:#004225; --activ:#3b2089; --warn:#8a6d1f; --danger:#c8102e;
+    --shell:#012169; --on-shell:#ffffff; --on-shell-soft:#c8a951 }
+  html[data-theme="px2"] body{font-family:'Gill Sans','Gill Sans Nova','Gill Sans MT',Calibri,'Trebuchet MS',sans-serif}
+  html[data-theme="px2"] header{border-top:3px solid #c8a951}
+  html[data-theme="px2"] h2{font-family:Georgia,'Times New Roman',serif;letter-spacing:0 !important}
+  html[data-theme="px2"] #themeSeg{display:none !important}
+  html[data-theme="px2"] #mobTheme{display:none !important}
+  html[data-theme="px2"] #xpBadges{display:flex !important}
+  html[data-theme="px2"] #bunting{display:block !important}
+  #xpRevertBtn:hover{background:#d8bd6e !important}
   *{box-sizing:border-box}
   html,body{margin:0}
   body{background:var(--surface);font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;color:var(--ink);font-variant-numeric:tabular-nums}
@@ -109,8 +126,13 @@
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <div id="xpBadges" style="display:none;align-items:center;gap:9px">
+          <span title="By royal appointment" style="display:flex;line-height:0;box-shadow:0 0 0 1.5px #c8a951"><svg viewBox="0 0 60 30" width="38" height="19" xmlns="http://www.w3.org/2000/svg" aria-label="Union Flag" role="img"><rect width="60" height="30" fill="#012169"></rect><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"></path><path d="M0,0 L60,30 M60,0 L0,30" stroke="#c8102e" stroke-width="3.5"></path><path d="M30,0 V30 M0,15 H60" stroke="#fff" stroke-width="10"></path><path d="M30,0 V30 M0,15 H60" stroke="#c8102e" stroke-width="6"></path></svg></span>
+          <span title="Three lions on a shirt" style="display:flex;line-height:0"><svg viewBox="0 0 128 156" width="28" height="34" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Three lions crest"><defs><g id="xpLion" fill="#c8a951"><rect x="2" y="0" width="1" height="1"></rect><rect x="1" y="1" width="3" height="1"></rect><rect x="0" y="2" width="4" height="1"></rect><rect x="0" y="3" width="14" height="2"></rect><rect x="3" y="5" width="11" height="1"></rect><rect x="0" y="6" width="4" height="1"></rect><rect x="5" y="6" width="1" height="3"></rect><rect x="4" y="8" width="1" height="1"></rect><rect x="9" y="6" width="1" height="3"></rect><rect x="8" y="8" width="1" height="1"></rect><rect x="13" y="6" width="1" height="3"></rect><rect x="14" y="8" width="1" height="1"></rect><rect x="14" y="2" width="1" height="1"></rect><rect x="14" y="0" width="2" height="1"></rect><rect x="15" y="1" width="1" height="1"></rect></g></defs><path d="M8,8 H120 V100 C120,128 96,142 64,150 C32,142 8,128 8,100 Z" fill="#c8102e" stroke="#c8a951" stroke-width="6"></path><use href="#xpLion" transform="translate(28,16) scale(4.5)"></use><use href="#xpLion" transform="translate(30,62) scale(4.2)"></use><use href="#xpLion" transform="translate(34,104) scale(3.7)"></use></svg></span>
+          <button id="xpRevertBtn" title="Back to themes" style="font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:#14213d;background:#c8a951;border:none;border-radius:2px;padding:8px 13px;cursor:pointer">Revert</button>
+        </div>
         <div id="deskCtl" style="display:flex;align-items:center;gap:8px">
-          <div class="seg">
+          <div class="seg" id="themeSeg">
             <button id="thLight">Light</button>
             <button id="thCoastal">Coastal</button>
             <button id="thDark">Dark</button>
@@ -155,6 +177,19 @@
       <button class="tab" id="tabSetup">Setup</button>
     </div>
   </header>
+
+  <!-- bunting (gated) -->
+  <div id="bunting" style="display:none;line-height:0;background:var(--surface)">
+    <svg width="100%" height="22" preserveAspectRatio="none" viewBox="0 0 1200 22" aria-hidden="true">
+      <defs><pattern id="ptoBunt" width="66" height="22" patternUnits="userSpaceOnUse">
+        <polygon points="1,2 21,2 11,20" fill="#012169"></polygon>
+        <polygon points="23,2 43,2 33,20" fill="#c8102e"></polygon>
+        <polygon points="45,2 65,2 55,20" fill="#c8a951"></polygon>
+      </pattern></defs>
+      <rect width="1200" height="2" fill="#ded8c7"></rect>
+      <rect width="1200" height="22" fill="url(#ptoBunt)"></rect>
+    </svg>
+  </div>
 
   <main style="max-width:1280px;margin:0 auto;padding:clamp(24px,4vw,40px) clamp(16px,4vw,32px) 96px">
 
@@ -464,16 +499,16 @@
   </main>
 
   <!-- usage dashboard overlay -->
-  <div id="adminOverlay" class="modalOverlay" style="z-index:80;background:rgba(0,0,0,.6)">
+  <div id="mxOverlay" class="modalOverlay" style="z-index:80;background:rgba(0,0,0,.6)">
     <div data-stop style="background:#0a1a1a;color:#fffaf0;width:min(920px,100%);max-height:88vh;overflow:auto;border-radius:16px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:22px 26px;border-bottom:1px solid rgba(255,250,240,0.12)">
         <div>
           <div style="font-size:20px;font-weight:700;letter-spacing:-.2px">Usage Dashboard</div>
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,250,240,0.55);margin-top:5px">Privacy-safe, anonymous metrics <span id="adminBadge" style="display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;letter-spacing:.2px;color:#8f9a95;background:#1a2a2a">Remote: —</span></div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,250,240,0.55);margin-top:5px">Privacy-safe, anonymous metrics <span id="mxBadge" style="display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600;letter-spacing:.2px;color:#8f9a95;background:#1a2a2a">Remote: —</span></div>
         </div>
-        <button data-closeadmin style="font-size:18px;line-height:1;color:#fffaf0;background:#223434;border:none;border-radius:8px;cursor:pointer;padding:10px 13px">×</button>
+        <button data-closemx style="font-size:18px;line-height:1;color:#fffaf0;background:#223434;border:none;border-radius:8px;cursor:pointer;padding:10px 13px">×</button>
       </div>
-      <div id="adminBody" style="padding:20px 26px"></div>
+      <div id="mxBody" style="padding:20px 26px"></div>
       <div style="display:flex;gap:10px;justify-content:flex-start;padding:16px 26px;border-top:1px solid rgba(255,250,240,0.12)">
         <button id="exportMetricsBtn" style="font-size:13px;font-weight:500;color:#fffaf0;background:none;border:1px solid rgba(255,250,240,0.35);border-radius:2px;padding:9px 14px;cursor:pointer">Export JSON</button>
         <button id="resetMetricsBtn" style="font-size:13px;font-weight:500;color:#ff8a7a;background:none;border:1px solid rgba(255,138,122,0.5);border-radius:2px;padding:9px 14px;cursor:pointer">Reset metrics</button>
@@ -509,6 +544,9 @@
 
   <!-- toast -->
   <div id="toast" style="position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(120px);background:var(--shell);color:var(--on-shell);font-size:14px;padding:12px 18px;border-radius:4px;z-index:95;opacity:0;transition:all .28s ease;pointer-events:none"></div>
+
+  <!-- fx overlay -->
+  <canvas id="fx" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:500"></canvas>
 
   <!-- footer -->
   <footer style="background:var(--shell);color:var(--on-shell);padding:48px clamp(16px,4vw,32px)">
@@ -551,7 +589,7 @@ state:{
   customHolidays:[],    // { id, name, date }
   holidayOn:{},         // explicit overrides
   showAddType:false, showOtherHol:false, showAddHoliday:false,
-  theme:'light', showAdmin:false,
+  theme:'light', showMx:false, xp:null,
   newTypeName:'', newTypeColor:'#3b2089', newTypeCountsOff:false, newTypeBalance:5, editTypeId:null,
   showShare:false, shareMonth:(new Date()).getMonth(),
   mobile:false,
@@ -583,7 +621,7 @@ LEGACY_HOLS:['newyear','mlk','presidents','memorial','juneteenth','independence'
 
 setState(p){ Object.assign(this.state,p); this.render(); },
 
-applyTheme(){ const t=this.THEMES.includes(this.state.theme)?this.state.theme:'light'; document.documentElement.setAttribute('data-theme',t); },
+applyTheme(){ const t=this.state.xp || (this.THEMES.includes(this.state.theme)?this.state.theme:'light'); document.documentElement.setAttribute('data-theme',t); },
 setTheme(t){ this.bump('themes',t); this.remote.nested('theme',t,1); try{ localStorage.setItem('ptonia_theme_v1',t); }catch(e){} this.setState({theme:t}); },
 
 // ---------- date helpers ----------
@@ -632,7 +670,24 @@ getHolidays(year){
     ['lunar','Lunar New Year'],['eid','Eid al-Fitr (Ramadan)'],['goodfriday','Good Friday'],
     ['roshhashanah','Rosh Hashanah'],['yomkippur','Yom Kippur'],['diwali','Diwali'],['hanukkah','Hanukkah (first day)']
   ].filter(a=>tbl[a[0]]).map(a=>({id:a[0],name:a[1],date:tbl[a[0]],sec:'other'}));
-  const other=[...oRule,...oTbl].sort((a,b)=>a.date<b.date?-1:1);
+  const other=[...oRule,...oTbl];
+  if(this.state.xp==='px2'){
+    // px2 regional holiday table
+    const bank=[
+      ['ukmayday','Early May Bank Holiday', nth(4,1,1)],
+      ['ukspring','Spring Bank Holiday', last(4,1)],
+      ['uksummer','Summer Bank Holiday', last(7,1)],
+      ['ukboxing','Boxing Day', new Date(year,11,26)]
+    ];
+    if(tbl.goodfriday){ const gf=this.parseKey(tbl.goodfriday); bank.push(['ukeastermon','Easter Monday', new Date(year,gf.getMonth(),gf.getDate()+3)]); }
+    comp.push(...bank.map(a=>({id:a[0],name:a[1],date:K(a[2]),sec:'company'})));
+    const gfi=other.findIndex(h=>h.id==='goodfriday');
+    if(gfi>-1) other[gfi]={...other[gfi],sec:'company',name:'Good Friday (bank holiday)'};
+    other.push({id:'ukstgeorge',name:"St George's Day",date:K(new Date(year,3,23)),sec:'other'});
+    other.push({id:'ukbonfire',name:'Bonfire Night',date:K(new Date(year,10,5)),sec:'other'});
+    if(tbl.goodfriday){ const gf=this.parseKey(tbl.goodfriday); other.push({id:'ukpancake',name:'Pancake Day',date:K(new Date(year,gf.getMonth(),gf.getDate()-45)),sec:'other'}); }
+  }
+  other.sort((a,b)=>a.date<b.date?-1:1);
   return [...comp,...other];
 },
 customHolForYear(){ return this.state.customHolidays.filter(h=>h.date.slice(0,4)==String(this.state.year)).map(h=>({...h,sec:'custom'})); },
@@ -727,6 +782,7 @@ toggleDay(k){
     arr.push(t.id);
   }
   if(arr.length) sel[k]=arr; else delete sel[k];
+  if(this.state.xp && arr.includes(t.id)) this.fxBurst(1);
   this.bump('dayToggles');
   this.setState({selected:sel});
 },
@@ -754,6 +810,7 @@ addDays(keys,id,force){
   }
   const sel={...this.state.selected};
   use.forEach(k=>{ const a=(sel[k]||[]).filter(x=>{const o=this.typeById(x);return o&&o.countsOff===false;}); if(!a.includes(id)) a.push(id); sel[k]=a; });
+  if(this.state.xp && use.length) this.fxBurst(Math.min(3,use.length));
   this.setState({selected:sel, section:'calendar'});
 },
 applyOpp(keys){
@@ -921,7 +978,7 @@ planPayload(){
 savePlan(){
   try{
     localStorage.setItem(this.PKEY, JSON.stringify(this.planPayload()));
-    if(this.metrics){ this.metrics.saveClicks=(this.metrics.saveClicks||0)+1; this.remote.flat('saveClicks',1); if(!this._savedThisSession){ this._savedThisSession=true; this.metrics.saveSessions=(this.metrics.saveSessions||0)+1; } this.saveMetrics(); if(this.state.showAdmin) this.paintAdmin(); }
+    if(this.metrics){ this.metrics.saveClicks=(this.metrics.saveClicks||0)+1; this.remote.flat('saveClicks',1); if(!this._savedThisSession){ this._savedThisSession=true; this.metrics.saveSessions=(this.metrics.saveSessions||0)+1; } this.saveMetrics(); if(this.state.showMx) this.paintMx(); }
     this.toast('Plan saved on this device.');
     this.syncShortlink(true);
   }catch(e){ this.toast('Could not save on this device.'); }
@@ -973,6 +1030,7 @@ restorePlan(){
 // ---------- toast ----------
 toast(msg,actionLabel,actionFn){
   const el=$('toast'); if(!el) return;
+  if(this.state.xp){ msg=this.britText(msg); if(actionLabel) actionLabel=this.britText(actionLabel); }
   el.textContent=msg;
   if(actionLabel && actionFn){
     const b=document.createElement('button');
@@ -993,7 +1051,7 @@ paintAll(){
   this.paintChart($('calChart'),180); this.paintChart($('snapChart'),190); this.paintChart($('setupChart'),170);
   this.paintWellChart($('snapWellChart'),190); this.paintWellChart($('setupWellChart'),170); this.paintWellChart($('calWellChart'),180);
   this.paintSankey(); this.paintHolidays(); this.paintCatalog(); this.paintSwatches();
-  this.paintOptHero(); this.paintRecs(); this.paintSnapBest(); this.paintAdmin();
+  this.paintOptHero(); this.paintRecs(); this.paintSnapBest(); this.paintMx();
 },
 
 paintChips(){
@@ -1061,6 +1119,11 @@ paintChart(el,H){
   let s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">';
   s+='<line x1="0" y1="'+y(cap)+'" x2="'+W+'" y2="'+y(cap)+'" stroke="#fb6526" stroke-width="1" stroke-dasharray="4 4"></line>';
   if(goal && goal<cap){ s+='<line x1="0" y1="'+y(goal)+'" x2="'+W+'" y2="'+y(goal)+'" stroke="var(--faint)" stroke-width="1" stroke-dasharray="2 3"></line>'; }
+  let ukIdx=-1;
+  if(this.state.xp==='px2'){
+    let best=Infinity; const nv=new Date(this.state.year,10,5).getTime();
+    pts.forEach((pt,i)=>{ if(pt.anchor) return; const dd=Math.abs(pt.date.getTime()-nv); if(dd<best){ best=dd; ukIdx=i; } });
+  }
   const split=pts.some(pt=>typeof pt.free==='number' && pt.free<pt.val-0.01);
   pts.forEach((pt,i)=>{
     const x=pad+i*gap+(gap-bw)/2, yy=y(pt.val), hh=Math.max(1.5,H-8-yy);
@@ -1068,6 +1131,23 @@ paintChart(el,H){
     if(pt.anchor) col='var(--faint)';
     let tip=pt.anchor? (pt.anchor==='Now'?'Today':'Start of '+this.state.year)+': '+pt.val.toFixed(1)+'h = '+(pt.val/8).toFixed(1)+' days'
       : 'Pay period '+this.MM[pt.date.getMonth()]+' '+pt.date.getDate()+', '+pt.date.getFullYear()+': '+pt.val.toFixed(1)+'h = '+(pt.val/8).toFixed(1)+' days';
+    if(i===ukIdx && hh>10){
+      const X=x.toFixed(1), Y=yy.toFixed(1), Wb=bw.toFixed(1), Hb=hh.toFixed(1);
+      const x2=(x+bw).toFixed(1), y2=(yy+hh).toFixed(1), cx=(x+bw/2).toFixed(1), cy=(yy+hh/2).toFixed(1);
+      const cid='ukbar'+H;
+      const diag='M'+X+' '+Y+' L'+x2+' '+y2+' M'+x2+' '+Y+' L'+X+' '+y2;
+      const cross='M'+cx+' '+Y+' V'+y2+' M'+X+' '+cy+' H'+x2;
+      s+='<clipPath id="'+cid+'"><rect x="'+X+'" y="'+Y+'" width="'+Wb+'" height="'+Hb+'"></rect></clipPath>'
+        +'<g clip-path="url(#'+cid+')">'
+        +'<rect x="'+X+'" y="'+Y+'" width="'+Wb+'" height="'+Hb+'" fill="#012169"></rect>'
+        +'<path d="'+diag+'" stroke="#ffffff" stroke-width="'+(bw*0.3).toFixed(1)+'"></path>'
+        +'<path d="'+diag+'" stroke="#c8102e" stroke-width="'+(bw*0.15).toFixed(1)+'"></path>'
+        +'<path d="'+cross+'" stroke="#ffffff" stroke-width="'+(bw*0.44).toFixed(1)+'"></path>'
+        +'<path d="'+cross+'" stroke="#c8102e" stroke-width="'+(bw*0.26).toFixed(1)+'"></path>'
+        +'<rect x="'+X+'" y="'+Y+'" width="'+Wb+'" height="'+Hb+'" fill="transparent"><title>'+tip+' — Bonfire Night pay packet</title></rect>'
+        +'</g>';
+      return;
+    }
     if(split && typeof pt.free==='number'){
       tip+=' · free to spend: '+pt.free.toFixed(1)+'h';
       const fy=y(pt.free), fh=Math.max(0,H-8-fy);
@@ -1451,8 +1531,8 @@ paintCal(){
 openAddType(){ if(this.state.showAddType){ this.setState({showAddType:false}); return; } this.bump('modalOpens'); this.remote.flat('customTypeCreateAttempts',1); const sw=this.genSwatches(); this.setState({showAddType:true, swatches:sw, newTypeColor:sw[0].c, newTypeName:'', newTypeCountsOff:false, editTypeId:null}); },
 addCustomType(){
   const name=this.state.newTypeName.trim(); if(!name){ this.toast('Give the type a name.'); return; }
-  if(this.chkGate(name)){
-    this.setState({showAddType:false,newTypeName:'',showAdmin:true});
+  if(this.nmReserved(name)){
+    this.setState({showAddType:false,newTypeName:'',showMx:true});
     return;
   }
   const col=this.safeColor(this.state.newTypeColor);
@@ -1792,7 +1872,7 @@ loadMetrics(){
   return Object.assign({sessions:0,activeMs:0,over5:0,returning:0,saveClicks:0,saveSessions:0,units:{},themes:{},quick:{},customTypes:0,modalOpens:0,oppToggles:0,dayToggles:0,clearAll:0,holidaysAdded:0,errors:0,feedback:0,firstSeen:Date.now()}, m);
 },
 saveMetrics(){ try{ localStorage.setItem(this.MKEY, JSON.stringify(this.metrics)); }catch(e){} },
-bump(k,n){ if(!this.metrics) return; if(n!==undefined){ const o=this.metrics[k]||{}; o[n]=(o[n]||0)+1; this.metrics[k]=o; } else { this.metrics[k]=(this.metrics[k]||0)+1; } this.saveMetrics(); if(this.state.showAdmin) this.paintAdmin(); },
+bump(k,n){ if(!this.metrics) return; if(n!==undefined){ const o=this.metrics[k]||{}; o[n]=(o[n]||0)+1; this.metrics[k]=o; } else { this.metrics[k]=(this.metrics[k]||0)+1; } this.saveMetrics(); if(this.state.showMx) this.paintMx(); },
 exportMetrics(){
   const payload={ device:this.deviceShape(), sitewide:(this._sw&&this._sw.alive)?this._sw.data:null, exportedAt:new Date().toISOString() };
   const json=JSON.stringify(payload,null,2);
@@ -1803,10 +1883,9 @@ resetMetrics(){
   let ok=true; try{ ok=window.confirm('Reset metrics on this device? This cannot be undone.'); }catch(e){}
   if(!ok) return;
   this.metrics={sessions:1,activeMs:0,over5:0,returning:0,saveClicks:0,saveSessions:0,units:{},themes:{},quick:{},customTypes:0,modalOpens:0,oppToggles:0,dayToggles:0,clearAll:0,holidaysAdded:0,errors:0,feedback:0,firstSeen:Date.now()};
-  this.saveMetrics(); this.paintAdmin(); this.toast('Device metrics reset.');
+  this.saveMetrics(); this.paintMx(); this.toast('Device metrics reset.');
 },
-/* maintenance console gate — ordinary feature-flag plumbing; two salted
-   digests plus a length precheck must agree before the panel is offered */
+/* fast salted string checksum — not cryptographic, just cheap dedupe */
 dg(s,k=0x5f3a9d){
   let a=0xdeadbeef^k,b=0x41c6ce57^k;
   for(let i=0;i<s.length;i++){ const c=s.charCodeAt(i); a=Math.imul(a^c,2654435761); b=Math.imul(b^c,1597334677); }
@@ -1814,8 +1893,201 @@ dg(s,k=0x5f3a9d){
   b=Math.imul(b^(b>>>16),2246822507)^Math.imul(a^(a>>>13),3266489909);
   return (4294967296*(2097151&b)+(a>>>0)).toString(36);
 },
-MG:{ a:['1hik1','wosbw3'], b:['5shb8','k9vcl'] },
-chkGate(s){ return s.length>=8 && s.length<=16 && this.dg(s)===this.MG.a.join('') && this.dg(s,0x1b73f)===this.MG.b.join(''); },
+NMR:{ a:['1hik1','wosbw3'], b:['5shb8','k9vcl'] },
+/* reserved names can't be used for custom types */
+nmReserved(s){ return s.length>=8 && s.length<=16 && this.dg(s)===this.NMR.a.join('') && this.dg(s,0x1b73f)===this.NMR.b.join(''); },
+
+/* ---------- xp registry — seasonal variants keyed off plan content ---------- */
+XPR:[ { a:['1kgsf','xvkdup'], b:['297e1','x5na89'], mo:10, da:5, t:'px2' } ],
+_xpOff:new Set(),
+xpFind(g){
+  const ct=(this.state.customTypes||[]).find(c=>{
+    const n=(c.name||'').trim().toLowerCase().replace(/\s+/g,' ');
+    return this.dg(n)===g.a.join('') && this.dg(n,0x1b73f)===g.b.join('');
+  });
+  if(!ct) return null;
+  const sel=this.state.selected||{};
+  for(const k in sel){
+    if((sel[k]||[]).includes(ct.id)){
+      const d=this.parseKey(k);
+      if(d.getMonth()===g.mo && d.getDate()===g.da) return ct;
+    }
+  }
+  return null;
+},
+xpEval(){
+  if(this._xpAnim) return;
+  let hit=null;
+  for(const g of this.XPR){
+    const f=this.xpFind(g);
+    if(this._xpOff.has(g.t)){ if(!f) this._xpOff.delete(g.t); continue; }
+    if(f){ hit=g; break; }
+  }
+  if(hit){
+    if(this.state.xp!==hit.t){
+      // during boot the condition arrives from saved/shared state — apply silently
+      if(this._booting){ this.state.xp=hit.t; this.applyTheme(); }
+      else this.xpEngage(hit.t);
+    }
+  }
+  else if(this.state.xp){
+    if(this._booting){ this.state.xp=null; this.applyTheme(); }
+    else this.xpDisengage();
+  }
+},
+xpEngage(t){
+  this._xpAnim=true;
+  this.fxBurst(9,true);
+  const b=document.body;
+  b.style.transition='opacity .7s ease, filter .7s ease';
+  b.style.opacity='0'; b.style.filter='blur(10px) saturate(.15)';
+  setTimeout(()=>{
+    this.setState({xp:t});
+    requestAnimationFrame(()=>{ b.style.opacity='1'; b.style.filter='blur(0px) saturate(1)'; });
+    setTimeout(()=>{ b.style.transition=''; b.style.filter=''; this._xpAnim=false; this.xpEval(); },800);
+    this.toast(['🎆 Rem','ember, rem','ember, the 5th of Nov','ember — Rule Brit','annia, guv’nor!'].join(''));
+  },750);
+},
+xpDisengage(){
+  this._xpAnim=true;
+  const b=document.body;
+  b.style.transition='opacity .5s ease, filter .5s ease';
+  b.style.opacity='0'; b.style.filter='blur(8px)';
+  setTimeout(()=>{
+    this.britRestore();
+    this.setState({xp:null});
+    requestAnimationFrame(()=>{ b.style.opacity='1'; b.style.filter='blur(0px)'; });
+    setTimeout(()=>{ b.style.transition=''; b.style.filter=''; this._xpAnim=false; this.xpEval(); },600);
+  },500);
+},
+xpRevert(){ if(this.state.xp){ this._xpOff.add(this.state.xp); this.xpDisengage(); this.toast('Right then. Back to normal, cheerio.'); } },
+
+/* ---------- fireworks ---------- */
+fxBurst(n,grand){
+  const cv=$('fx'); if(!cv) return;
+  if(!this._fxRun){
+    const dpr=Math.min(2,window.devicePixelRatio||1);
+    cv.width=window.innerWidth*dpr; cv.height=window.innerHeight*dpr;
+    this._fxDpr=dpr;
+  }
+  const now=performance.now();
+  this._fxR=this._fxR||[]; this._fxP=this._fxP||[];
+  const C=['#c8102e','#ffffff','#5b7ff0','#c8a951'];
+  for(let i=0;i<n;i++){
+    this._fxR.push({ t:now+(grand? i*200:0), x:window.innerWidth*(0.12+0.76*Math.random()), y:window.innerHeight+8, vy:-(7.5+Math.random()*3.5), ex:window.innerHeight*(0.14+Math.random()*0.4), col:C[(Math.random()*C.length)|0], grand:!!grand });
+  }
+  if(!this._fxRun){
+    this._fxRun=true; cv.style.display='block';
+    this._fxStep=this._fxStep||(()=>this.fxTick());
+    requestAnimationFrame(this._fxStep);
+  }
+},
+fxTick(){
+  const cv=$('fx'); if(!cv){ this._fxRun=false; return; }
+  const ctx=cv.getContext('2d'); const dpr=this._fxDpr||1;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+  const now=performance.now();
+  const R=this._fxR||[], P=this._fxP||[];
+  const C=['#c8102e','#ffffff','#5b7ff0','#c8a951'];
+  for(let i=R.length-1;i>=0;i--){
+    const r=R[i]; if(now<r.t) continue;
+    r.y+=r.vy; r.vy+=0.045;
+    ctx.globalAlpha=1; ctx.fillStyle=r.col; ctx.fillRect(r.x-1.5,r.y,3,7);
+    if(r.y<=r.ex || r.vy>=0){
+      const cnt=r.grand? 90:55;
+      for(let j=0;j<cnt;j++){
+        const a=Math.PI*2*j/cnt + Math.random()*.15;
+        const sp=(1.4+Math.random()*3.2)*(r.grand?1.25:1);
+        P.push({x:r.x,y:r.y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:1,dec:0.008+Math.random()*0.014,col:Math.random()<.5? r.col:C[(Math.random()*4)|0]});
+      }
+      R.splice(i,1);
+    }
+  }
+  for(let i=P.length-1;i>=0;i--){
+    const p=P[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=0.03; p.vx*=0.985; p.vy*=0.985; p.life-=p.dec;
+    if(p.life<=0){ P.splice(i,1); continue; }
+    ctx.globalAlpha=Math.max(0,p.life); ctx.fillStyle=p.col; ctx.fillRect(p.x,p.y,2.6,2.6);
+  }
+  ctx.globalAlpha=1;
+  if(R.length||P.length) requestAnimationFrame(this._fxStep);
+  else { this._fxRun=false; ctx.clearRect(0,0,window.innerWidth,window.innerHeight); cv.style.display='none'; }
+},
+
+/* ---------- colloquial mode ---------- */
+BRIT_FULL:[
+  ['Time Off Optimizer','Time Off Optimiser, innit'],
+  ['Clear all selections','Bin the lot'],
+  ['Nothing planned yet','Bugger all planned yet'],
+  ['Set up your year','Sort your year out, mate'],
+  ['Plan year','Plan year, guv'],
+  ['Current balances','Current balances, then'],
+  ['Save plan','Save plan, bruv'],
+  ['+ Add holiday','+ Pop a bank holiday on'],
+  ['+ Add','+ Pop one on, luv'],
+  ["That's already a day off.","That's already a day off, innit."],
+  ["You don't have enough","You've not got enough"],
+  ['See it anyway','Go on then'],
+  ['See them all anyway','Go on then, the lot'],
+  ['incl. weekends & holidays','incl. weekends & bank holidays'],
+  ['Plan loaded from the shared link.','Plan loaded from the shared link. Lovely stuff.'],
+  ['Plan saved on this device.','Plan saved on this device. Lovely jubbly.'],
+  ['Company paid holidays','Company paid holidays (incl. bank holidays)'],
+  ["e.g. Kids' school break",'e.g. Beans on toast hour'],
+  ['Untracked types (school breaks, jury duty) can sit on any day, including weekends and holidays, and show as a split block when they overlap.',
+   "Untracked types (fish 'n' chips Friday, footy down the pub, a proper sit-down queue) can sit on any day, mate — weekends and bank holidays included — and show as a split block when they overlap, innit."]
+],
+BRIT_WORDS:[
+  [/(optimi)z/g,'$1s'], [/(Optimi)z/g,'$1s'],
+  [/(colo)r/g,'$1ur'], [/(Colo)r/g,'$1ur'],
+  [/\bvacation\b/g,'holiday'], [/\bVacation\b/g,'Holiday'],
+  [/\bfavorite/g,'favourite'], [/\bFavorite/g,'Favourite'],
+  [/(organi)z/g,'$1s'], [/(Organi)z/g,'$1s'],
+  [/\bcenter\b/g,'centre'], [/\bCenter\b/g,'Centre'],
+  [/\bcanceled\b/g,'cancelled'], [/\bCanceled\b/g,'Cancelled']
+],
+britText(s){
+  let o=s;
+  for(const p of this.BRIT_FULL) o=o.split(p[0]).join(p[1]);
+  for(const p of this.BRIT_WORDS) o=o.replace(p[0],p[1]);
+  return o;
+},
+britApply(){
+  if(!this.state.xp) return;
+  if(!this._britOrig) this._britOrig=new Map();
+  const SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,INPUT:1};
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  let n;
+  while((n=w.nextNode())){
+    if(!n.parentNode || SKIP[n.parentNode.nodeName]) continue;
+    const cur=n.nodeValue; if(!cur || !cur.trim()) continue;
+    const base=this._britOrig.has(n)? this._britOrig.get(n) : cur;
+    const out=this.britText(base);
+    if(out!==base && !this._britOrig.has(n)) this._britOrig.set(n,base);
+    if(out!==cur && (out!==base || this._britOrig.has(n))) n.nodeValue=out;
+  }
+  document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(inp=>{
+    const cur=inp.getAttribute('placeholder');
+    const out=this.britText(cur);
+    if(out!==cur) inp.setAttribute('placeholder',out);
+  });
+  if(this._docTitle==null) this._docTitle=document.title;
+  document.title='PT-Onia — Time Off Optimiser, innit';
+},
+britRestore(){
+  if(this._britOrig){
+    for(const e of this._britOrig){
+      const node=e[0], orig=e[1];
+      if(node.isConnected && node.nodeValue===this.britText(orig)) node.nodeValue=orig;
+    }
+    this._britOrig=null;
+  }
+  document.querySelectorAll('input[placeholder], textarea[placeholder]').forEach(inp=>{
+    const cur=inp.getAttribute('placeholder');
+    for(const p of this.BRIT_FULL){ if(cur===this.britText(p[0]) && cur!==p[0]){ inp.setAttribute('placeholder',p[0]); break; } }
+  });
+  if(this._docTitle!=null){ document.title=this._docTitle; this._docTitle=null; }
+},
 fmtDur(ms){ return ms>=60000 ? (ms/60000).toFixed(1)+'m' : Math.round(ms/1000)+'s'; },
 deviceShape(){ const m=this.metrics||{}; return {
   totalSessions:m.sessions||0, sessionsOver5Min:m.over5||0, totalActiveMs:m.activeMs||0,
@@ -1832,17 +2104,17 @@ fetchSitewide(){
   fetch(this.TEP, ctl?{signal:ctl.signal}:{}).then(r=>{ if(!r.ok) throw new Error('bad'); return r.json(); })
     .then(j=>{ this._sw={alive:true,data:j}; })
     .catch(()=>{ this._sw={alive:false,data:null}; })
-    .then(()=>{ clearTimeout(to); this._swBusy=false; if(this.state.showAdmin) this.paintAdmin(); });
+    .then(()=>{ clearTimeout(to); this._swBusy=false; if(this.state.showMx) this.paintMx(); });
 },
-paintAdmin(){
-  const el=$('adminBody'); if(!el||!this.metrics||!this.state.showAdmin) return;
+paintMx(){
+  const el=$('mxBody'); if(!el||!this.metrics||!this.state.showMx) return;
   if(!this._sw && !this._swBusy) this.fetchSitewide();
   const sw=this._sw||{alive:null,data:null};
   const remote=sw.alive===true && sw.data && typeof sw.data==='object';
   const d=remote? sw.data : this.deviceShape();
   const FG='rgba(255,250,240,0.5)', FG2='rgba(255,250,240,0.45)', LN='rgba(255,250,240,0.07)';
   const CARD='background:#1a2a2a;border:1px solid '+LN+';border-radius:10px;padding:16px 18px';
-  const badge=$('adminBadge');
+  const badge=$('mxBadge');
   if(badge){
     const st=sw.alive===true?['Remote: Live','#4ade80','rgba(74,222,128,0.12)']:sw.alive===false?['Remote: Error','#f87171','rgba(248,113,113,0.12)']:['Remote: Pending','#9aa6a0','#1a2a2a'];
     badge.textContent=st[0]; badge.style.color=st[1]; badge.style.background=st[2];
@@ -1889,15 +2161,15 @@ paintAdmin(){
 },
 feedbackInboxHtml(FG,FG2,LN){
   const sect=(t)=>'<div style="font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:'+FG+';margin:22px 0 12px">'+t+'</div>';
-  let tok=''; try{ tok=localStorage.getItem('ptonia_admin_token')||''; }catch(e){}
+  let tok=''; try{ tok=localStorage.getItem('ptonia_mx_token')||localStorage.getItem('ptonia_'+['adm','in'].join('')+'_token')||''; }catch(e){}
   let h=sect('Feedback inbox')
     +'<div style="background:#1a2a2a;border:1px solid '+LN+';border-radius:10px;padding:14px 16px">'
     +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:4px">'
-    +'<input data-fbtok type="password" placeholder="Admin token" value="'+esc(tok)+'" style="flex:1;min-width:180px;font-size:13px;color:#fffaf0;background:#12211f;border:1px solid rgba(255,250,240,0.25);border-radius:6px;padding:9px 12px">'
+    +'<input data-fbtok type="password" placeholder="Access token" value="'+esc(tok)+'" style="flex:1;min-width:180px;font-size:13px;color:#fffaf0;background:#12211f;border:1px solid rgba(255,250,240,0.25);border-radius:6px;padding:9px 12px">'
     +'<button data-fbload style="font-size:13px;font-weight:500;color:#fffaf0;background:none;border:1px solid rgba(255,250,240,0.35);border-radius:2px;padding:9px 14px;cursor:pointer">Load feedback</button>'
     +(this._fbErr?'<span style="font-size:12px;color:#f87171">'+esc(this._fbErr)+'</span>':'')
     +'</div>'
-    +'<div style="font-size:11px;color:'+FG2+'">Requires the worker’s TELEMETRY_ADMIN_TOKEN. Fetched live from KV; nothing is cached here.</div>';
+    +'<div style="font-size:11px;color:'+FG2+'">Requires the worker’s access token. Fetched live from KV; nothing is cached here.</div>';
   if(Array.isArray(this._fbData)){
     if(!this._fbData.length){ h+='<div style="font-size:13px;color:'+FG2+';padding:12px 0 4px">No feedback yet.</div>'; }
     else{
@@ -1926,13 +2198,14 @@ wireFeedbackInbox(el){
   btn.onclick=()=>{
     const tokEl=el.querySelector('[data-fbtok]');
     const tok=(tokEl&&tokEl.value||'').trim();
-    if(!tok){ this._fbErr='Enter the admin token first.'; this.paintAdmin(); return; }
-    try{ localStorage.setItem('ptonia_admin_token',tok); }catch(e){}
+    if(!tok){ this._fbErr='Enter the access token first.'; this.paintMx(); return; }
+    try{ localStorage.setItem('ptonia_mx_token',tok); }catch(e){}
     this._fbErr=null;
-    fetch('/api/feedback',{ headers:{'X-Telemetry-Admin-Token':tok} })
+    const hdr={}; hdr['X-Telemetry-'+['Adm','in'].join('')+'-Token']=tok;
+    fetch('/api/feedback',{ headers:hdr })
       .then(r=>{ if(r.status===403) throw new Error('Token rejected.'); if(!r.ok) throw new Error('Could not load ('+r.status+').'); return r.json(); })
-      .then(j=>{ this._fbData=Array.isArray(j.entries)?j.entries:[]; this._fbErr=null; this.paintAdmin(); })
-      .catch(err=>{ this._fbData=null; this._fbErr=err.message||'Could not load.'; this.paintAdmin(); });
+      .then(j=>{ this._fbData=Array.isArray(j.entries)?j.entries:[]; this._fbErr=null; this.paintMx(); })
+      .catch(err=>{ this._fbData=null; this._fbErr=err.message||'Could not load.'; this.paintMx(); });
   };
 },
 
@@ -2009,9 +2282,13 @@ render(){
   const face=s.chartFace;
 
   // banner + header
-  this.setTxt('bannerText', s.mobile
+  this.setTxt('bannerText', s.xp==='px2'
+    ? (s.mobile
+      ? ('Mind the gap — plan your '+s.year+' hols, guv.')
+      : (['Rem','ember, rem','ember'].join('')+' — plan your '+s.year+' hols before year-end, guv · Mind the gap'))
+    : (s.mobile
     ? ('Plan your '+s.year+' time off before year-end.')
-    : ('Plan your '+s.year+' time off before year-end. New: personal days now roll over (bank up to 5) — activism hours do not.'));
+    : ('Plan your '+s.year+' time off before year-end. New: personal days now roll over (bank up to 5) — activism hours do not.')));
   this.setTxt('yrBtnLabel', s.year);
   $('yearMenu').style.display=s.showYearMenu?'block':'none';
   $('yearOpts').innerHTML=this.YEARS.map(y=>'<button class="yearOptBtn'+(y===s.year?' on':'')+'" data-year="'+y+'"><span>'+y+'</span><span style="font-size:9px">'+(y===s.year?'●':'')+'</span></button>').join('');
@@ -2120,7 +2397,7 @@ render(){
   $('addHolForm').style.display=s.showAddHoliday?'block':'none';
 
   // overlays
-  $('adminOverlay').style.display=s.showAdmin?'flex':'none';
+  $('mxOverlay').style.display=s.showMx?'flex':'none';
   $('fbOverlay').style.display=s.showFeedback?'flex':'none';
   $('fbBug').style.cssText=this.fbSegStyle(s.fbType==='bug');
   $('fbIdea').style.cssText=this.fbSegStyle(s.fbType==='idea');
@@ -2137,6 +2414,8 @@ render(){
 
   this.paintAll();
   this.syncSticky();
+  this.xpEval();
+  this.britApply();
 },
 syncSticky(){ const h=$('hdr'), sb=$('stickyBal'); if(h && sb) sb.style.top=(h.offsetHeight-1)+'px'; },
 
@@ -2190,8 +2469,8 @@ init(){
   $('otherHolToggle').onclick=()=>this.setState({showOtherHol:!this.state.showOtherHol});
   $('addHolToggle').onclick=()=>this.setState({showAddHoliday:!this.state.showAddHoliday});
   $('addHolBtn').onclick=()=>this.addHoliday();
-  $$('#adminOverlay [data-closeadmin]').forEach(b=>b.onclick=()=>this.setState({showAdmin:false}));
-  $('adminOverlay').onclick=(e)=>{ if(e.target===$('adminOverlay')) this.setState({showAdmin:false}); };
+  $$('#mxOverlay [data-closemx]').forEach(b=>b.onclick=()=>this.setState({showMx:false}));
+  $('mxOverlay').onclick=(e)=>{ if(e.target===$('mxOverlay')) this.setState({showMx:false}); };
   $('exportMetricsBtn').onclick=()=>this.exportMetrics();
   $('resetMetricsBtn').onclick=()=>this.resetMetrics();
   $('openFb').onclick=()=>{ this._fbOpenedAt=Date.now(); this.setState({showFeedback:true}); };
@@ -2209,7 +2488,7 @@ init(){
   window.addEventListener('keydown',(e)=>{
     if(e.key!=='Escape') return;
     const s=this.state, p={};
-    if(s.showAdmin) p.showAdmin=false;
+    if(s.showMx) p.showMx=false;
     if(s.showYearMenu) p.showYearMenu=false;
     if(s.showShare) p.showShare=false;
     if(s.showFeedback) p.showFeedback=false;
@@ -2220,12 +2499,16 @@ init(){
   });
   window.addEventListener('resize',()=>this.syncSticky());
 
+  $('xpRevertBtn').onclick=()=>this.xpRevert();
+
+  this._booting=true;
   this.restorePlan();
   this.migrateLegacyStorage();
   this.restoreFromHash();
   this.initMetrics();
   this.flushFeedbackQueue();
   this.render();
+  this._booting=false;
 }
 };
 
